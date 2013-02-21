@@ -68,13 +68,13 @@ namespace OgreBulletCollisions
     class TriangleMeshDebugShape;
     class RayDebugShape;
 
-	class GImpactConcaveShape;
-	class HeightmapCollisionShape;
+    class GImpactConcaveShape;
+    class HeightmapCollisionShape;
     class CollisionShape;
     class BoxCollisionShape;
     class SphereCollisionShape;
     class CylinderCollisionShape;
-	class CapsuleCollisionShape;
+    class CapsuleCollisionShape;
     class ConeCollisionShape;
 
     class CompoundCollisionShape;
@@ -89,7 +89,7 @@ namespace OgreBulletCollisions
 
     class ObjectState;
 
-	class CollisionShapebject;
+    class CollisionShapebject;
 
     typedef std::vector<Ogre::Vector3> Vector3Array;
     typedef std::map<unsigned short, Vector3Array* > BoneIndex;

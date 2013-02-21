@@ -28,6 +28,7 @@ set (SOURCES_Col
 	Collisions/src/Shapes/OgreBulletCollisionsTriangleShape.cpp
 	Collisions/src/Shapes/OgreBulletCollisionsCompoundShape.cpp
 	Collisions/src/Shapes/OgreBulletCollisionsBoxShape.cpp
+	Collisions/src/Shapes/OgreBulletCollisionsTerrainShape.cpp
 	Collisions/src/OgreBulletCollisionsObjectState.cpp
 	Collisions/src/OgreBulletCollisionsRay.cpp
 	Collisions/src/OgreBulletCollisionsWorld.cpp

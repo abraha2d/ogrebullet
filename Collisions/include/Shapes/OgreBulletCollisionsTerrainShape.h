@@ -7,7 +7,6 @@
 #include "OgreBulletCollisionsShape.h"
 #include "Debug/OgreBulletCollisionsDebugLines.h"
 
-#include "BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h"
 #include "BulletCollision/CollisionShapes/btTriangleCallback.h"
 
 namespace OgreBulletCollisions
@@ -82,47 +81,15 @@ namespace OgreBulletCollisions
 	class HeightmapCollisionShape : public CollisionShape
 	{
 	public:
-		HeightmapCollisionShape(int width, int length, Ogre::Vector3& scale, Ogre::Real* pHeightData, bool bFlip)
-		{
-			int upIndex = 1;
-			bool useFloatDatam=true;
-			bool flipQuadEdges=bFlip;
-
-			btHeightfieldTerrainShape* pHeightShape = 
-				new btHeightfieldTerrainShape(width, length, pHeightData, scale.y, upIndex, useFloatDatam, flipQuadEdges);
-			pHeightShape->setUseDiamondSubdivision(true);
-
-			mShape = pHeightShape;
-
-			btVector3 sc(scale.x, scale.y, scale.z);
-			mShape->setLocalScaling(sc);
-
-		}
+		HeightmapCollisionShape(int width, int length, const Ogre::Vector3& scale, Ogre::Real* pHeightData, bool bFlip);
 
 		virtual ~HeightmapCollisionShape()
 		{
 		}
 
-		bool drawWireFrame(DebugLines *wire, 
-			const Ogre::Vector3 &pos = Ogre::Vector3::ZERO, 
-			const Ogre::Quaternion &quat= Ogre::Quaternion::IDENTITY) const
-		{
-			btHeightfieldTerrainShape* pHeightShape = static_cast<btHeightfieldTerrainShape*>(mShape);
-
-			btTransform bt;
-			bt.setIdentity();
-
-			btVector3 colour(255.0, 255.0, 255.0);
-
-			DebugHelper ddraw(wire);
-			DebugTriangleDrawCallback cb(&ddraw, bt, colour);
-
-			btVector3 aabbMax(btScalar(1e30),btScalar(1e30),btScalar(1e30));
-			btVector3 aabbMin(btScalar(-1e30),btScalar(-1e30),btScalar(-1e30));
-			pHeightShape->processAllTriangles(&cb, aabbMin, aabbMax);
-			return true;
-		}
-
+		bool drawWireFrame(DebugLines *wire,
+				   const Ogre::Vector3 &pos = Ogre::Vector3::ZERO,
+				   const Ogre::Quaternion &quat= Ogre::Quaternion::IDENTITY) const;
 	};
 }
 
