@@ -1,5 +1,7 @@
 cmake_minimum_required (VERSION 2.8)
-project (OgreBullet)
+
+set (PROJ "OgreBullet")
+project (${PROJ})
 
 set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 
@@ -109,13 +111,13 @@ set (HEADERS_Dyn
 	Dynamics/include/OgreBulletDynamicsObjectState.h
 	Dynamics/include/OgreBulletDynamicsPreRequisites.h)
 
-set (COLLISIONS_LIB "OgreBulletCollisions")
-set (DYNAMICS_LIB "OgreBulletDynamics")
+set (COLLISIONS_LIB "${PROJ}Collisions")
+set (DYNAMICS_LIB "${PROJ}Dynamics")
 
 add_library (${COLLISIONS_LIB} ${SOURCES_Col})
 add_library (${DYNAMICS_LIB} ${SOURCES_Dyn})
 
-set (INCLUDE_INSTALL_DIR include/OgreBullet)
+set (INCLUDE_INSTALL_DIR include/${PROJ})
 
 set (INCLUDE_INSTALL_COL_DIR ${INCLUDE_INSTALL_DIR}/Collisions)
 set (INCLUDE_INSTALL_COL_SHAPES_DIR ${INCLUDE_INSTALL_COL_DIR}/Shapes)
@@ -127,9 +129,9 @@ set (INCLUDE_INSTALL_DYN_CONSTRAINTS_DIR ${INCLUDE_INSTALL_DYN_DIR}/Constraints)
 set (INCLUDE_INSTALL_DYN_PREFAB_DIR ${INCLUDE_INSTALL_DYN_DIR}/Prefab)
 
 install (TARGETS ${COLLISIONS_LIB} ${DYNAMICS_LIB} 
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib)
+	RUNTIME DESTINATION bin
+	LIBRARY DESTINATION lib
+	ARCHIVE DESTINATION lib)
 
 install (FILES ${HEADERS_Col} DESTINATION ${INCLUDE_INSTALL_COL_DIR})
 install (FILES ${HEADERS_Col_Shapes} DESTINATION ${INCLUDE_INSTALL_COL_SHAPES_DIR})
@@ -139,4 +141,15 @@ install (FILES ${HEADERS_Col_Utils} DESTINATION ${INCLUDE_INSTALL_COL_UTILS_DIR}
 install (FILES ${HEADERS_Dyn} DESTINATION ${INCLUDE_INSTALL_DYN_DIR})
 install (FILES ${HEADERS_Dyn_Constraints} DESTINATION ${INCLUDE_INSTALL_DYN_CONSTRAINTS_DIR})
 install (FILES ${HEADERS_Dyn_Prefab} DESTINATION ${INCLUDE_INSTALL_DYN_PREFAB_DIR})
+
+install (FILES FindOgreBullet.cmake DESTINATION lib/${PROJ}/cmake)
+
+# uninstall target
+configure_file(
+	"${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+	IMMEDIATE @ONLY)
+
+add_custom_target(uninstall
+	COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
 
