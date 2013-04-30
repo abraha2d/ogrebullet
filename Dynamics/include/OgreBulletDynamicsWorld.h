@@ -43,10 +43,12 @@ namespace OgreBulletDynamics
     class DynamicsWorld : public OgreBulletCollisions::CollisionsWorld
     {
     public:
-        DynamicsWorld(Ogre::SceneManager *mgr, 
-            const Ogre::AxisAlignedBox &bounds,  
-            const Ogre::Vector3 &gravity,
-            bool init = true, bool set32BitAxisSweep = true, unsigned int maxHandles = 1500000);
+        DynamicsWorld(Ogre::SceneManager *mgr,
+                      const Ogre::AxisAlignedBox &bounds,
+                      const Ogre::Vector3 &gravity,
+                      bool init = true,
+                      bool set32BitAxisSweep = true,
+                      unsigned int maxHandles = 1500000);
 
 	    ~DynamicsWorld();
 
@@ -57,12 +59,14 @@ namespace OgreBulletDynamics
                 mWorld = createdWorld;
             }
 
-        void stepSimulation(const Ogre::Real elapsedTime, int maxSubSteps = 1, const Ogre::Real fixedTimestep = 1./60.);
+        void stepSimulation(const Ogre::Real elapsedTime,
+                            int maxSubSteps = 1,
+                            const Ogre::Real fixedTimestep = 1.0/60.0);
 
-        void addRigidBody (RigidBody *rb, short collisionGroup, short collisionMask);
+        void addRigidBody(RigidBody *rb, short collisionGroup, short collisionMask);
 
 
-        inline btDynamicsWorld * getBulletDynamicsWorld() const {return static_cast<btDynamicsWorld *> (mWorld);};
+        inline btDynamicsWorld * getBulletDynamicsWorld() const { return static_cast<btDynamicsWorld *>(mWorld); }
 
         void removeConstraint(TypedConstraint *constraint);
         void addConstraint(TypedConstraint *constraint);
@@ -71,10 +75,10 @@ namespace OgreBulletDynamics
         void addVehicle(RaycastVehicle *v);
 
     private:
-        btConstraintSolver                                *mConstraintsolver;
+        btConstraintSolver *mConstraintsolver;
 
-		std::deque <TypedConstraint *>                    mConstraints;
-		std::deque <ActionInterface *>                    mActionInterface;
+        std::deque <TypedConstraint *> mConstraints;
+        std::deque <ActionInterface *> mActionInterface;
     };
 }
 #endif //_OGREBULLETDYNAMICS_DynamicWorld_H

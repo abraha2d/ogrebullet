@@ -46,15 +46,19 @@ namespace OgreBulletCollisions
 #endif
 	{
 	public:
-		GImpactConcaveShape(Ogre::Vector3 *_vertices, unsigned int _vertex_count, unsigned int *_indices, unsigned int_index_count);
+        GImpactConcaveShape(Ogre::Vector3 *_vertices,
+                            unsigned int _vertex_count,
+                            unsigned int *_indices,
+                            unsigned int_index_count);
+
 		virtual ~GImpactConcaveShape();
 
-		bool drawWireFrame(DebugLines *wire, 
-			const Ogre::Vector3 &pos = Ogre::Vector3::ZERO, 
-			const Ogre::Quaternion &quat= Ogre::Quaternion::IDENTITY) const;
+        bool drawWireFrame(DebugLines *wire,
+                           const Ogre::Vector3 &pos = Ogre::Vector3::ZERO,
+                           const Ogre::Quaternion &quat= Ogre::Quaternion::IDENTITY) const;
 
 	private:
-		btTriangleMesh*         mTriMesh;
+        btTriangleMesh *mTriMesh;
 	};
 }
 #endif

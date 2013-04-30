@@ -39,7 +39,8 @@ using namespace Ogre;
 //------------------------------------------------------------------------------------------------
 bool DebugLines::_materials_created = false;
 //------------------------------------------------------------------------------------------------
-DebugLines::DebugLines() : SimpleRenderable()
+DebugLines::DebugLines()
+    : SimpleRenderable()
 {
 	mRenderOp.vertexData = new Ogre::VertexData();
 	mRenderOp.indexData = 0;
@@ -53,7 +54,7 @@ DebugLines::DebugLines() : SimpleRenderable()
     {
         StringVector resourceGroups = ResourceGroupManager::getSingletonPtr()->getResourceGroups();
 
-        if(std::find(resourceGroups.begin(), resourceGroups.end(), "OgreBulletCollisions") == resourceGroups.end())
+        if (std::find(resourceGroups.begin(), resourceGroups.end(), "OgreBulletCollisions") == resourceGroups.end())
         {
             ResourceGroupManager::getSingletonPtr()->createResourceGroup("OgreBulletCollisions");
         }
@@ -99,7 +100,7 @@ DebugLines::DebugLines() : SimpleRenderable()
 
         _materials_created = true;
     }
-    setCastShadows (false);
+    setCastShadows(false);
     this->setMaterial("OgreBulletCollisionsDebugLines/Enabled");
 }
 
@@ -119,7 +120,7 @@ void DebugLines::clear()
     }
 }
 //------------------------------------------------------------------------------------------------
-DebugLines::~DebugLines(void)
+DebugLines::~DebugLines()
 { 
     clear();
 
@@ -128,10 +129,14 @@ DebugLines::~DebugLines(void)
 //------------------------------------------------------------------------------------------------
 void DebugLines::draw()
 {
-    if (_drawn || _points.empty()) 
+    if (_drawn || _points.empty())
+    {
         return;
-    else 
+    }
+    else
+    {
         _drawn = true;
+    }
 
     // Initialization stuff
     mRenderOp.vertexData->vertexCount = _points.size();
@@ -140,7 +145,7 @@ void DebugLines::draw()
     Ogre::VertexBufferBinding *bind = mRenderOp.vertexData->vertexBufferBinding;
 
 	HardwareVertexBufferSharedPtr vbuf;
-	if(decl->getElementCount() == 0)
+    if (decl->getElementCount() == 0)
 	{
 		decl->addElement(0, 0, VET_FLOAT3, VES_POSITION);
 		decl->addElement(0, 12, VET_FLOAT1, VES_TEXTURE_COORDINATES);
@@ -157,7 +162,7 @@ void DebugLines::draw()
 	{
 		bind->unsetAllBindings();
 
-		 vbuf = HardwareBufferManager::getSingleton().createVertexBuffer(
+        vbuf = HardwareBufferManager::getSingleton().createVertexBuffer(
 			decl->getVertexSize(0),
 			mRenderOp.vertexData->vertexCount,
 			HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY_DISCARDABLE);
@@ -172,7 +177,7 @@ void DebugLines::draw()
 
     float *prPos = static_cast<float*>(vbuf->lock(HardwareBuffer::HBL_DISCARD));
 
-    for(unsigned int i = 0; i < size; i++)
+    for (unsigned int i = 0; i < size; i++)
     {
         *prPos++ = _points[i].x;
         *prPos++ = _points[i].y;
@@ -181,19 +186,34 @@ void DebugLines::draw()
 		*prPos++ = 0;
 
         if (_points[i].x < vaabMin.x)
+        {
 			vaabMin.x = _points[i].x;
-		else if (_points[i].x > vaabMax.x)
+        }
+        else
+        if (_points[i].x > vaabMax.x)
+        {
 			vaabMax.x = _points[i].x;
+        }
 
         if (_points[i].y < vaabMin.y)
+        {
 			vaabMin.y = _points[i].y;
-		else if (_points[i].y > vaabMax.y)
+        }
+        else
+        if (_points[i].y > vaabMax.y)
+        {
 			vaabMax.y = _points[i].y;
+        }
 
         if (_points[i].z < vaabMin.z)
+        {
 			vaabMin.z = _points[i].z;
-		else if (_points[i].z > vaabMax.z)
+        }
+        else
+        if (_points[i].z > vaabMax.z)
+        {
 			vaabMax.z = _points[i].z;
+        }
     }
 
     vbuf->unlock();

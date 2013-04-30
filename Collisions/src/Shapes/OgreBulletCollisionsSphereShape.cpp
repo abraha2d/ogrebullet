@@ -39,10 +39,10 @@ using namespace OgreBulletCollisions;
 namespace OgreBulletCollisions
 {
     // -------------------------------------------------------------------------
-    SphereCollisionShape::SphereCollisionShape(const Real radius):	
-        CollisionShape()
+    SphereCollisionShape::SphereCollisionShape(const Real radius)
+        : CollisionShape()
     {
-            mShape = new btSphereShape(radius);
+        mShape = new btSphereShape(radius);
     }
     // -------------------------------------------------------------------------
     SphereCollisionShape::~SphereCollisionShape()

@@ -39,22 +39,21 @@ using namespace OgreBulletCollisions;
 namespace OgreBulletCollisions
 {
     // -------------------------------------------------------------------------
-    StaticPlaneCollisionShape::StaticPlaneCollisionShape(const Vector3 normal, Real distance):	
-        CollisionShape()
+    StaticPlaneCollisionShape::StaticPlaneCollisionShape(const Vector3 &normal, Real distance)
+        : CollisionShape()
     {
-            mShape = new btStaticPlaneShape (btVector3 (normal.x, normal.y, normal.z), btScalar (distance));
+        mShape = new btStaticPlaneShape(btVector3(normal.x, normal.y, normal.z), btScalar(distance));
     }
     // -------------------------------------------------------------------------
     StaticPlaneCollisionShape::~StaticPlaneCollisionShape()
     {
     }
     // -------------------------------------------------------------------------
-    bool StaticPlaneCollisionShape::drawWireFrame(DebugLines *wire, 
-        const Ogre::Vector3 &pos, 
-        const Ogre::Quaternion &quat) const
+    bool StaticPlaneCollisionShape::drawWireFrame(DebugLines *wire,
+                                                  const Ogre::Vector3 &pos,
+                                                  const Ogre::Quaternion &quat) const
     {        
         return false;
     }
-
 }
 

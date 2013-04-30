@@ -40,10 +40,10 @@ using namespace Ogre;
 namespace OgreBulletDynamics
 {
     // -------------------------------------------------------------------------
-    PointToPointConstraint::PointToPointConstraint(RigidBody *body, const Vector3 &pivot) :
-        TypedConstraint(body)
+    PointToPointConstraint::PointToPointConstraint(RigidBody *body, const Vector3 &pivot)
+        : TypedConstraint(body)
     {
-        mConstraint = new btPoint2PointConstraint(*(body->getBulletRigidBody ()), 
+        mConstraint = new btPoint2PointConstraint(*(body->getBulletRigidBody()),
             OgreBulletCollisions::OgreBtConverter::to(pivot));
     }
     // -------------------------------------------------------------------------
@@ -51,35 +51,35 @@ namespace OgreBulletDynamics
     {
     }
     // -------------------------------------------------------------------------
-    void	PointToPointConstraint::setPivotA(const Ogre::Vector3& pivotA)
+    void PointToPointConstraint::setPivotA(const Ogre::Vector3& pivotA)
     {
         getBulletPoint2PointConstraint()->setPivotA(
             OgreBulletCollisions::OgreBtConverter::to(pivotA));
     }
     // -------------------------------------------------------------------------
-    void	PointToPointConstraint::setPivotB(const Ogre::Vector3& pivotB)
+    void PointToPointConstraint::setPivotB(const Ogre::Vector3& pivotB)
     {
         getBulletPoint2PointConstraint()->setPivotB(
             OgreBulletCollisions::OgreBtConverter::to(pivotB));
     }
     // -------------------------------------------------------------------------
-    void PointToPointConstraint::setTau (float tau) 
+    void PointToPointConstraint::setTau(float tau)
     {
         getBulletPoint2PointConstraint()->m_setting.m_tau = tau;
-    };
+    }
     // -------------------------------------------------------------------------
-    void PointToPointConstraint::setDamping (float damping) 
+    void PointToPointConstraint::setDamping(float damping)
     {
         getBulletPoint2PointConstraint()->m_setting.m_damping = damping;
-    };
+    }
     // -------------------------------------------------------------------------
-    float PointToPointConstraint::getTau () const 
+    float PointToPointConstraint::getTau() const
     {
         return getBulletPoint2PointConstraint()->m_setting.m_tau;
-    };
+    }
     // -------------------------------------------------------------------------
-    float PointToPointConstraint::getDamping () const 
+    float PointToPointConstraint::getDamping() const
     {
         return getBulletPoint2PointConstraint()->m_setting.m_damping;
-    };
+    }
 }

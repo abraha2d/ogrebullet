@@ -34,7 +34,7 @@ THE SOFTWARE.
 
 namespace OgreBulletCollisions
 {
-	HeightmapCollisionShape::HeightmapCollisionShape(int width, int length, const Ogre::Vector3& scale, Ogre::Real* pHeightData, bool bFlip)
+    HeightmapCollisionShape::HeightmapCollisionShape(int width, int length, const Ogre::Vector3 &scale, Ogre::Real *pHeightData, bool bFlip)
 	{
 		int upIndex = 1;
 		bool useFloatDatam=true;
@@ -62,8 +62,8 @@ namespace OgreBulletCollisions
 		DebugHelper ddraw(wire);
 		DebugTriangleDrawCallback cb(&ddraw, bt, colour);
 
-		btVector3 aabbMax(btScalar(1e30),btScalar(1e30),btScalar(1e30));
-		btVector3 aabbMin(btScalar(-1e30),btScalar(-1e30),btScalar(-1e30));
+        btVector3 aabbMax(btScalar(1e30), btScalar(1e30), btScalar(1e30));
+        btVector3 aabbMin(btScalar(-1e30), btScalar(-1e30), btScalar(-1e30));
 		pHeightShape->processAllTriangles(&cb, aabbMin, aabbMax);
 		return true;
 	}

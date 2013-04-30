@@ -46,16 +46,15 @@ namespace OgreBulletCollisions
     const Ogre::String Object::mMovableType = "OgreBullet::Object";
     // -------------------------------------------------------------------------
     Object::Object(const String &name, CollisionsWorld *world, bool init)
-        :	
-        MovableObject(name),
-        mWorld(world),
-        mShape(0),
-        mState(0),
-        mRootNode(0),
-        mBounds(Vector3::ZERO, Vector3::ZERO),
-        mDebugShape(0),
-        mShapeNode(0),
-        mDebugNode(0)
+        : MovableObject(name),
+          mWorld(world),
+          mShape(NULL),
+          mState(NULL),
+          mRootNode(NULL),
+          mBounds(Vector3::ZERO, Vector3::ZERO),
+          mDebugShape(NULL),
+          mShapeNode(NULL),
+          mDebugNode(NULL)
     {
         if (init)
         {
@@ -69,12 +68,12 @@ namespace OgreBulletCollisions
         if (mRootNode)
         {
             showDebugShape(false);
-            mShapeNode->detachObject (this);
-            mRootNode->removeAndDestroyChild (mShapeNode->getName ());
+            mShapeNode->detachObject(this);
+            mRootNode->removeAndDestroyChild(mShapeNode->getName());
             //mRootNode->getParentSceneNode ()->removeAndDestroyChild (mRootNode->getName ());
         }
 
-        getBulletCollisionWorld()->removeCollisionObject( mObject );
+        getBulletCollisionWorld()->removeCollisionObject(mObject);
 		getCollisionWorld()->removeObject(this);
 
         delete mObject;        
@@ -85,29 +84,30 @@ namespace OgreBulletCollisions
     //-----------------------------------------------------------------------
     void Object::showDebugShape(bool show)
     {
-        if (show && mDebugShape == 0 && mShape)
+        if (show && mDebugShape == NULL && mShape)
         {
             mDebugShape = new DebugCollisionShape(mShape);
-            if (mDebugShape->getIsVisual ())
+            if (mDebugShape->getIsVisual())
             {
-                assert (mDebugNode == 0);
+                assert(mDebugNode == NULL);
                 mDebugNode = mRootNode->createChildSceneNode(mName + "DebugShape");
                 mDebugNode->setInheritScale(false);
-                mDebugNode->attachObject (mDebugShape);
+                mDebugNode->attachObject(mDebugShape);
             }
         }
-        else if (show != true && mDebugShape != 0)
+        else
+        if (show != true && mDebugShape != NULL)
         {
-            if (mDebugShape->getIsVisual ())
+            if (mDebugShape->getIsVisual())
             {
-                assert (mDebugNode);
-                mDebugNode->detachObject (mDebugShape->getName());
-                mRootNode->removeAndDestroyChild (mDebugNode->getName());
-                mDebugNode = 0;
+                assert(mDebugNode);
+                mDebugNode->detachObject(mDebugShape->getName());
+                mRootNode->removeAndDestroyChild(mDebugNode->getName());
+                mDebugNode = NULL;
             }
-            assert (mDebugNode == 0);
+            assert(mDebugNode == NULL);
             delete mDebugShape;
-            mDebugShape = 0;
+            mDebugShape = NULL;
         }
     }
     // -------------------------------------------------------------------------
@@ -169,8 +169,7 @@ namespace OgreBulletCollisions
     }
 #if (OGRE_VERSION >=  ((1 << 16) | (5 << 8) | 0)) // must have at least shoggoth (1.5.0)
     //-----------------------------------------------------------------------
-	void Object::visitRenderables(Renderable::Visitor* visitor, 
-		bool debugRenderables)
+	void Object::visitRenderables(Renderable::Visitor* visitor, bool debugRenderables)
 	{
 		//visitor->visit(this, 0, false);
 	}
@@ -194,7 +193,7 @@ namespace OgreBulletCollisions
     //-----------------------------------------------------------------------
     Real Object::getBoundingRadius(void) const
     {
-        return Ogre::Real(0.0);
+        return Ogre::Real(0.0f);
     }
 
     //-----------------------------------------------------------------------

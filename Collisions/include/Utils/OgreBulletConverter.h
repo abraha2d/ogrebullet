@@ -40,36 +40,36 @@ namespace OgreBulletCollisions
     class OgreBtConverter
     {
     public:
-        OgreBtConverter(){};
-        ~OgreBtConverter(){};
+        OgreBtConverter() { }
+        ~OgreBtConverter() { }
 
         static btVector3 to(const Ogre::Vector3 &V)
         {
             return btVector3(V.x, V.y, V.z);
-        };
+        }
 
         static btQuaternion to(const Ogre::Quaternion &Q)
         {
             return btQuaternion(Q.x, Q.y, Q.z, Q.w);
-        };
+        }
 
     };
     class BtOgreConverter
     {
     public:
-        BtOgreConverter(){};
-        ~BtOgreConverter(){};
+        BtOgreConverter() { }
+        ~BtOgreConverter() { }
 
         static Ogre::Vector3 to(const btVector3 &V)
         {
             return Ogre::Vector3(V.x(), V.y(), V.z());
-        };
+        }
 
         static Ogre::Quaternion to(const btQuaternion &Q)
         {
             return Ogre::Quaternion(Q.w(), Q.x(), Q.y(), Q.z());
             //return Ogre::Quaternion(Q.x(), Q.y(), Q.z(), Q[3]);
-        };
+        }
     };
 }
 #endif //_OGREBULLETCOLLISIONS_OgreBtConverter_H

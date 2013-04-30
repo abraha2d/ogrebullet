@@ -48,15 +48,14 @@ namespace OgreBulletDynamics
 
 	    virtual ~TypedConstraint();
 
-
-        inline btTypedConstraint* getBulletTypedConstraint() const {return static_cast <btTypedConstraint*> (mConstraint);};
+        inline btTypedConstraint* getBulletTypedConstraint() const { return static_cast<btTypedConstraint *> (mConstraint); }
 
     protected:
-        btTypedConstraint       *mConstraint;
+        btTypedConstraint *mConstraint;
 
-        DynamicsWorld           *mWorld;
-        RigidBody               *mBodyA;
-        RigidBody               *mBodyB;
+        DynamicsWorld *mWorld;
+        RigidBody *mBodyA;
+        RigidBody *mBodyB;
 	}; 
 	// basic constraint action class
 	class ActionInterface
@@ -68,15 +67,14 @@ namespace OgreBulletDynamics
 
 		virtual ~ActionInterface();
 
-
-		inline btActionInterface* getBulletActionInterface() const {return static_cast <btActionInterface*> (mActionInterface);};
+        inline btActionInterface* getBulletActionInterface() const {return static_cast<btActionInterface *>(mActionInterface); }
 
 	protected:
-		btActionInterface       *mActionInterface;
+        btActionInterface *mActionInterface;
 
-		DynamicsWorld           *mWorld;
-		RigidBody               *mBodyA;
-		RigidBody               *mBodyB;
+        DynamicsWorld *mWorld;
+        RigidBody *mBodyA;
+        RigidBody *mBodyB;
 	};
 }
 #endif //_OGREBULLETDYNAMICS_TypedConstraint_H

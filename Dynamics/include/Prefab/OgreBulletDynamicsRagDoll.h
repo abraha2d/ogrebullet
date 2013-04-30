@@ -43,10 +43,10 @@ namespace OgreBulletDynamics
 	class RagDoll 
 	{
 	public:
-		RagDoll (btDynamicsWorld* ownerWorld, 
-				const btVector3& positionOffset);
+        RagDoll(btDynamicsWorld *ownerWorld,
+                const btVector3 &positionOffset);
 
-		virtual	~RagDoll ();
+        virtual	~RagDoll();
 
 		// Make ragdoll  active.
 		void ragdollEnable(bool doEnable);
@@ -68,18 +68,16 @@ namespace OgreBulletDynamics
 		// is it fixed on a pose?
 		bool isRigidityEnable();
 
-
 	protected:
 		btDynamicsWorld* m_ownerWorld;
 
-		std::vector<btCollisionShape* >  m_shapes;
-		std::vector<btRigidBody* >		 m_bodies;
-		std::vector<btTypedConstraint* > m_joints;
+        std::vector<btCollisionShape *>  m_shapes;
+        std::vector<btRigidBody *>		 m_bodies;
+        std::vector<btTypedConstraint *> m_joints;
 
-		btRigidBody* localCreateRigidBody (btScalar mass, 
-			const btTransform& startTransform, 
-			btCollisionShape* shape);
-
+        btRigidBody *localCreateRigidBody(btScalar mass,
+                                          const btTransform &startTransform,
+                                          btCollisionShape *shape);
 	};
 }
 #endif //_OGREBULLETCOLLISIONS_CollisionWorld_H

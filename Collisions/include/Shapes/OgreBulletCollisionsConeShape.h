@@ -42,7 +42,10 @@ namespace OgreBulletCollisions
     class ConeCollisionShape : public CollisionShape
     {
     public:
-        ConeCollisionShape(Ogre::Real radius, Ogre::Real height, const Ogre::Vector3 &axe);
+        ConeCollisionShape(Ogre::Real radius,
+                           Ogre::Real height,
+                           const Ogre::Vector3 &axe);
+
 	    virtual ~ConeCollisionShape();
 
     };

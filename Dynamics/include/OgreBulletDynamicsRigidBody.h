@@ -56,35 +56,34 @@ namespace OgreBulletDynamics
 
 	    virtual ~RigidBody();
 
-        void setShape(Ogre::SceneNode *node, 
-            OgreBulletCollisions::CollisionShape *shape,
-            const float      bodyRestitution,
-            const float      bodyFriction,
-            const float      bodyMass,
-            const Ogre::Vector3 &pos = Ogre::Vector3::ZERO, 
-            const Ogre::Quaternion &quat = Ogre::Quaternion::IDENTITY);
+        void setShape(Ogre::SceneNode *node,
+                      OgreBulletCollisions::CollisionShape *shape,
+                      const float bodyRestitution,
+                      const float bodyFriction,
+                      const float bodyMass,
+                      const Ogre::Vector3 &pos = Ogre::Vector3::ZERO,
+                      const Ogre::Quaternion &quat = Ogre::Quaternion::IDENTITY);
 
         void setStaticShape(Ogre::SceneNode *node,
-            OgreBulletCollisions::CollisionShape *shape,
-            const float      bodyRestitution,
-            const float      bodyFriction,
-            const Ogre::Vector3 &pos = Ogre::Vector3::ZERO, 
-            const Ogre::Quaternion &quat = Ogre::Quaternion::IDENTITY);
+                            OgreBulletCollisions::CollisionShape *shape,
+                            const float bodyRestitution,
+                            const float bodyFriction,
+                            const Ogre::Vector3 &pos = Ogre::Vector3::ZERO,
+                            const Ogre::Quaternion &quat = Ogre::Quaternion::IDENTITY);
 
 
-		   void setStaticShape(btScaledBvhTriangleMeshShape *shape,
-		           const float      bodyRestitution,
-		           const float      bodyFriction,
-		           const Ogre::Vector3 &pos = Ogre::Vector3::ZERO,
-		           const Ogre::Quaternion &quat = Ogre::Quaternion::IDENTITY);
+        void setStaticShape(btScaledBvhTriangleMeshShape *shape,
+                            const float bodyRestitution,
+                            const float bodyFriction,
+                            const Ogre::Vector3 &pos = Ogre::Vector3::ZERO,
+                            const Ogre::Quaternion &quat = Ogre::Quaternion::IDENTITY);
 
 
         void setStaticShape(OgreBulletCollisions::CollisionShape *shape,
-            const float      bodyRestitution,
-            const float      bodyFriction,
-            const Ogre::Vector3 &pos = Ogre::Vector3::ZERO, 
-            const Ogre::Quaternion &quat = Ogre::Quaternion::IDENTITY);
-
+                            const float bodyRestitution,
+                            const float bodyFriction,
+                            const Ogre::Vector3 &pos = Ogre::Vector3::ZERO,
+                            const Ogre::Quaternion &quat = Ogre::Quaternion::IDENTITY);
 
         void setLinearVelocity(const Ogre::Vector3 &vel);
         void setLinearVelocity(const Ogre::Real x, const Ogre::Real y, const Ogre::Real z);
@@ -93,11 +92,11 @@ namespace OgreBulletDynamics
         void applyForce(const Ogre::Vector3 &impulse, const Ogre::Vector3 &position);
 
 
-        inline btRigidBody*         getBulletRigidBody() const;
-        inline btDynamicsWorld*     getBulletDynamicsWorld() const;
-        inline DynamicsWorld*       getDynamicsWorld();
+        inline btRigidBody *getBulletRigidBody() const;
+        inline btDynamicsWorld *getBulletDynamicsWorld() const;
+        inline DynamicsWorld *getDynamicsWorld();
 
-        Ogre::SceneNode*  getSceneNode() const {return mRootNode;};
+        inline Ogre::SceneNode *getSceneNode() const { return mRootNode; }
 
         inline bool isStaticObject() const;
         inline bool isKinematicObject() const;
@@ -105,17 +104,18 @@ namespace OgreBulletDynamics
 		void setKinematicObject(bool isKinematic);
 
         inline void disableDeactivation();
-        inline void enableActiveState ();
+        inline void enableActiveState();
         inline void forceActivationState();
         void setDeactivationTime(const float ftime);
 
         inline const btTransform &getCenterOfMassTransform() const;
-        inline Ogre::Quaternion    getCenterOfMassOrientation () const;
+        inline Ogre::Quaternion getCenterOfMassOrientation() const;
         inline Ogre::Vector3 getCenterOfMassPosition() const;
 
-        Ogre::Vector3       getCenterOfMassPivot (const Ogre::Vector3 &pivotPosition) const;
+        Ogre::Vector3 getCenterOfMassPivot(const Ogre::Vector3 &pivotPosition) const;
         
-        void setDamping( const Ogre::Real linearDamping, const Ogre::Real angularDamping );
+        void setDamping(const Ogre::Real linearDamping, const Ogre::Real angularDamping);
+
 	protected:
 		short mCollisionGroup;
 		short mCollisionMask;
@@ -125,43 +125,41 @@ namespace OgreBulletDynamics
     class WheeledRigidBody : public RigidBody
     {
     public:
-        WheeledRigidBody(const Ogre::String &name, DynamicsWorld *world): 
-            RigidBody(name, world),
-                mVehicle(0)
+        WheeledRigidBody(const Ogre::String &name, DynamicsWorld *world)
+            : RigidBody(name, world),
+              mVehicle(NULL)
         {
-        };
-
+        }
         
-        void setVehicle(RaycastVehicle *v){mVehicle = v;};
+        inline void setVehicle(RaycastVehicle *v) { mVehicle = v; }
 
-       virtual void setPosition(const btVector3 &pos);
-       virtual void setOrientation(const btQuaternion &quat);
-       virtual void setTransform(const btVector3 &pos, const btQuaternion &quat);
-       virtual void setTransform(const btTransform& worldTrans);
+        virtual void setPosition(const btVector3 &pos);
+        virtual void setOrientation(const btQuaternion &quat);
+        virtual void setTransform(const btVector3 &pos, const btQuaternion &quat);
+        virtual void setTransform(const btTransform& worldTrans);
 
-        virtual ~WheeledRigidBody(){};
+        virtual ~WheeledRigidBody() { }
 
     protected:
 		RaycastVehicle *mVehicle;
-
     };
     // -------------------------------------------------------------------------
     // basic rigid body class inline methods
     // -------------------------------------------------------------------------
-    inline btRigidBody*  RigidBody::getBulletRigidBody() const 
+    inline btRigidBody *RigidBody::getBulletRigidBody() const
     {
-        return static_cast <btRigidBody* > (mObject);
-    };
+        return static_cast<btRigidBody *>(mObject);
+    }
     // -------------------------------------------------------------------------
-    inline btDynamicsWorld*     RigidBody::getBulletDynamicsWorld() const 
+    inline btDynamicsWorld *RigidBody::getBulletDynamicsWorld() const
     { 
-        return static_cast <btDynamicsWorld * > (mWorld->getBulletCollisionWorld ());
-    };
+        return static_cast<btDynamicsWorld *>(mWorld->getBulletCollisionWorld());
+    }
     // -------------------------------------------------------------------------
-    inline DynamicsWorld*       RigidBody::getDynamicsWorld() 
+    inline DynamicsWorld *RigidBody::getDynamicsWorld()
     { 
-        return static_cast <DynamicsWorld* > (mWorld);
-    };
+        return static_cast<DynamicsWorld *>(mWorld);
+    }
     // -------------------------------------------------------------------------
     inline bool RigidBody::isStaticObject() const 
     {
@@ -171,7 +169,7 @@ namespace OgreBulletDynamics
     inline bool RigidBody::isKinematicObject() const 
     {
         return getBulletRigidBody()->isKinematicObject();
-    };
+    }
     // -------------------------------------------------------------------------
     inline void RigidBody::disableDeactivation()
     {

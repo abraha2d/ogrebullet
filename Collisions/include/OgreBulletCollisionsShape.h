@@ -49,17 +49,16 @@ namespace OgreBulletCollisions
 	    CollisionShape();
         virtual ~CollisionShape();
         
-        inline btCollisionShape* getBulletShape () {return mShape;};
+        inline btCollisionShape* getBulletShape() { return mShape; }
 
-        virtual bool drawWireFrame(DebugLines *wire, 
-            const Ogre::Vector3 &pos = Ogre::Vector3::ZERO, 
-            const Ogre::Quaternion &quat= Ogre::Quaternion::IDENTITY) const;
+        virtual bool drawWireFrame(DebugLines *wire,
+                                   const Ogre::Vector3 &pos = Ogre::Vector3::ZERO,
+                                   const Ogre::Quaternion &quat = Ogre::Quaternion::IDENTITY) const;
 
 		bool drawConvexWireFrame(DebugLines *wire, const Ogre::Vector3 &pos, const Ogre::Quaternion &quat) const;
 
-
     protected:
-        btCollisionShape*       mShape;        
+        btCollisionShape *mShape;
 
     };
 }

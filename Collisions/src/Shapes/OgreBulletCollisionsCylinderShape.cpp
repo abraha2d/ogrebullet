@@ -44,11 +44,19 @@ namespace OgreBulletCollisions
         CollisionShape()
     {
         if (axe == Vector3::UNIT_X)
+        {
             mShape = new btCylinderShapeX(OgreBtConverter::to(halfExtents));
-        else if (axe == Vector3::UNIT_Y)
-            mShape = new btCylinderShape (OgreBtConverter::to(halfExtents));
-        else if (axe == Vector3::UNIT_Z)
+        }
+        else
+        if (axe == Vector3::UNIT_Y)
+        {
+            mShape = new btCylinderShape(OgreBtConverter::to(halfExtents));
+        }
+        else
+        if (axe == Vector3::UNIT_Z)
+        {
             mShape = new btCylinderShapeZ(OgreBtConverter::to(halfExtents));
+        }
     }
     // -------------------------------------------------------------------------
     CylinderCollisionShape::~CylinderCollisionShape()

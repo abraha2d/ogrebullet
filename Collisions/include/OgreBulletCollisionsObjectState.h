@@ -42,7 +42,7 @@ namespace OgreBulletCollisions
 	    ObjectState(Object *parent);
 	    ~ObjectState();
     	
-	    virtual void getWorldTransform(btTransform& worldTrans ) const;
+        virtual void getWorldTransform(btTransform& worldTrans) const;
         virtual void setWorldTransform(const btTransform& worldTrans);	
 
     private:

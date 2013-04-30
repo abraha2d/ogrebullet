@@ -41,19 +41,22 @@ using namespace Ogre;
 namespace OgreBulletDynamics
 {
     // -------------------------------------------------------------------------
-    ConeTwistConstraint::ConeTwistConstraint(RigidBody * rbA, RigidBody * rbB,
-        const Vector3& FrameInAVector3, const Quaternion& FrameInAOrientation,
-        const Vector3& FrameInBVector3, const Quaternion& FrameInBOrientation):
-    TypedConstraint(rbA, rbB)
+    ConeTwistConstraint::ConeTwistConstraint(RigidBody *rbA,
+                                             RigidBody *rbB,
+                                             const Vector3 &FrameInAVector3,
+                                             const Quaternion &FrameInAOrientation,
+                                             const Vector3 &FrameInBVector3,
+                                             const Quaternion &FrameInBOrientation)
+        : TypedConstraint(rbA, rbB)
     {
-        btTransform frameInA (OgreBulletCollisions::OgreBtConverter::to(FrameInAOrientation),
-                              OgreBulletCollisions::OgreBtConverter::to(FrameInAVector3));
-        btTransform frameInB (OgreBulletCollisions::OgreBtConverter::to(FrameInBOrientation),
-                              OgreBulletCollisions::OgreBtConverter::to(FrameInBVector3));
+        btTransform frameInA(OgreBulletCollisions::OgreBtConverter::to(FrameInAOrientation),
+                             OgreBulletCollisions::OgreBtConverter::to(FrameInAVector3));
+        btTransform frameInB(OgreBulletCollisions::OgreBtConverter::to(FrameInBOrientation),
+                             OgreBulletCollisions::OgreBtConverter::to(FrameInBVector3));
 
         mConstraint = new btConeTwistConstraint(
-            *rbA->getBulletRigidBody (),
-            *rbB->getBulletRigidBody (),
+            *rbA->getBulletRigidBody(),
+            *rbB->getBulletRigidBody(),
             frameInA,
             frameInB);
     }

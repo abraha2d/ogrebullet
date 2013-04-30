@@ -53,80 +53,80 @@ namespace OgreBulletCollisions
         _enabled(false)
     {
         // scene node 
-        _node = _world->getSceneManager()->getRootSceneNode ()->createChildSceneNode ();
+        _node = _world->getSceneManager()->getRootSceneNode()->createChildSceneNode();
 
         // sphere attach to contact point
         _point = _world->getSceneManager()->createEntity(name + String("_debug_point"), "sphere.mesh");
-        _point_node = _node->createChildSceneNode ();
-        _point_node->attachObject (_point);
+        _point_node = _node->createChildSceneNode();
+        _point_node->attachObject(_point);
         _point_node->setScale(0.001, 0.001, 0.001);
 
         // normal direction debug
          _normal = new DebugNormal();
-         _node->attachObject (_normal);
+         _node->attachObject(_normal);
 
          // text info on contact
-        _text = new DebugContactText(name + String("_debug_text"), _node->createChildSceneNode ());
-        _text->setPosition (Vector3(0,5,0));
-        _text->setCaption ("-");
-        _text->setVisible (false);
+        _text = new DebugContactText(name + String("_debug_text"), _node->createChildSceneNode());
+        _text->setPosition(Vector3(0,5,0));
+        _text->setCaption("-");
+        _text->setVisible(false);
 
-        _node->setVisible (false);
+        _node->setVisible(false);
     }
      //------------------------------------------------------------------------------------------------
     DebugContact::~DebugContact()
     {
         delete _text;
 
-        _point_node->detachObject (_point->getName ());
-        _node->detachObject (_normal->getName ());
+        _point_node->detachObject(_point->getName());
+        _node->detachObject(_normal->getName());
 
-        _world->getSceneManager()->destroyEntity (_point->getName ());
+        _world->getSceneManager()->destroyEntity(_point->getName());
 
-        _node->detachAllObjects ();
-        _node->removeAndDestroyAllChildren ();
+        _node->detachAllObjects();
+        _node->removeAndDestroyAllChildren();
 
         delete _normal;
     }
     //------------------------------------------------------------------------------------------------
     void DebugContact::update(const Ogre::Vector3 &normal, const Ogre::Vector3 &pt, const Ogre::Real depth)
     {
-        _node->setPosition (pt);
+        _node->setPosition(pt);
 
-        _point_node->setPosition (depth * normal);
+        _point_node->setPosition(depth * normal);
 
         //String contactLabel("p: ");
         //contactLabel = contactLabel + StringConverter::toString(contact->getPosition());
         //contactLabel = contactLabel + ", n: ";
         //contactLabel = contactLabel + StringConverter::toString(contact->getNormal());
-        //_text->setCaption (contactLabel);
-        //_text->setVisible (false);
+        //_text->setCaption(contactLabel);
+        //_text->setVisible(false);
 
-        //_text->setPosition (contact->getPosition () + Vector3(0,5,0));
+        //_text->setPosition(contact->getPosition() + Vector3(0,5,0));
         
-        _normal->update (normal, pt, depth);
+        _normal->update(normal, pt, depth);
     }
     //------------------------------------------------------------------------------------------------
-    bool DebugContact::isEnabled () const 
+    bool DebugContact::isEnabled() const
     {
         return _enabled;
     }
     //------------------------------------------------------------------------------------------------
-    void DebugContact::setEnabled (bool enable)
+    void DebugContact::setEnabled(bool enable)
     {
         _enabled = enable;
-        _node->setVisible (_enabled);
-    };
+        _node->setVisible(_enabled);
+    }
     //------------------------------------------------------------------------------------------------
     void DebugNormal::update(const Ogre::Vector3 &normal, const Ogre::Vector3 &pt, const Ogre::Real depth)
     {
-       DebugLines::clear ();
+       DebugLines::clear();
        // set normal following contact normal
        //contact->_normal 
        //contact->_position
-       DebugLines::addLine (Vector3::ZERO, 
-                            5*normal);
-        DebugLines::draw ();
+       DebugLines::addLine(Vector3::ZERO,
+                           5*normal);
+        DebugLines::draw();
     }
     //------------------------------------------------------------------------------------------------
     DebugContactText::DebugContactText(const String &name, 
@@ -155,7 +155,9 @@ namespace OgreBulletCollisions
 
     {
         if (name.empty())
+        {
             Exception(Exception::ERR_INVALIDPARAMS, "Trying to create DebugContact without name", "DebugContact::DebugContact");
+        }
 // 
 //         if (caption.empty())
 //            Exception(Exception::ERR_INVALIDPARAMS, "Trying to create DebugContact without caption", "DebugContact::DebugContact");
@@ -170,7 +172,9 @@ namespace OgreBulletCollisions
     {
         mNode->detachObject(this->getName());
         if (mRenderOp.vertexData)
+        {
             delete mRenderOp.vertexData;
+        }
     }
 #if (OGRE_VERSION >=  ((1 << 16) | (5 << 8) | 0)) // must have at least shoggoth (1.5.0)
 	void DebugContactText::visitRenderables(Renderable::Visitor* visitor, 
@@ -182,12 +186,12 @@ namespace OgreBulletCollisions
     //------------------------------------------------------------------------------------------------
     void DebugContactText::setPosition(const Vector3 &pos)
     {
-        mNode->setPosition (pos);
+        mNode->setPosition(pos);
     }
     //------------------------------------------------------------------------------------------------
     void DebugContactText::setFontName(const String &fontName)
     {
-        if((Ogre::MaterialManager::getSingletonPtr()->resourceExists(mName + "Material"))) 
+        if (Ogre::MaterialManager::getSingleton().resourceExists(mName + "Material"))
         { 
             Ogre::MaterialManager::getSingleton().remove(mName + "Material"); 
         }
@@ -197,7 +201,9 @@ namespace OgreBulletCollisions
             mFontName = fontName;
             mpFont = (Font *)FontManager::getSingleton().getByName(mFontName).getPointer();
             if (!mpFont)
+            {
                 Exception(Exception::ERR_ITEM_NOT_FOUND, "Could not find font " + fontName, "DebugContact::setFontName");
+            }
 
             mpFont->load();
             if (!mpMaterial.isNull())
@@ -208,7 +214,9 @@ namespace OgreBulletCollisions
 
             mpMaterial = mpFont->getMaterial()->clone(mName + "Material");
             if (!mpMaterial->isLoaded())
+            {
                 mpMaterial->load();
+            }
 
             mpMaterial->setDepthCheckEnabled(!mOnTop);
             //mpMaterial->setDepthBias(!mOnTop);
@@ -257,12 +265,12 @@ namespace OgreBulletCollisions
     //------------------------------------------------------------------------------------------------
     void DebugContactText::setTextAlignment(const HorizontalAlignment& horizontalAlignment, const VerticalAlignment& verticalAlignment)
     {
-        if(mHorizontalAlignment != horizontalAlignment)
+        if (mHorizontalAlignment != horizontalAlignment)
         {
             mHorizontalAlignment = horizontalAlignment;
             mNeedUpdate = true;
         }
-        if(mVerticalAlignment != verticalAlignment)
+        if (mVerticalAlignment != verticalAlignment)
         {
             mVerticalAlignment = verticalAlignment;
             mNeedUpdate = true;
@@ -271,7 +279,7 @@ namespace OgreBulletCollisions
     //------------------------------------------------------------------------------------------------
     void DebugContactText::setAdditionalHeight( Real height )
     {
-        if( mAdditionalHeight != height )
+        if (mAdditionalHeight != height)
         {
             mAdditionalHeight = height;
             mNeedUpdate = true;
@@ -280,7 +288,7 @@ namespace OgreBulletCollisions
     //------------------------------------------------------------------------------------------------
     void DebugContactText::showOnTop(bool show)
     {
-        if( mOnTop != show && !mpMaterial.isNull() )
+        if (mOnTop != show && !mpMaterial.isNull())
         {
             mOnTop = show;
             mpMaterial->setDepthBias(0,!mOnTop);
@@ -310,7 +318,9 @@ namespace OgreBulletCollisions
         }
 
         if (!mRenderOp.vertexData)
+        {
             mRenderOp.vertexData = new VertexData();
+        }
 
         mRenderOp.indexData = 0;
         mRenderOp.vertexData->vertexStart = 0;
@@ -324,12 +334,16 @@ namespace OgreBulletCollisions
 
         // create/bind positions/tex.ccord. buffer
         if (!decl->findElementBySemantic(VES_POSITION))
+        {
             decl->addElement(POS_TEX_BINDING, offset, VET_FLOAT3, VES_POSITION);
+        }
 
         offset += VertexElement::getTypeSize(VET_FLOAT3);
 
         if (!decl->findElementBySemantic(VES_TEXTURE_COORDINATES))
+        {
             decl->addElement(POS_TEX_BINDING, offset, Ogre::VET_FLOAT2, Ogre::VES_TEXTURE_COORDINATES, 0);
+        }
 
         HardwareVertexBufferSharedPtr ptbuf = HardwareBufferManager::getSingleton().createVertexBuffer(decl->getVertexSize(POS_TEX_BINDING),
             mRenderOp.vertexData->vertexCount,
@@ -338,14 +352,16 @@ namespace OgreBulletCollisions
 
         // Colours - store these in a separate buffer because they change less often
         if (!decl->findElementBySemantic(VES_DIFFUSE))
+        {
             decl->addElement(COLOUR_BINDING, 0, VET_COLOUR, VES_DIFFUSE);
+        }
 
         HardwareVertexBufferSharedPtr cbuf = HardwareBufferManager::getSingleton().createVertexBuffer(decl->getVertexSize(COLOUR_BINDING),
             mRenderOp.vertexData->vertexCount,
             HardwareBuffer::HBU_DYNAMIC_WRITE_ONLY);
         bind->setBinding(COLOUR_BINDING, cbuf);
 
-        size_t charlen = mCaption.size();
+//        size_t charlen = mCaption.size();
         Real *pPCBuff = static_cast<Real*>(ptbuf->lock(HardwareBuffer::HBL_DISCARD));
 
         float largestWidth = 0;
@@ -354,7 +370,9 @@ namespace OgreBulletCollisions
 
         // Derive space width from a capital A
         if (mSpaceWidth == 0)
+        {
             mSpaceWidth = mpFont->getGlyphAspectRatio('A') * mCharHeight * 2.0;
+        }
 
         // for calculation of AABB
         Ogre::Vector3 min, max, currPos;
@@ -367,14 +385,16 @@ namespace OgreBulletCollisions
         bool newLine = true;
         Real len = 0.0f;
 
-        if(mVerticalAlignment == DebugContactText::V_ABOVE)
+        if (mVerticalAlignment == DebugContactText::V_ABOVE)
         {
             // Raise the first line of the caption
             top += mCharHeight;
             for (i = mCaption.begin(); i != iend; ++i)
             {
                 if (*i == '\n')
+                {
                     top += mCharHeight * 2.0;
+                }
             }
         }
 
@@ -386,9 +406,13 @@ namespace OgreBulletCollisions
                 for (String::iterator j = i; j != iend && *j != '\n'; j++)
                 {
                     if (*j == ' ')
+                    {
                         len += mSpaceWidth;
-                    else 
+                    }
+                    else
+                    {
                         len += mpFont->getGlyphAspectRatio(*j) * mCharHeight * 2.0;
+                    }
                 }
                 newLine = false;
             }
@@ -424,20 +448,29 @@ namespace OgreBulletCollisions
             // First tri
             //
             // Upper left
-            if(mHorizontalAlignment == DebugContactText::H_LEFT)
+            if (mHorizontalAlignment == DebugContactText::H_LEFT)
+            {
                 *pPCBuff++ = left;
+            }
             else
+            {
                 *pPCBuff++ = left - (len / 2);
+            }
             *pPCBuff++ = top;
             *pPCBuff++ = -1.0;
             *pPCBuff++ = u1;
             *pPCBuff++ = v1;
 
             // Deal with bounds
-            if(mHorizontalAlignment == DebugContactText::H_LEFT)
+            if (mHorizontalAlignment == DebugContactText::H_LEFT)
+            {
                 currPos = Ogre::Vector3(left, top, -1.0);
+            }
             else
+            {
                 currPos = Ogre::Vector3(left - (len / 2), top, -1.0);
+            }
+
             if (first)
             {
                 min = max = currPos;
@@ -454,20 +487,29 @@ namespace OgreBulletCollisions
             top -= mCharHeight * 2.0;
 
             // Bottom left
-            if(mHorizontalAlignment == DebugContactText::H_LEFT)
+            if (mHorizontalAlignment == DebugContactText::H_LEFT)
+            {
                 *pPCBuff++ = left;
+            }
             else
+            {
                 *pPCBuff++ = left - (len / 2);
+            }
+
             *pPCBuff++ = top;
             *pPCBuff++ = -1.0;
             *pPCBuff++ = u1;
             *pPCBuff++ = v2;
 
             // Deal with bounds
-            if(mHorizontalAlignment == DebugContactText::H_LEFT)
+            if (mHorizontalAlignment == DebugContactText::H_LEFT)
+            {
                 currPos = Ogre::Vector3(left, top, -1.0);
+            }
             else
+            {
                 currPos = Ogre::Vector3(left - (len / 2), top, -1.0);
+            }
             min.makeFloor(currPos);
             max.makeCeil(currPos);
             maxSquaredRadius = std::max(maxSquaredRadius, currPos.squaredLength());
@@ -476,10 +518,14 @@ namespace OgreBulletCollisions
             left += horiz_height * mCharHeight * 2.0;
 
             // Top right
-            if(mHorizontalAlignment == DebugContactText::H_LEFT)
+            if (mHorizontalAlignment == DebugContactText::H_LEFT)
+            {
                 *pPCBuff++ = left;
+            }
             else
+            {
                 *pPCBuff++ = left - (len / 2);
+            }
             *pPCBuff++ = top;
             *pPCBuff++ = -1.0;
             *pPCBuff++ = u2;
@@ -487,10 +533,14 @@ namespace OgreBulletCollisions
             //-------------------------------------------------------------------------------------
 
             // Deal with bounds
-            if(mHorizontalAlignment == DebugContactText::H_LEFT)
+            if (mHorizontalAlignment == DebugContactText::H_LEFT)
+            {
                 currPos = Ogre::Vector3(left, top, -1.0);
+            }
             else
+            {
                 currPos = Ogre::Vector3(left - (len / 2), top, -1.0);
+            }
             min.makeFloor(currPos);
             max.makeCeil(currPos);
             maxSquaredRadius = std::max(maxSquaredRadius, currPos.squaredLength());
@@ -499,10 +549,14 @@ namespace OgreBulletCollisions
             // Second tri
             //
             // Top right (again)
-            if(mHorizontalAlignment == DebugContactText::H_LEFT)
+            if (mHorizontalAlignment == DebugContactText::H_LEFT)
+            {
                 *pPCBuff++ = left;
+            }
             else
+            {
                 *pPCBuff++ = left - (len / 2);
+            }
             *pPCBuff++ = top;
             *pPCBuff++ = -1.0;
             *pPCBuff++ = u2;
@@ -517,10 +571,14 @@ namespace OgreBulletCollisions
             left -= horiz_height  * mCharHeight * 2.0;
 
             // Bottom left (again)
-            if(mHorizontalAlignment == DebugContactText::H_LEFT)
+            if (mHorizontalAlignment == DebugContactText::H_LEFT)
+            {
                 *pPCBuff++ = left;
+            }
             else
+            {
                 *pPCBuff++ = left - (len / 2);
+            }
             *pPCBuff++ = top;
             *pPCBuff++ = -1.0;
             *pPCBuff++ = u1;
@@ -534,10 +592,14 @@ namespace OgreBulletCollisions
             left += horiz_height  * mCharHeight * 2.0;
 
             // Bottom right
-            if(mHorizontalAlignment == DebugContactText::H_LEFT)
+            if (mHorizontalAlignment == DebugContactText::H_LEFT)
+            {
                 *pPCBuff++ = left;
+            }
             else
+            {
                 *pPCBuff++ = left - (len / 2);
+            }
             *pPCBuff++ = top;
             *pPCBuff++ = -1.0;
             *pPCBuff++ = u2;
@@ -554,7 +616,9 @@ namespace OgreBulletCollisions
 
             float currentWidth = (left + 1)/2 - 0;
             if (currentWidth > largestWidth)
+            {
                 largestWidth = currentWidth;
+            }
         }
 
         // Unlock vertex buffer
@@ -565,7 +629,9 @@ namespace OgreBulletCollisions
         mRadius = Ogre::Math::Sqrt(maxSquaredRadius);
 
         if (mUpdateColors)
+        {
             this->_updateColors();
+        }
 
         mNeedUpdate = false;
     }
@@ -581,7 +647,9 @@ namespace OgreBulletCollisions
         HardwareVertexBufferSharedPtr vbuf = mRenderOp.vertexData->vertexBufferBinding->getBuffer(COLOUR_BINDING);
         RGBA *pDest = static_cast<RGBA*>(vbuf->lock(HardwareBuffer::HBL_DISCARD));
         for (unsigned int i = 0; i < mRenderOp.vertexData->vertexCount; ++i)
+        {
             *pDest++ = color;
+        }
         vbuf->unlock();
         mUpdateColors = false;
     }
@@ -626,9 +694,15 @@ namespace OgreBulletCollisions
         if (this->isVisible())
         {
             if (mNeedUpdate)
+            {
                 this->_setupGeometry();
+            }
+
             if (mUpdateColors)
+            {
                 this->_updateColors();
+            }
+
             op = mRenderOp;
         }
     }
@@ -643,9 +717,14 @@ namespace OgreBulletCollisions
         if (this->isVisible())
         {
             if (mNeedUpdate)
+            {
                 this->_setupGeometry();
+            }
+
             if (mUpdateColors)
+            {
                 this->_updateColors();
+            }
 
             queue->addRenderable(this, mRenderQueueID, OGRE_RENDERABLE_DEFAULT_PRIORITY);
             //      queue->addRenderable(this, mRenderQueueID, RENDER_QUEUE_SKIES_LATE);

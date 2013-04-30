@@ -39,9 +39,8 @@ namespace OgreBulletDynamics
 {
     // -------------------------------------------------------------------------
     PhysicState::PhysicState(RigidBody *parent)
-        :	
-      btMotionState(),
-        mObject(parent)
+        : btMotionState(),
+          mObject(parent)
     {
     }
     // -------------------------------------------------------------------------
@@ -49,21 +48,19 @@ namespace OgreBulletDynamics
     {
     }
     // -------------------------------------------------------------------------
-    void PhysicState::getWorldTransform(btTransform& worldTrans ) const
+    void PhysicState::getWorldTransform(btTransform& worldTrans) const
     {
-        assert (mObject);
+        assert(mObject);
         
         worldTrans.setOrigin(OgreBulletCollisions::OgreBtConverter::to(mObject->getWorldPosition()));
         worldTrans.setRotation(OgreBulletCollisions::OgreBtConverter::to(mObject->getWorldOrientation()));
-        
     }
     // -------------------------------------------------------------------------
     void PhysicState::setWorldTransform(const btTransform& worldTrans)
     {
-        assert (mObject);
+        assert(mObject);
 
         mObject->setPosition(OgreBulletCollisions::BtOgreConverter::to(worldTrans.getOrigin()));
         mObject->setOrientation(OgreBulletCollisions::BtOgreConverter::to(worldTrans.getRotation()));
-        
     }
 }

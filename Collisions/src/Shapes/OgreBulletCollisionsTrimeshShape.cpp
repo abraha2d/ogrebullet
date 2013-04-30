@@ -40,20 +40,19 @@ using namespace OgreBulletCollisions;
 namespace OgreBulletCollisions
 {
     // -------------------------------------------------------------------------
-    TriangleMeshCollisionShape::TriangleMeshCollisionShape(
-        Vector3        *vertices, 
-        unsigned int vertexCount, 
-        unsigned int *indices, 
-        unsigned int indexCount,
-		bool use32bitsIndices) :	
-        CollisionShape(),
-        mTriMesh(0)
+    TriangleMeshCollisionShape::TriangleMeshCollisionShape(Vector3 *vertices,
+                                                           unsigned int vertexCount,
+                                                           unsigned int *indices,
+                                                           unsigned int indexCount,
+                                                           bool use32bitsIndices)
+        : CollisionShape(),
+          mTriMesh(NULL)
     {
 		unsigned int numFaces = indexCount / 3;
 
 		mTriMesh = new btTriangleMesh(use32bitsIndices);
 
-        btVector3    vertexPos[3];
+        btVector3 vertexPos[3];
         for (unsigned int n = 0; n < numFaces; ++n)
         {
 			{
@@ -87,41 +86,44 @@ namespace OgreBulletCollisions
     // -------------------------------------------------------------------------
     TriangleMeshCollisionShape::~TriangleMeshCollisionShape()
     {
-        if(mTriMesh)
+        if (mTriMesh)
         {
             delete mTriMesh;
         }
         mTriMesh = 0;
     }
     // -------------------------------------------------------------------------
-	bool TriangleMeshCollisionShape::drawWireFrame(DebugLines *wire, 
-		const Ogre::Vector3 &pos, 
-		const Ogre::Quaternion &quat) const
+    bool TriangleMeshCollisionShape::drawWireFrame(DebugLines *wire,
+                                                   const Ogre::Vector3 &pos,
+                                                   const Ogre::Quaternion &quat) const
     {
-        const int numTris = mTriMesh->getNumTriangles ();
+        const int numTris = mTriMesh->getNumTriangles();
         if (numTris > 0)
         {
 
-			const int numSubParts = mTriMesh->getNumSubParts ();
+            const int numSubParts = mTriMesh->getNumSubParts();
 			for (int currSubPart = 0; currSubPart < numSubParts; currSubPart++)
 			{
-				const unsigned char* vertexBase = NULL;
+                const unsigned char *vertexBase = NULL;
 				int numVerts;
 				PHY_ScalarType vertexType;
 				int vertexStride;
-				const unsigned char* indexBase = NULL;
+                const unsigned char *indexBase = NULL;
 				int indexStride;
 				int numFaces;
 				PHY_ScalarType indexType;
 
-				mTriMesh->getLockedReadOnlyVertexIndexBase (&vertexBase, numVerts, 
-					vertexType, vertexStride, 
-					&indexBase, indexStride, numFaces, indexType, currSubPart);
+                mTriMesh->getLockedReadOnlyVertexIndexBase(&vertexBase, numVerts,
+                                                           vertexType, vertexStride,
+                                                           &indexBase, indexStride,
+                                                           numFaces, indexType,
+                                                           currSubPart);
 
-				float* p;
+                float *p = NULL;
 				btVector3 vert0;
 				btVector3 vert1;
 				btVector3 vert2;
+
 				for (int t = 0; t < numFaces; t++)
 				{
 #define setVector(A, B) {A.setX(B[0]);A.setY(B[1]);A.setZ(B[2]);};
@@ -150,9 +152,9 @@ namespace OgreBulletCollisions
 					}
 #undef setVector
 
-					wire->addLine (BtOgreConverter::to(vert0), BtOgreConverter::to(vert1));
-					wire->addLine (BtOgreConverter::to(vert1), BtOgreConverter::to(vert2));
-					wire->addLine (BtOgreConverter::to(vert2), BtOgreConverter::to(vert0));
+                    wire->addLine(BtOgreConverter::to(vert0), BtOgreConverter::to(vert1));
+                    wire->addLine(BtOgreConverter::to(vert1), BtOgreConverter::to(vert2));
+                    wire->addLine(BtOgreConverter::to(vert2), BtOgreConverter::to(vert0));
 				}
 			}
             return true;

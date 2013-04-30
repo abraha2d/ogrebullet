@@ -40,12 +40,11 @@ using namespace OgreBulletCollisions;
 namespace OgreBulletCollisions
 {
     // -------------------------------------------------------------------------
-    MultiSphereCollisionShape::MultiSphereCollisionShape(
-        const Ogre::Vector3& inertiaHalfExtents,
-        const Ogre::Vector3* positions,
-        const Ogre::Real* radi,
-        int numSpheres):	
-        CollisionShape()
+    MultiSphereCollisionShape::MultiSphereCollisionShape(const Ogre::Vector3 &inertiaHalfExtents,
+                                                         const Ogre::Vector3 *positions,
+                                                         const Ogre::Real *radi,
+                                                         int numSpheres)
+        : CollisionShape()
     {
 		btVector3 * btPositions = new btVector3[numSpheres];
 		{
@@ -56,11 +55,10 @@ namespace OgreBulletCollisions
 			}
 		}
 
-        mShape = new btMultiSphereShape(
-            //OgreBtConverter::to(inertiaHalfExtents),
-            (btVector3 *) btPositions,
-            (const btScalar *) radi,
-            numSpheres);
+        mShape = new btMultiSphereShape(//OgreBtConverter::to(inertiaHalfExtents),
+                                        (btVector3 *) btPositions,
+                                        (const btScalar *)radi,
+                                        numSpheres);
 
 		delete [] btPositions;
     }

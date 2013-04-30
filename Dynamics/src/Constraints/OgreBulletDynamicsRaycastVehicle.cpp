@@ -42,27 +42,27 @@ namespace OgreBulletDynamics
     // -------------------------------------------------------------------------
     VehicleRayCaster::VehicleRayCaster(DynamicsWorld *world)
     {
-        mBulletVehicleRayCaster = new btDefaultVehicleRaycaster(world->getBulletDynamicsWorld ());
+        mBulletVehicleRayCaster = new btDefaultVehicleRaycaster(world->getBulletDynamicsWorld());
     }
     // -------------------------------------------------------------------------
     VehicleRayCaster::~VehicleRayCaster()
     {
-        if(mBulletVehicleRayCaster != 0)
+        if (mBulletVehicleRayCaster != NULL)
         {
             delete mBulletVehicleRayCaster;
-            mBulletVehicleRayCaster = 0;
+            mBulletVehicleRayCaster = NULL;
         }
     }
     // -------------------------------------------------------------------------
     VehicleTuning::VehicleTuning(const Ogre::Real suspensionStiffness,
-				const Ogre::Real suspensionCompression,
-				const Ogre::Real suspensionDamping,
-				const Ogre::Real maxSuspensionTravelCm,
-				const Ogre::Real frictionSlip)
+                                 const Ogre::Real suspensionCompression,
+                                 const Ogre::Real suspensionDamping,
+                                 const Ogre::Real maxSuspensionTravelCm,
+                                 const Ogre::Real frictionSlip)
     {
         mBulletTuning = new btRaycastVehicle::btVehicleTuning();
 
-        mBulletTuning->m_suspensionStiffness =  suspensionStiffness;
+        mBulletTuning->m_suspensionStiffness = suspensionStiffness;
         mBulletTuning->m_suspensionCompression = suspensionCompression;
         mBulletTuning->m_suspensionDamping = suspensionDamping;
         mBulletTuning->m_maxSuspensionTravelCm = maxSuspensionTravelCm;
@@ -71,26 +71,28 @@ namespace OgreBulletDynamics
     // -------------------------------------------------------------------------
     VehicleTuning::~VehicleTuning()
     {
-        if(mBulletTuning != 0)
+        if (mBulletTuning != NULL)
         {
             delete mBulletTuning;
-            mBulletTuning = 0;
+            mBulletTuning = NULL;
         }
     }
     // -------------------------------------------------------------------------
-    RaycastVehicle::RaycastVehicle(WheeledRigidBody *body,  
-                                VehicleTuning *vt,
-                                VehicleRayCaster *caster) :
-        ActionInterface(body),
-        mTuning(vt),
-        mRayCaster(caster)
+    RaycastVehicle::RaycastVehicle(WheeledRigidBody *body,
+                                   VehicleTuning *vt,
+                                   VehicleRayCaster *caster)
+        : ActionInterface(body),
+          mTuning(vt),
+          mRayCaster(caster)
     {
-        if (mRayCaster == 0)
+        if (mRayCaster == NULL)
+        {
             mRayCaster = new VehicleRayCaster(mWorld);
+        }
 
         btRaycastVehicle *v = new btRaycastVehicle(
                 *(mTuning->getBulletTuning()),
-                body->getBulletRigidBody (), 
+                body->getBulletRigidBody(),
                 mRayCaster->getBulletVehicleRayCaster()
                 );
         mActionInterface = v;
@@ -121,7 +123,7 @@ namespace OgreBulletDynamics
     {
         btRaycastVehicle *v = static_cast<btRaycastVehicle *> (mActionInterface);
 
-        mWheelsInfo.push_back (
+        mWheelsInfo.push_back(
             &v->addWheel(OgreBulletCollisions::OgreBtConverter::to(connectionPoint),
                         OgreBulletCollisions::OgreBtConverter::to(wheelDirection),
                         OgreBulletCollisions::OgreBtConverter::to(wheelAxle),
@@ -142,10 +144,10 @@ namespace OgreBulletDynamics
 
         // create wheel scene Node
         {
-            node->setPosition (connectionPoint);
+            node->setPosition(connectionPoint);
 
-            mWheelNodes.push_back ( node);
-            const size_t wheelCurrent = mWheelsInfo.size() - 1;
+            mWheelNodes.push_back(node);
+//            const size_t wheelCurrent = mWheelsInfo.size() - 1;
 
             //mWheelsInfo[wheelCurrent]->
         }
@@ -153,10 +155,10 @@ namespace OgreBulletDynamics
     // -------------------------------------------------------------------------
     void RaycastVehicle::setWheelsAttached()
     {
-        btRaycastVehicle *v = static_cast<btRaycastVehicle *> (mActionInterface);
-        for (int i=0; i < v->getNumWheels(); i++)
+        btRaycastVehicle *v = static_cast<btRaycastVehicle *>(mActionInterface);
+        for (int i = 0; i < v->getNumWheels(); ++i)
         {
-            btWheelInfo& wheel = v->getWheelInfo(i);
+            btWheelInfo &wheel = v->getWheelInfo(i);
 
             wheel.m_suspensionStiffness = mTuning->getBulletTuning()->m_suspensionStiffness;
             wheel.m_wheelsDampingRelaxation = mTuning->getBulletTuning()->m_suspensionDamping;
@@ -170,27 +172,27 @@ namespace OgreBulletDynamics
     void RaycastVehicle::setTransform()
     {
         //should update wheels as well ?
-        for (int i=0; i < getBulletVehicle()->getNumWheels(); i++)
+        for (int i = 0; i < getBulletVehicle()->getNumWheels(); ++i)
         {
             //synchronize the wheels with the (interpolated) chassis world transform
             getBulletVehicle()->updateWheelTransform(i, true);
             //draw wheels (cylinders)
             const btTransform &w = getBulletVehicle()->getWheelInfo(i).m_worldTransform;
 
-            mWheelNodes[i]->setPosition (w.getOrigin()[0], w.getOrigin()[1], w.getOrigin()[2]);
-            mWheelNodes[i]->setOrientation (w.getRotation().getW(), w.getRotation().getX(), w.getRotation().getY(), w.getRotation().getZ());
+            mWheelNodes[i]->setPosition(w.getOrigin()[0], w.getOrigin()[1], w.getOrigin()[2]);
+            mWheelNodes[i]->setOrientation(w.getRotation().getW(), w.getRotation().getX(), w.getRotation().getY(), w.getRotation().getZ());
 
         }
     }
     // -------------------------------------------------------------------------
-    void RaycastVehicle::applyEngineForce (float engineForce, int wheel)
+    void RaycastVehicle::applyEngineForce(float engineForce, int wheel)
     {
-        getBulletVehicle()->applyEngineForce (engineForce, wheel);
+        getBulletVehicle()->applyEngineForce(engineForce, wheel);
     }
     // -------------------------------------------------------------------------
     void RaycastVehicle::setSteeringValue(float steering, int wheel)
     {
-        getBulletVehicle()->setSteeringValue (steering, wheel);
+        getBulletVehicle()->setSteeringValue(steering, wheel);
     }
     // -------------------------------------------------------------------------
 }

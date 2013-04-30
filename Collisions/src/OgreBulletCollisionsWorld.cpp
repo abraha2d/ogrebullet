@@ -49,13 +49,13 @@ using namespace OgreBulletCollisions;
 namespace OgreBulletCollisions
 {
 	// -------------------------------------------------------------------------
-	CollisionsWorld::CollisionsWorld(SceneManager *scn, const AxisAlignedBox &bounds, bool init, bool set32bitsAxisSweep, unsigned int maxHandles):
-mScnMgr(scn),
-mBounds(bounds),
-mShowDebugShapes(false),
-mShowDebugContactPoints(false),
-mDebugContactPoints(0),
-mDebugDrawer(0)
+    CollisionsWorld::CollisionsWorld(SceneManager *scn, const AxisAlignedBox &bounds, bool init, bool set32bitsAxisSweep, unsigned int maxHandles)
+        : mScnMgr(scn),
+          mBounds(bounds),
+          mShowDebugShapes(false),
+          mShowDebugContactPoints(false),
+          mDebugContactPoints(0),
+          mDebugDrawer(0)
 {
 	mDispatcher = new btCollisionDispatcher(&mDefaultCollisionConfiguration);
 
@@ -92,14 +92,13 @@ mDebugDrawer(0)
 void  CollisionsWorld::setDebugDrawer(DebugDrawer *debugdrawer)
 {
 	mDebugDrawer = debugdrawer;
-	(static_cast <btCollisionWorld *> (mWorld))->setDebugDrawer(mDebugDrawer);
-};
+    (static_cast <btCollisionWorld *>(mWorld))->setDebugDrawer(mDebugDrawer);
+}
 // -------------------------------------------------------------------------
 void  CollisionsWorld::setDebugContactPoints(DebugLines *debugcontact)
 {
 	mDebugContactPoints = debugcontact;
-};
-
+}
 // -------------------------------------------------------------------------
 CollisionsWorld::~CollisionsWorld()
 {

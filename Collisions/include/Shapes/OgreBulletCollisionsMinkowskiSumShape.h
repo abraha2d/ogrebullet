@@ -42,9 +42,10 @@ namespace OgreBulletCollisions
     class MinkowskiSumCollisionShape : public CollisionShape
     {
     public:
-	    MinkowskiSumCollisionShape(CollisionShape* shapeA, CollisionShape* shapeB);
-	    virtual ~MinkowskiSumCollisionShape();
+        MinkowskiSumCollisionShape(CollisionShape* shapeA,
+                                   CollisionShape* shapeB);
 
+	    virtual ~MinkowskiSumCollisionShape();
     };
 }
 #endif //_OGREBULLETCOLLISIONS_MinkowskiSumShape_H

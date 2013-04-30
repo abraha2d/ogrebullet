@@ -43,11 +43,18 @@ namespace OgreBulletCollisions
         CollisionShape()
     {
         if (axe == Vector3::UNIT_Y)
-            mShape = new btConeShape (btScalar (radius), btScalar (height));
-        else if (axe == Vector3::UNIT_X)
-            mShape = new btConeShapeX (btScalar (radius), btScalar (height));
+        {
+            mShape = new btConeShape(btScalar(radius), btScalar(height));
+        }
         else
-             mShape = new btConeShapeZ (btScalar (radius), btScalar (height));
+        if (axe == Vector3::UNIT_X)
+        {
+            mShape = new btConeShapeX(btScalar (radius), btScalar(height));
+        }
+        else
+        {
+             mShape = new btConeShapeZ(btScalar(radius), btScalar(height));
+        }
 
     }
     // -------------------------------------------------------------------------

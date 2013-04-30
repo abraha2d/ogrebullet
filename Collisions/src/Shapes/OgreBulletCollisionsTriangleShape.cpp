@@ -42,11 +42,10 @@ using namespace OgreBulletCollisions;
 namespace OgreBulletCollisions
 {
     // -------------------------------------------------------------------------
-    TriangleCollisionShape::TriangleCollisionShape(
-        const Ogre::Vector3 &p1, 
-        const Ogre::Vector3 &p2, 
-        const Ogre::Vector3 &p3):	
-        CollisionShape()
+    TriangleCollisionShape::TriangleCollisionShape(const Ogre::Vector3 &p1,
+                                                   const Ogre::Vector3 &p2,
+                                                   const Ogre::Vector3 &p3)
+        : CollisionShape()
     {
             mShape = new btTriangleShape(OgreBtConverter::to(p1), 
                                          OgreBtConverter::to(p2), 

@@ -35,47 +35,46 @@ THE SOFTWARE.
 namespace OgreBulletCollisions
 {
     //------------------------------------------------------------------------------------------------
-    class  DebugLines:public Ogre::SimpleRenderable
+    class DebugLines : public Ogre::SimpleRenderable
     {
     public:
-        DebugLines(void);
-        ~DebugLines(void);
+        DebugLines();
+        ~DebugLines();
 
-        void addLine (const Ogre::Vector3 &start,const Ogre::Vector3 &end)
+        inline void addLine(const Ogre::Vector3 &start, const Ogre::Vector3 &end)
         {
-            clear ();
+            clear();
 
-            _points.push_back (start);
-            _points.push_back (end);
+            _points.push_back(start);
+            _points.push_back(end);
         }
 
-        void addLine(Ogre::Real start_x, Ogre::Real start_y, Ogre::Real start_z, 
-            Ogre::Real end_x, Ogre::Real end_y, Ogre::Real end_z)
+        inline void addLine(Ogre::Real startX, Ogre::Real startY, Ogre::Real startZ,
+                            Ogre::Real endX, Ogre::Real endY, Ogre::Real endZ)
         {
-            addLine (Ogre::Vector3(start_x,start_y,start_z),
-                Ogre::Vector3(end_x,end_y,end_z));
+            addLine(Ogre::Vector3(startX, startY, startZ),
+                    Ogre::Vector3(endX, endY, endZ));
         }
 
-        void addPoint (const Ogre::Vector3 &pt)
+        inline void addPoint(const Ogre::Vector3 &pt)
         {
             clear();
 
             _points.push_back(pt);
         }
 
-        void addPoint (Ogre::Real x, Ogre::Real y, Ogre::Real z)
+        inline void addPoint(Ogre::Real x, Ogre::Real y, Ogre::Real z)
         {
-            addPoint (Ogre::Vector3(x, y, z));
+            addPoint(Ogre::Vector3(x, y, z));
         }
 
-        void draw ();
-        void clear ();
+        void draw();
+        void clear();
 
-        Ogre::Real getSquaredViewDepth (const Ogre::Camera *cam) const;
-        Ogre::Real getBoundingRadius (void) const;
+        Ogre::Real getSquaredViewDepth(const Ogre::Camera *cam) const;
+        Ogre::Real getBoundingRadius() const;
 
     protected:
-
         Vector3Array _points;
         bool _drawn;
 

@@ -42,10 +42,8 @@ namespace OgreBulletCollisions
     class SphereCollisionShape : public CollisionShape
     {
     public:
-        SphereCollisionShape(const Ogre::Real  radius);
+        SphereCollisionShape(const Ogre::Real radius);
 	    virtual ~SphereCollisionShape();
-
-    private:
     };
 }
 #endif //_OGREBULLETCOLLISIONS_SphereShape_H

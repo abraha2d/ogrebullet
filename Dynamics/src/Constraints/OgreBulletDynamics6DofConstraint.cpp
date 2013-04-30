@@ -41,19 +41,22 @@ using namespace Ogre;
 namespace OgreBulletDynamics
 {
     // -------------------------------------------------------------------------
-    SixDofConstraint::SixDofConstraint(RigidBody * rbA, RigidBody * rbB, 
-        const Vector3& FrameInAVector3, const Quaternion& FrameInAOrientation,
-        const Vector3& FrameInBVector3, const Quaternion& FrameInBOrientation):
-    TypedConstraint(rbA, rbB)
+    SixDofConstraint::SixDofConstraint(RigidBody *rbA,
+                                       RigidBody *rbB,
+                                       const Vector3 &FrameInAVector3,
+                                       const Quaternion &FrameInAOrientation,
+                                       const Vector3 &FrameInBVector3,
+                                       const Quaternion &FrameInBOrientation)
+        : TypedConstraint(rbA, rbB)
     {
-        btTransform frameInA (OgreBulletCollisions::OgreBtConverter::to (FrameInAOrientation), 
-                              OgreBulletCollisions::OgreBtConverter::to (FrameInAVector3));
-        btTransform frameInB (OgreBulletCollisions::OgreBtConverter::to (FrameInBOrientation),
-                              OgreBulletCollisions::OgreBtConverter::to (FrameInBVector3));
+        btTransform frameInA(OgreBulletCollisions::OgreBtConverter::to(FrameInAOrientation),
+                             OgreBulletCollisions::OgreBtConverter::to(FrameInAVector3));
+        btTransform frameInB(OgreBulletCollisions::OgreBtConverter::to(FrameInBOrientation),
+                             OgreBulletCollisions::OgreBtConverter::to(FrameInBVector3));
 
         mConstraint = new btGeneric6DofConstraint(
-            *rbA->getBulletRigidBody (),
-            *rbB->getBulletRigidBody (), 
+            *rbA->getBulletRigidBody(),
+            *rbB->getBulletRigidBody(),
             frameInA,
             frameInB,
 			true); // Eric added this because Bullet 2.61 has a new argument (useLinearReferenceFrameA)
@@ -63,32 +66,32 @@ namespace OgreBulletDynamics
     {
 	}
 	// -------------------------------------------------------------------------
-	void	 SixDofConstraint::setLinearLowerLimit(const Ogre::Vector3& linearLower)
+    void SixDofConstraint::setLinearLowerLimit(const Ogre::Vector3& linearLower)
 	{
-		static_cast<btGeneric6DofConstraint* > (mConstraint)->setLinearLowerLimit(OgreBulletCollisions::OgreBtConverter::to (linearLower));
+        static_cast<btGeneric6DofConstraint *>(mConstraint)->setLinearLowerLimit(OgreBulletCollisions::OgreBtConverter::to(linearLower));
 	}
 	// -------------------------------------------------------------------------
-	void	 SixDofConstraint::setLinearUpperLimit(const Ogre::Vector3& linearUpper)
+    void SixDofConstraint::setLinearUpperLimit(const Ogre::Vector3& linearUpper)
 	{
-		static_cast<btGeneric6DofConstraint* > (mConstraint)->setLinearLowerLimit(OgreBulletCollisions::OgreBtConverter::to (linearUpper));
+        static_cast<btGeneric6DofConstraint *>(mConstraint)->setLinearLowerLimit(OgreBulletCollisions::OgreBtConverter::to(linearUpper));
 	}
 	// -------------------------------------------------------------------------
-	void	 SixDofConstraint::setAngularLowerLimit(const Ogre::Vector3& angularLower)
+    void SixDofConstraint::setAngularLowerLimit(const Ogre::Vector3& angularLower)
 	{
-		static_cast<btGeneric6DofConstraint* > (mConstraint)->setLinearLowerLimit(OgreBulletCollisions::OgreBtConverter::to (angularLower));
+        static_cast<btGeneric6DofConstraint *>(mConstraint)->setLinearLowerLimit(OgreBulletCollisions::OgreBtConverter::to(angularLower));
 	}
 	// -------------------------------------------------------------------------
-	void	 SixDofConstraint::setAngularUpperLimit(const Ogre::Vector3& angularUpper)
+    void SixDofConstraint::setAngularUpperLimit(const Ogre::Vector3& angularUpper)
 	{
-		static_cast<btGeneric6DofConstraint* > (mConstraint)->setLinearLowerLimit(OgreBulletCollisions::OgreBtConverter::to (angularUpper));
+        static_cast<btGeneric6DofConstraint *>(mConstraint)->setLinearLowerLimit(OgreBulletCollisions::OgreBtConverter::to(angularUpper));
 	}
 	// -------------------------------------------------------------------------
-	void	 SixDofConstraint::setLimit(const int axis, const Ogre::Real lo, const Ogre::Real hi)
+    void SixDofConstraint::setLimit(const int axis, const Ogre::Real lo, const Ogre::Real hi)
 	{
-		static_cast<btGeneric6DofConstraint* > (mConstraint)->setLimit(axis, lo, hi);
+        static_cast<btGeneric6DofConstraint *>(mConstraint)->setLimit(axis, lo, hi);
 	}
 	// -------------------------------------------------------------------------
-	bool	 SixDofConstraint::isLimited(int limitIndex)
+    bool SixDofConstraint::isLimited(int limitIndex)
 	{
 		return static_cast<btGeneric6DofConstraint* > (mConstraint)->isLimited(limitIndex);
 	}

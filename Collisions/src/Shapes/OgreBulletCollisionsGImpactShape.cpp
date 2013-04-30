@@ -39,11 +39,12 @@ using namespace OgreBulletCollisions;
 
 namespace OgreBulletCollisions
 {
-	GImpactConcaveShape::GImpactConcaveShape(
-		Ogre::Vector3 *_vertices,
-		unsigned int _vertex_count,
-		unsigned int *_indices,
-		unsigned int int_index_count) : CollisionShape(), mTriMesh(0)
+    GImpactConcaveShape::GImpactConcaveShape(Ogre::Vector3 *_vertices,
+                                             unsigned int _vertex_count,
+                                             unsigned int *_indices,
+                                             unsigned int int_index_count)
+        : CollisionShape(),
+          mTriMesh(NULL)
 	{
 
 #ifndef BVH
@@ -51,7 +52,7 @@ namespace OgreBulletCollisions
 
 		unsigned int numFaces = int_index_count / 3;
 
-		btVector3    vertexPos[3];
+        btVector3 vertexPos[3];
 		for (size_t n = 0; n < numFaces; ++n)
 		{
 			for (unsigned int i = 0; i < 3; ++i)
@@ -85,16 +86,16 @@ namespace OgreBulletCollisions
 		//comment out the next line to read the BVH from disk (first run the demo once to create the BVH)
 #define SERIALIZE_TO_DISK 1
 #ifdef SERIALIZE_TO_DISK
-		btVector3 aabbMin(-1000,-1000,-1000),aabbMax(1000,1000,1000);
+        btVector3 aabbMin(-1000, -1000, -1000),aabbMax(1000, 1000, 1000);
 
-		btBvhTriangleMeshShape * trimeshShape  = new btBvhTriangleMeshShape(m_indexVertexArrays,useQuantizedAabbCompression,aabbMin,aabbMax);
+        btBvhTriangleMeshShape * trimeshShape  = new btBvhTriangleMeshShape(m_indexVertexArrays, useQuantizedAabbCompression, aabbMin, aabbMax);
 		
 		///we can serialize the BVH data 
 		void* buffer = 0;
 		int numBytes = trimeshShape->getOptimizedBvh()->calculateSerializeBufferSize();
 		buffer = btAlignedAlloc(numBytes,16);
 		bool swapEndian = false;
-		trimeshShape->getOptimizedBvh()->serialize(buffer,numBytes,swapEndian);
+        trimeshShape->getOptimizedBvh()->serialize(buffer, numBytes, swapEndian);
 		FILE* file = fopen("bvh.bin","wb");
 		fwrite(buffer,1,numBytes,file);
 		fclose(file);
@@ -104,7 +105,7 @@ namespace OgreBulletCollisions
 
 #else
 
-		btBvhTriangleMeshShape *trimesh  = new btBvhTriangleMeshShape(m_indexVertexArrays,useQuantizedAabbCompression,false);
+        btBvhTriangleMeshShape *trimesh = new btBvhTriangleMeshShape(m_indexVertexArrays, useQuantizedAabbCompression, false);
 
 		char* fileName = "bvh.bin";
 
@@ -112,21 +113,23 @@ namespace OgreBulletCollisions
 		int size=0;
 		btOptimizedBvh* bvh = 0;
 
-		if (fseek(file, 0, SEEK_END) || (size = ftell(file)) == EOF || fseek(file, 0, SEEK_SET)) {        /* File operations denied? ok, just close and return failure */
+        if (fseek(file, 0, SEEK_END) || (size = ftell(file)) == EOF || fseek(file, 0, SEEK_SET)) /* File operations denied? ok, just close and return failure */
+        {
 			printf("Error: cannot get filesize from %s\n", fileName);
 			exit(0);
-		} else
+        }
+        else
 		{
 
 			fseek(file, 0, SEEK_SET);
 
 			int buffersize = size+btOptimizedBvh::getAlignmentSerializationPadding();
 
-			void* buffer = btAlignedAlloc(buffersize,16);
-			int read = fread(buffer,1,size,file);
+            void* buffer = btAlignedAlloc(buffersize, 16);
+            int read = fread(buffer, 1, size, file);
 			fclose(file);
 			bool swapEndian = false;
-			bvh = btOptimizedBvh::deSerializeInPlace(buffer,buffersize,swapEndian);
+            bvh = btOptimizedBvh::deSerializeInPlace(buffer, buffersize, swapEndian);
 		}
 
 		trimesh->setOptimizedBvh(bvh);
@@ -139,34 +142,36 @@ namespace OgreBulletCollisions
 	{
 	}
 	// -------------------------------------------------------------------------
-	bool GImpactConcaveShape::drawWireFrame(DebugLines *wire, 
-		const Ogre::Vector3 &pos, 
-		const Ogre::Quaternion &quat) const
+    bool GImpactConcaveShape::drawWireFrame(DebugLines *wire,
+                                            const Ogre::Vector3 &pos,
+                                            const Ogre::Quaternion &quat) const
 	{
-		const int numTris = mTriMesh->getNumTriangles ();
+        const int numTris = mTriMesh->getNumTriangles();
 		if (numTris > 0)
 		{
-
-			const int numSubParts = mTriMesh->getNumSubParts ();
+            const int numSubParts = mTriMesh->getNumSubParts();
 			for (int currSubPart = 0; currSubPart < numSubParts; currSubPart++)
 			{
-				const unsigned char* vertexBase = NULL;
+                const unsigned char *vertexBase = NULL;
 				int numVerts;
 				PHY_ScalarType vertexType;
 				int vertexStride;
-				const unsigned char* indexBase = NULL;
+                const unsigned char *indexBase = NULL;
 				int indexStride;
 				int numFaces;
 				PHY_ScalarType indexType;
 
-				mTriMesh->getLockedReadOnlyVertexIndexBase (&vertexBase, numVerts, 
-					vertexType, vertexStride, 
-					&indexBase, indexStride, numFaces, indexType, currSubPart);
+                mTriMesh->getLockedReadOnlyVertexIndexBase (&vertexBase, numVerts,
+                                                            vertexType, vertexStride,
+                                                            &indexBase, indexStride,
+                                                            numFaces, indexType,
+                                                            currSubPart);
 
-				float* p;
+                float *p = NULL;
 				btVector3 vert0;
 				btVector3 vert1;
 				btVector3 vert2;
+
 				for (int t = 0; t < numFaces; t++)
 				{
 #define setVector(A, B) {A.setX(B[0]);A.setY(B[1]);A.setZ(B[2]);};
@@ -195,9 +200,9 @@ namespace OgreBulletCollisions
 					}
 #undef setVector
 
-					wire->addLine (BtOgreConverter::to(vert0), BtOgreConverter::to(vert1));
-					wire->addLine (BtOgreConverter::to(vert1), BtOgreConverter::to(vert2));
-					wire->addLine (BtOgreConverter::to(vert2), BtOgreConverter::to(vert0));
+                    wire->addLine(BtOgreConverter::to(vert0), BtOgreConverter::to(vert1));
+                    wire->addLine(BtOgreConverter::to(vert1), BtOgreConverter::to(vert2));
+                    wire->addLine(BtOgreConverter::to(vert2), BtOgreConverter::to(vert0));
 				}
 			}
 			return true;

@@ -41,20 +41,21 @@ namespace OgreBulletCollisions
 {
     // -------------------------------------------------------------------------
     CollisionShape::CollisionShape()
-        :	
-        mShape(0)
+        : mShape(NULL)
     {
     }
     // -------------------------------------------------------------------------
     CollisionShape::~CollisionShape()
     {
-       delete mShape;
+        delete mShape;
     }
     // -------------------------------------------------------------------------
     bool CollisionShape::drawWireFrame(DebugLines *wire, const Vector3 &pos, const Quaternion &quat) const
     {   
-        if (mShape->isConvex ())
+        if (mShape->isConvex())
+        {
 			return drawConvexWireFrame (wire, pos, quat);
+        }
 		//else 
 		//	return drawWireFrame (wire, pos, quat);
 
@@ -63,17 +64,17 @@ namespace OgreBulletCollisions
     // -------------------------------------------------------------------------
     bool CollisionShape::drawConvexWireFrame(DebugLines *wire, const Vector3 &pos, const Quaternion &quat) const
     {   
-        assert (mShape->isConvex ());
+        assert(mShape->isConvex());
 
         if (0 && mShape->getShapeType() <= CUSTOM_POLYHEDRAL_SHAPE_TYPE)
 		{
-			const btPolyhedralConvexShape * const polyshape = static_cast <btPolyhedralConvexShape *> (mShape);
+            const btPolyhedralConvexShape * const polyshape = static_cast <btPolyhedralConvexShape *>(mShape);
 
 			const bool hasVecTransform = (pos != Vector3::ZERO);
 			const bool hasQuatTransform = (quat != Quaternion::IDENTITY);
 			const bool hasTransform = (hasVecTransform) || (hasQuatTransform);
 
-			btTransform trans ( OgreBulletCollisions::OgreBtConverter::to(quat), OgreBulletCollisions::OgreBtConverter::to(pos));
+            btTransform trans(OgreBulletCollisions::OgreBtConverter::to(quat), OgreBulletCollisions::OgreBtConverter::to(pos));
 			int i;
 			btVector3 a,b;
 			for (i=0;i<polyshape->getNumEdges();i++)
@@ -97,9 +98,9 @@ namespace OgreBulletCollisions
 		{
 			Vector3 lastVec;
 			bool sideBeginning;
-			const btConvexShape * const s = static_cast <btConvexShape *> (mShape);
+            const btConvexShape * const s = static_cast <btConvexShape *>(mShape);
 
-			btTransform trans ( OgreBulletCollisions::OgreBtConverter::to(quat), OgreBulletCollisions::OgreBtConverter::to(pos));
+            btTransform trans( OgreBulletCollisions::OgreBtConverter::to(quat), OgreBulletCollisions::OgreBtConverter::to(pos));
 
 	#define getVertex(X,Y,Z) BtOgreConverter::to(trans * s->localGetSupportingVertex (btVector3(X,Y,Z)))
 

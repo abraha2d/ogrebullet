@@ -50,7 +50,7 @@ namespace OgreBulletCollisions
     // -------------------------------------------------------------------------
     void ObjectState::getWorldTransform(btTransform& worldTrans) const
     {
-        assert (mObject);
+        assert(mObject);
 
         // could use mWorldTrans ?
 		
@@ -60,9 +60,9 @@ namespace OgreBulletCollisions
     // -------------------------------------------------------------------------
     void ObjectState::setWorldTransform(const btTransform& worldTrans)
     {
-        assert (mObject);        
+        assert(mObject);
 
-        mObject->setTransform (worldTrans);
+        mObject->setTransform(worldTrans);
         mWorldTrans = worldTrans;        
     }
 }

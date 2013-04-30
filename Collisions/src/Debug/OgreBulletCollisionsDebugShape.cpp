@@ -42,12 +42,14 @@ DebugCollisionShape::DebugCollisionShape(CollisionShape *shape, DebugCollisionSh
 {
     setStatemode(mode);
     // try to draw debug wire frame of the shape
-    mIsVisual = shape->drawWireFrame (this);
+    mIsVisual = shape->drawWireFrame(this);
 
     // if no success (not possible or not implemented
     // does not draw, hence saving a segfault
     if (mIsVisual)
-        DebugLines::draw ();
+    {
+        DebugLines::draw();
+    }
 }
 //------------------------------------------------------------------------------------------------
 void DebugCollisionShape::setStatemode(DebugCollisionShape::Mode mode)
@@ -91,7 +93,7 @@ RayDebugShape::RayDebugShape(const Ogre::Vector3& start,
 							   const Ogre::Vector3& direction, 
 							   const Ogre::Real length)
 {
-	const Ogre::Vector3 end (start + (direction.normalisedCopy() * length));
+    const Ogre::Vector3 end(start + (direction.normalisedCopy() * length));
 	addLine(start, end);
 
 	draw();
@@ -103,7 +105,7 @@ void RayDebugShape::setDefinition(const Ogre::Vector3& start,
 {
 	clear();
 
-	const Ogre::Vector3 end (start + (direction.normalisedCopy() * length));
+    const Ogre::Vector3 end(start + (direction.normalisedCopy() * length));
 	addLine(start, end);
 
 	draw();

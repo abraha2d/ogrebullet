@@ -39,20 +39,20 @@ using namespace OgreBulletCollisions;
 namespace OgreBulletCollisions
 {
     // -------------------------------------------------------------------------
-    ConvexHullCollisionShape::ConvexHullCollisionShape(const Real* points, int numPoints, int stride):	
-        CollisionShape()
+    ConvexHullCollisionShape::ConvexHullCollisionShape(const Real *points, int numPoints, int stride)
+        : CollisionShape()
     {
-            mShape = new btConvexHullShape((btScalar*) points, numPoints, stride);
+        mShape = new btConvexHullShape((btScalar*)points, numPoints, stride);
     }
     // -------------------------------------------------------------------------
-    ConvexHullCollisionShape::ConvexHullCollisionShape():	
-    CollisionShape()
+    ConvexHullCollisionShape::ConvexHullCollisionShape()
+        : CollisionShape()
     {
         mShape = new btConvexHullShape();
 	}
 	// -------------------------------------------------------------------------
-	ConvexHullCollisionShape::ConvexHullCollisionShape(btConvexHullShape *shape):	
-	CollisionShape()
+    ConvexHullCollisionShape::ConvexHullCollisionShape(btConvexHullShape *shape)
+        : CollisionShape()
 	{
 		mShape = shape;
 	}
@@ -60,6 +60,5 @@ namespace OgreBulletCollisions
     ConvexHullCollisionShape::~ConvexHullCollisionShape()
     {
     }
-
 }
 

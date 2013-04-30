@@ -42,9 +42,10 @@ namespace OgreBulletCollisions
     class CylinderCollisionShape : public CollisionShape
     {
     public:
-        CylinderCollisionShape(const Ogre::Vector3  &halfExtents, const Ogre::Vector3 &axe);
-	    virtual ~CylinderCollisionShape();
+        CylinderCollisionShape(const Ogre::Vector3 &halfExtents,
+                               const Ogre::Vector3 &axe);
 
+	    virtual ~CylinderCollisionShape();
     };
 }
 #endif //_OGREBULLETCOLLISIONS_CylinderShape_H

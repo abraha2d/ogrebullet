@@ -42,9 +42,12 @@ namespace OgreBulletDynamics
     class ConeTwistConstraint : public TypedConstraint
     {
     public:
-        ConeTwistConstraint(RigidBody * rbA, RigidBody * rbB,
-            const Ogre::Vector3& FrameInAVector, const Ogre::Quaternion& FrameInAOrientation,
-            const Ogre::Vector3& FrameInBVector, const Ogre::Quaternion& FrameInBOrientation);
+        ConeTwistConstraint(RigidBody *rbA,
+                            RigidBody *rbB,
+                            const Ogre::Vector3 &FrameInAVector,
+                            const Ogre::Quaternion &FrameInAOrientation,
+                            const Ogre::Vector3 &FrameInBVector,
+                            const Ogre::Quaternion &FrameInBOrientation);
 
         virtual ~ConeTwistConstraint();
        

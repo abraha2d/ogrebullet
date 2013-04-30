@@ -43,7 +43,7 @@ namespace OgreBulletCollisions
     CompoundCollisionShape::CompoundCollisionShape():	
         CollisionShape()
     {
-            mShape = new btCompoundShape();
+        mShape = new btCompoundShape();
 	}
 	//---------------------------------------------------------
 	CompoundCollisionShape::CompoundCollisionShape(btCompoundShape *shape):	
@@ -52,7 +52,7 @@ namespace OgreBulletCollisions
 		mShape = shape;
 		
 		// TODO : create a list of child ogre bullet collision shapes using child list, recursively		
-		btCompoundShape *cShapes = static_cast <btCompoundShape *> (mShape);
+        btCompoundShape *cShapes = static_cast<btCompoundShape *>(mShape);
 		unsigned int numChildren = cShapes->getNumChildShapes();
 		for (unsigned int i = 0; i < numChildren; i++)	
 		{
@@ -60,15 +60,18 @@ namespace OgreBulletCollisions
 			switch (cShapes->getChildList()[i].m_childShapeType)
 			{
 			case CONVEX_HULL_SHAPE_PROXYTYPE:
-				s = new ConvexHullCollisionShape(static_cast<btConvexHullShape*> (cShapes->getChildList()[i].m_childShape));
+                s = new ConvexHullCollisionShape(static_cast<btConvexHullShape*>(cShapes->getChildList()[i].m_childShape));
 				break;
 			//case :
 			//	break;
 			default :
 				break;
 			}
+
 			if (s)
-				mShapes.push_back (s);
+            {
+                mShapes.push_back(s);
+            }
 		}
 	}
     // -------------------------------------------------------------------------
@@ -85,9 +88,9 @@ namespace OgreBulletCollisions
 		localTrans.setOrigin (OgreBtConverter::to(pos));
 		localTrans.setRotation (OgreBtConverter::to(quat));
 
-        static_cast <btCompoundShape *> (mShape)->addChildShape(localTrans, shape->getBulletShape());
+        static_cast<btCompoundShape *>(mShape)->addChildShape(localTrans, shape->getBulletShape());
     
-        mShapes.push_back (shape);
+        mShapes.push_back(shape);
     }
     // -------------------------------------------------------------------------
     bool CompoundCollisionShape::drawWireFrame(DebugLines *wire, 
@@ -95,7 +98,6 @@ namespace OgreBulletCollisions
         const Ogre::Quaternion &quat) const
     {
         bool isVisual = false;
-
 
         btCompoundShape * const myBtCompoundShape = static_cast <btCompoundShape *> (mShape);
         int numChildShapes = myBtCompoundShape->getNumChildShapes ();
@@ -107,21 +109,24 @@ namespace OgreBulletCollisions
             const btCollisionShape * const shape = (*itShape)->getBulletShape();
             for (i = 0; i < numChildShapes; i++)
             {
-                if (myBtCompoundShape->getChildShape (i) == shape)
+                if (myBtCompoundShape->getChildShape(i) == shape)
+                {
                     break;
+                }
             }
-            assert (i < numChildShapes);
+            assert(i < numChildShapes);
 
-            const btTransform &localTrans = myBtCompoundShape->getChildTransform (i);
+            const btTransform &localTrans = myBtCompoundShape->getChildTransform(i);
 
-            const Vector3 pos (BtOgreConverter::to(localTrans.getOrigin ()));
-            const Quaternion quat( BtOgreConverter::to(localTrans.getRotation ()));
+            const Vector3 pos(BtOgreConverter::to(localTrans.getOrigin()));
+            const Quaternion quat( BtOgreConverter::to(localTrans.getRotation()));
 
             if ((*itShape)->drawWireFrame(wire, pos, quat))
+            {
                 isVisual = true;
+            }
         }
         return isVisual;
-		
     }
 }
 
