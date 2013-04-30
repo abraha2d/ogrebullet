@@ -122,6 +122,7 @@ find_bullet_library (BulletCollision)
 find_bullet_library (BulletMultiThreaded)
 find_bullet_library (LinearMath)
 find_bullet_library_dirname (OpenGLSupport OpenGL)
+find_bullet_library (ConvexDecomposition)
 
 # Pre-2.76
 find_bullet_library_dirname (XML LibXML)

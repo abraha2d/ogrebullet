@@ -1,20 +1,24 @@
-cmake_minimum_required (VERSION 2.8)
-project (OgreBullet)
+cmake_minimum_required(VERSION 2.8)
 
-set (CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
+set(PROJ "OgreBullet")
+set(${PROJ}_BUILD_DEMOS ON)
 
-find_package (OGRE REQUIRED)
-find_package (Bullet REQUIRED)
+project(${PROJ})
 
-include_directories (${OGRE_INCLUDE_DIR}
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
+
+find_package(OGRE REQUIRED)
+find_package(Bullet REQUIRED)
+
+include_directories(${OGRE_INCLUDE_DIR}
 	${BULLET_INCLUDE_DIR}
 	${BULLET_INCLUDE_DIRS}/ConvexDecomposition
 	${CMAKE_CURRENT_SOURCE_DIR}/Collisions/include
 	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/include)
 
-link_directories (${OGRE_LIB_DIR})
+#link_directories(${OGRE_LIB_DIR})
 
-set (SOURCES_Col
+set(SOURCES_Col
 	Collisions/src/Shapes/OgreBulletCollisionsConeShape.cpp
 	Collisions/src/Shapes/OgreBulletCollisionsConvexHullShape.cpp
 	Collisions/src/Shapes/OgreBulletCollisionsGImpactShape.cpp
@@ -41,7 +45,7 @@ set (SOURCES_Col
 	Collisions/src/Utils/OgreBulletCollisionsMeshToShapeConverter.cpp
 	Collisions/src/OgreBulletCollisionsShape.cpp)
 
-set (SOURCES_Dyn
+set(SOURCES_Dyn
 	Dynamics/src/OgreBulletDynamicsConstraint.cpp
 	Dynamics/src/Constraints/OgreBulletDynamicsRaycastVehicle.cpp
 	Dynamics/src/Constraints/OgreBulletDynamicsPoint2pointConstraint.cpp
@@ -55,7 +59,7 @@ set (SOURCES_Dyn
 	Dynamics/src/OgreBulletDynamicsWorld.cpp
 	Dynamics/src/Prefab/OgreBulletDynamicsRagDoll.cpp)
 
-set (HEADERS_Col_Shapes
+set(HEADERS_Col_Shapes
 	Collisions/include/Shapes/OgreBulletCollisionsMultiSphereShape.h
 	Collisions/include/Shapes/OgreBulletCollisionsTriangleShape.h
 	Collisions/include/Shapes/OgreBulletCollisionsCompoundShape.h
@@ -71,17 +75,17 @@ set (HEADERS_Col_Shapes
 	Collisions/include/Shapes/OgreBulletCollisionsGImpactShape.h
 	Collisions/include/Shapes/OgreBulletCollisionsCylinderShape.h)
 
-set (HEADERS_Col_Debug
+set(HEADERS_Col_Debug
 	Collisions/include/Debug/OgreBulletCollisionsDebugContact.h
 	Collisions/include/Debug/OgreBulletCollisionsDebugDrawer.h
 	Collisions/include/Debug/OgreBulletCollisionsDebugLines.h
 	Collisions/include/Debug/OgreBulletCollisionsDebugShape.h)
 
-set (HEADERS_Col_Utils
+set(HEADERS_Col_Utils
 	Collisions/include/Utils/OgreBulletCollisionsMeshToShapeConverter.h
 	Collisions/include/Utils/OgreBulletConverter.h)
 
-set (HEADERS_Col
+set(HEADERS_Col
 	Collisions/include/OgreBulletCollisionsRay.h
 	Collisions/include/OgreBulletCollisions.h
 	Collisions/include/OgreBulletCollisionsShape.h
@@ -90,7 +94,7 @@ set (HEADERS_Col
 	Collisions/include/OgreBulletCollisionsObject.h
 	Collisions/include/OgreBulletCollisionsPreRequisites.h)
 
-set (HEADERS_Dyn_Constraints
+set(HEADERS_Dyn_Constraints
 	Dynamics/include/Constraints/OgreBulletDynamicsRaycastVehicle.h
 	Dynamics/include/Constraints/OgreBulletDynamics6DofSpringConstraint.h
 	Dynamics/include/Constraints/OgreBulletDynamicsConeTwistConstraint.h
@@ -98,10 +102,10 @@ set (HEADERS_Dyn_Constraints
 	Dynamics/include/Constraints/OgreBulletDynamicsHingeConstraint.h
 	Dynamics/include/Constraints/OgreBulletDynamicsPoint2pointConstraint.h)
 
-set (HEADERS_Dyn_Prefab
+set(HEADERS_Dyn_Prefab
 	Dynamics/include/Prefab/OgreBulletDynamicsRagDoll.h)
 
-set (HEADERS_Dyn
+set(HEADERS_Dyn
 	Dynamics/include/OgreBulletDynamics.h
 	Dynamics/include/OgreBulletDynamicsWorld.h
 	Dynamics/include/OgreBulletDynamicsRigidBody.h
@@ -109,34 +113,53 @@ set (HEADERS_Dyn
 	Dynamics/include/OgreBulletDynamicsObjectState.h
 	Dynamics/include/OgreBulletDynamicsPreRequisites.h)
 
-set (COLLISIONS_LIB "OgreBulletCollisions")
-set (DYNAMICS_LIB "OgreBulletDynamics")
+set(COLLISIONS_LIB "${PROJ}Collisions")
+set(DYNAMICS_LIB "${PROJ}Dynamics")
 
-add_library (${COLLISIONS_LIB} ${SOURCES_Col})
-add_library (${DYNAMICS_LIB} ${SOURCES_Dyn})
+add_library(${COLLISIONS_LIB} ${SOURCES_Col})
+add_library(${DYNAMICS_LIB} ${SOURCES_Dyn})
 
-set (INCLUDE_INSTALL_DIR include/OgreBullet)
+set(INCLUDE_INSTALL_DIR include/${PROJ})
 
-set (INCLUDE_INSTALL_COL_DIR ${INCLUDE_INSTALL_DIR}/Collisions)
-set (INCLUDE_INSTALL_COL_SHAPES_DIR ${INCLUDE_INSTALL_COL_DIR}/Shapes)
-set (INCLUDE_INSTALL_COL_DEBUG_DIR ${INCLUDE_INSTALL_COL_DIR}/Debug)
-set (INCLUDE_INSTALL_COL_UTILS_DIR ${INCLUDE_INSTALL_COL_DIR}/Utils)
+set(INCLUDE_INSTALL_COL_DIR ${INCLUDE_INSTALL_DIR}/Collisions)
+set(INCLUDE_INSTALL_COL_SHAPES_DIR ${INCLUDE_INSTALL_COL_DIR}/Shapes)
+set(INCLUDE_INSTALL_COL_DEBUG_DIR ${INCLUDE_INSTALL_COL_DIR}/Debug)
+set(INCLUDE_INSTALL_COL_UTILS_DIR ${INCLUDE_INSTALL_COL_DIR}/Utils)
 
-set (INCLUDE_INSTALL_DYN_DIR ${INCLUDE_INSTALL_DIR}/Dynamics)
-set (INCLUDE_INSTALL_DYN_CONSTRAINTS_DIR ${INCLUDE_INSTALL_DYN_DIR}/Constraints)
-set (INCLUDE_INSTALL_DYN_PREFAB_DIR ${INCLUDE_INSTALL_DYN_DIR}/Prefab)
+set(INCLUDE_INSTALL_DYN_DIR ${INCLUDE_INSTALL_DIR}/Dynamics)
+set(INCLUDE_INSTALL_DYN_CONSTRAINTS_DIR ${INCLUDE_INSTALL_DYN_DIR}/Constraints)
+set(INCLUDE_INSTALL_DYN_PREFAB_DIR ${INCLUDE_INSTALL_DYN_DIR}/Prefab)
 
-install (TARGETS ${COLLISIONS_LIB} ${DYNAMICS_LIB} 
-  RUNTIME DESTINATION bin
-  LIBRARY DESTINATION lib
-  ARCHIVE DESTINATION lib)
+install(TARGETS ${COLLISIONS_LIB} ${DYNAMICS_LIB} 
+	RUNTIME DESTINATION bin
+	LIBRARY DESTINATION lib
+	ARCHIVE DESTINATION lib)
 
-install (FILES ${HEADERS_Col} DESTINATION ${INCLUDE_INSTALL_COL_DIR})
-install (FILES ${HEADERS_Col_Shapes} DESTINATION ${INCLUDE_INSTALL_COL_SHAPES_DIR})
-install (FILES ${HEADERS_Col_Debug} DESTINATION ${INCLUDE_INSTALL_COL_DEBUG_DIR})
-install (FILES ${HEADERS_Col_Utils} DESTINATION ${INCLUDE_INSTALL_COL_UTILS_DIR})
+set(LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
+set(BIN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
-install (FILES ${HEADERS_Dyn} DESTINATION ${INCLUDE_INSTALL_DYN_DIR})
-install (FILES ${HEADERS_Dyn_Constraints} DESTINATION ${INCLUDE_INSTALL_DYN_CONSTRAINTS_DIR})
-install (FILES ${HEADERS_Dyn_Prefab} DESTINATION ${INCLUDE_INSTALL_DYN_PREFAB_DIR})
+if(${PROJ}_BUILD_DEMOS)
+#	message(STATUS "building demos!")
+	add_subdirectory(Demos)
+endif(${PROJ}_BUILD_DEMOS)
+
+install(FILES ${HEADERS_Col} DESTINATION ${INCLUDE_INSTALL_COL_DIR})
+install(FILES ${HEADERS_Col_Shapes} DESTINATION ${INCLUDE_INSTALL_COL_SHAPES_DIR})
+install(FILES ${HEADERS_Col_Debug} DESTINATION ${INCLUDE_INSTALL_COL_DEBUG_DIR})
+install(FILES ${HEADERS_Col_Utils} DESTINATION ${INCLUDE_INSTALL_COL_UTILS_DIR})
+
+install(FILES ${HEADERS_Dyn} DESTINATION ${INCLUDE_INSTALL_DYN_DIR})
+install(FILES ${HEADERS_Dyn_Constraints} DESTINATION ${INCLUDE_INSTALL_DYN_CONSTRAINTS_DIR})
+install(FILES ${HEADERS_Dyn_Prefab} DESTINATION ${INCLUDE_INSTALL_DYN_PREFAB_DIR})
+
+install(FILES FindOgreBullet.cmake DESTINATION lib/${PROJ}/cmake)
+
+# uninstall target
+configure_file(
+	"${CMAKE_CURRENT_SOURCE_DIR}/cmake_uninstall.cmake.in"
+	"${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake"
+	IMMEDIATE @ONLY)
+
+add_custom_target(uninstall
+	COMMAND ${CMAKE_COMMAND} -P ${CMAKE_CURRENT_BINARY_DIR}/cmake_uninstall.cmake)
 
