@@ -36,32 +36,31 @@ using namespace OgreBulletDynamics;
 ///notice that for higher-quality slow-moving vehicles, another approach might be better
 ///implementing explicit hinged-wheel constraints with cylinder collision, rather then raycasts
 
-	static float	gMaxEngineForce = 3000.f;
+    static float gMaxEngineForce = 3000.f;
 
-	static float	gSteeringIncrement = 0.04f;
-	static float	gSteeringClamp = 0.8f;
+    static float gSteeringIncrement = 0.04f;
+    static float gSteeringClamp = 0.8f;
 
-	static float	gWheelRadius = 0.5f;
-	static float	gWheelWidth = 0.4f;
+    static float gWheelRadius = 0.5f;
+    static float gWheelWidth = 0.4f;
 
-	static float	gWheelFriction = 1e30f;//1000;//1e30f;
-	static float	gSuspensionStiffness = 20.f;
-	static float	gSuspensionDamping = 2.3f;
-	static float	gSuspensionCompression = 4.4f;
+    static float gWheelFriction = 1e30f;//1000;//1e30f;
+    static float gSuspensionStiffness = 20.0f;
+    static float gSuspensionDamping = 2.3f;
+    static float gSuspensionCompression = 4.4f;
 
-	static float	gRollInfluence = 
-		//0.1f;
-		1.0f;
-	static float   gSuspensionRestLength = 0.6;
-	static float   gMaxSuspensionTravelCm = 500.0;
-	static float   gFrictionSlip = 10.5;
+    static float gRollInfluence = 1.0f; //0.1f;
+    static float gSuspensionRestLength = 0.6f;
+    static float gMaxSuspensionForce = 6000.0f;
+    static float gMaxSuspensionTravelCm = 500.0f;
+    static float gFrictionSlip = 10.5f;
 
-	static const Ogre::Vector3    CameraStart            = Ogre::Vector3(0, 25, 0);
+    static const Ogre::Vector3 CameraStart = Ogre::Vector3(0.0f, 25.0f, 0.0f);
 	// -------------------------------------------------------------------------
-	static const Ogre::Vector3   CarPosition             = Ogre::Vector3(15, 3,-15);
+    static const Ogre::Vector3 CarPosition = Ogre::Vector3(15.0f, 3.0f, -15.0f);
 
-	static const float terrain_height = 45;
-	static const Ogre::Vector3 terrain_Shift = Ogre::Vector3(750, terrain_height, 750);
+    static const float terrain_height = 45.0f;
+    static const Ogre::Vector3 terrain_Shift = Ogre::Vector3(750.0f, terrain_height, 750.0f);
 
 
 #define CUBE_HALF_EXTENTS 1
@@ -69,19 +68,17 @@ using namespace OgreBulletDynamics;
 // -------------------------------------------------------------------------
 void Terrain_Demo::init(Ogre::Root *root, Ogre::RenderWindow *win, OgreBulletApplication *application)
 {
-
 	mCameraMove = 1;
 
-
     mHelpKeys.clear();
-    mHelpKeys.push_back (BASIC_HELP_INFO0);
-    mHelpKeys.push_back (BASIC_HELP_INFO1);
-    mHelpKeys.push_back (BASIC_HELP_INFO2);
-    mHelpKeys.push_back (BASIC_HELP_INFO3);
-    mHelpKeys.push_back (BASIC_HELP_INFO4);
-    mHelpKeys.push_back (BASIC_HELP_INFO5);
-    mHelpKeys.push_back (BASIC_HELP_INFO6);
-    mHelpKeys.push_back ("Use Arrow Key to move Car.");
+    mHelpKeys.push_back(BASIC_HELP_INFO0);
+    mHelpKeys.push_back(BASIC_HELP_INFO1);
+    mHelpKeys.push_back(BASIC_HELP_INFO2);
+    mHelpKeys.push_back(BASIC_HELP_INFO3);
+    mHelpKeys.push_back(BASIC_HELP_INFO4);
+    mHelpKeys.push_back(BASIC_HELP_INFO5);
+    mHelpKeys.push_back(BASIC_HELP_INFO6);
+    mHelpKeys.push_back("Use Arrow Key to move Car.");
 
 // reset
     for (int i = 0; i < 4; i++)
@@ -112,7 +109,7 @@ void Terrain_Demo::init(Ogre::Root *root, Ogre::RenderWindow *win, OgreBulletApp
 
     // ------------------------
 	// Start OgreScene
-    mSceneMgr = root->createSceneManager( "TerrainSceneManager", "BulletTerrain");
+    mSceneMgr = root->createSceneManager("TerrainSceneManager", "BulletTerrain");
 
     mCamera = mSceneMgr->createCamera("Cam");
     //mCamera->setFOVy(Degree(90));
@@ -155,41 +152,39 @@ void Terrain_Demo::init(Ogre::Root *root, Ogre::RenderWindow *win, OgreBulletApp
 
 		config.loadFromResourceSystem(terrain_cfg, ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME, "=", true);
 
-        unsigned page_size = Ogre::StringConverter::parseUnsignedInt(config.getSetting( "PageSize" ));
+        unsigned page_size = Ogre::StringConverter::parseUnsignedInt(config.getSetting("PageSize"));
 
-        Ogre::Vector3 terrainScale(Ogre::StringConverter::parseReal( config.getSetting( "PageWorldX" ) ) / (page_size-1),
-                                   Ogre::StringConverter::parseReal( config.getSetting( "MaxHeight" ) ),
-                                   Ogre::StringConverter::parseReal( config.getSetting( "PageWorldZ" ) ) / (page_size-1));
+        Ogre::Vector3 terrainScale(Ogre::StringConverter::parseReal(config.getSetting("PageWorldX")) / (page_size - 1),
+                                   Ogre::StringConverter::parseReal(config.getSetting("MaxHeight")),
+                                   Ogre::StringConverter::parseReal(config.getSetting("PageWorldZ")) / (page_size - 1));
 
-        Ogre::String terrainfileName = config.getSetting( "Heightmap.image" );
+        Ogre::String terrainfileName = config.getSetting("Heightmap.image");
 
-        float *heights = new float [page_size*page_size];
+        float *heights = new float[page_size*page_size];
 
         Ogre::Image terrainHeightMap;
         terrainHeightMap.load(terrainfileName, Ogre::ResourceGroupManager::AUTODETECT_RESOURCE_GROUP_NAME);
         
-        for(unsigned y = 0; y < page_size; ++y)
+        for (unsigned y = 0; y < page_size; ++y)
         {
-            for(unsigned x = 0; x < page_size; ++x)
+            for (unsigned x = 0; x < page_size; ++x)
             {
                 Ogre::ColourValue color = terrainHeightMap.getColourAt(x, y, 0);
                 heights[x + y * page_size] = color.r;
             }
         }
 
-		mTerrainShape = new HeightmapCollisionShape (
-			page_size, 
-			page_size, 
-			terrainScale, 
-			heights, 
-			true);
+        mTerrainShape = new HeightmapCollisionShape(page_size,
+                                                    page_size,
+                                                    terrainScale,
+                                                    heights,
+                                                    true);
 
-		RigidBody *defaultTerrainBody = new RigidBody(
-			"Terrain", 
-			mWorld);
+        RigidBody *defaultTerrainBody = new RigidBody("Terrain",
+                                                      mWorld);
 
-		const float      terrainBodyRestitution  = 0.1f;
-		const float      terrainBodyFriction     = 0.8f;
+        const float terrainBodyRestitution = 0.1f;
+        const float terrainBodyFriction    = 0.8f;
 
         Ogre::Vector3 terrainShiftPos( (terrainScale.x * (page_size - 1) / 2), \
                                         0,
@@ -197,7 +192,7 @@ void Terrain_Demo::init(Ogre::Root *root, Ogre::RenderWindow *win, OgreBulletApp
 
         terrainShiftPos.y = terrainScale.y / 2 * terrainScale.y;
 
-		Ogre::SceneNode* pTerrainNode = mSceneMgr->getRootSceneNode ()->createChildSceneNode ();
+        Ogre::SceneNode* pTerrainNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
 		defaultTerrainBody->setStaticShape (pTerrainNode, mTerrainShape, terrainBodyRestitution, terrainBodyFriction, terrainShiftPos);
 
 		mBodies.push_back(defaultTerrainBody);
@@ -264,22 +259,23 @@ void Terrain_Demo::init(Ogre::Root *root, Ogre::RenderWindow *win, OgreBulletApp
 
         mCarChassis = new WheeledRigidBody("carChassis", mWorld);
 
-        mCarChassis->setShape (node, 
-			compound, 
-			0.6, //restitution
-			0.6, //friction
-			800, //bodyMass
-			CarPosition +  terrain_Shift , 
-			Quaternion::IDENTITY);
+        mCarChassis->setShape(node,
+                              compound,
+                              0.6, //restitution
+                              0.6, //friction
+                              800, //bodyMass
+                              CarPosition + terrain_Shift,
+                              Quaternion::IDENTITY);
+
         mCarChassis->setDamping(0.2, 0.2);
 
-        mCarChassis->disableDeactivation ();
-        mTuning = new VehicleTuning(
-            gSuspensionStiffness,
-            gSuspensionCompression,
-            gSuspensionDamping,
-            gMaxSuspensionTravelCm,
-            gFrictionSlip);
+        mCarChassis->disableDeactivation();
+        mTuning = new VehicleTuning(gSuspensionStiffness,
+                                    gSuspensionCompression,
+                                    gSuspensionDamping,
+                                    gMaxSuspensionTravelCm,
+                                    gMaxSuspensionForce,
+                                    gFrictionSlip);
 
         mVehicleRayCaster = new VehicleRayCaster(mWorld);
         mVehicle = new RaycastVehicle(mCarChassis, mTuning, mVehicleRayCaster);

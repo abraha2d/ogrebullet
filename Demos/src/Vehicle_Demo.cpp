@@ -205,12 +205,12 @@ void Vehicles_Demo::init(Ogre::Root *root, Ogre::RenderWindow *win, OgreBulletAp
         mCarChassis->setDamping(0.2, 0.2);
 
         mCarChassis->disableDeactivation ();
-        mTuning = new VehicleTuning(
-            gSuspensionStiffness,
-            gSuspensionCompression,
-            gSuspensionDamping,
-            gMaxSuspensionTravelCm,
-            gFrictionSlip);
+        mTuning = new VehicleTuning(gSuspensionStiffness,
+                                    gSuspensionCompression,
+                                    gSuspensionDamping,
+                                    gMaxSuspensionTravelCm,
+                                    gMaxEngineForce,
+                                    gFrictionSlip);
 
         mVehicleRayCaster = new VehicleRayCaster(mWorld);
         mVehicle = new RaycastVehicle(mCarChassis, mTuning, mVehicleRayCaster);

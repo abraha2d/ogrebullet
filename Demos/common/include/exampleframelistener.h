@@ -44,7 +44,12 @@ D:        Step right
 #define OIS_DYNAMIC_LIB
 
 // NOTICE: You may need to change this line to <OIS.h> if you build OIS from source.
-#include <OIS\OIS.h>
+#define OIS_DYNAMIC_LIB
+#if OGRE_COMPILER == OGRE_COMPILER_GNUC && OGRE_COMP_VER >= 470
+#include <ois/OIS.h>
+#else
+#include <OIS/OIS.h>
+#endif
 
 using namespace Ogre;
 

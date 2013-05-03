@@ -61,6 +61,7 @@ namespace OgreBulletDynamics
                       const Ogre::Real suspensionCompression,
                       const Ogre::Real suspensionDamping,
                       const Ogre::Real maxSuspensionTravelCm,
+                      const Ogre::Real maxSuspensionForce,
                       const Ogre::Real frictionSlip);
 
         virtual ~VehicleTuning();

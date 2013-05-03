@@ -58,6 +58,7 @@ namespace OgreBulletDynamics
                                  const Ogre::Real suspensionCompression,
                                  const Ogre::Real suspensionDamping,
                                  const Ogre::Real maxSuspensionTravelCm,
+                                 const Ogre::Real maxSuspensionForce,
                                  const Ogre::Real frictionSlip)
     {
         mBulletTuning = new btRaycastVehicle::btVehicleTuning();
@@ -66,12 +67,13 @@ namespace OgreBulletDynamics
         mBulletTuning->m_suspensionCompression = suspensionCompression;
         mBulletTuning->m_suspensionDamping = suspensionDamping;
         mBulletTuning->m_maxSuspensionTravelCm = maxSuspensionTravelCm;
+        mBulletTuning->m_maxSuspensionForce = maxSuspensionForce;
         mBulletTuning->m_frictionSlip = frictionSlip;
     }
     // -------------------------------------------------------------------------
     VehicleTuning::~VehicleTuning()
     {
-        if (mBulletTuning != NULL)
+        if (mBulletTuning)
         {
             delete mBulletTuning;
             mBulletTuning = NULL;
@@ -85,16 +87,14 @@ namespace OgreBulletDynamics
           mTuning(vt),
           mRayCaster(caster)
     {
-        if (mRayCaster == NULL)
+        if (!mRayCaster)
         {
             mRayCaster = new VehicleRayCaster(mWorld);
         }
 
-        btRaycastVehicle *v = new btRaycastVehicle(
-                *(mTuning->getBulletTuning()),
-                body->getBulletRigidBody(),
-                mRayCaster->getBulletVehicleRayCaster()
-                );
+        btRaycastVehicle *v = new btRaycastVehicle(*(mTuning->getBulletTuning()),
+                                                   body->getBulletRigidBody(),
+                                                   mRayCaster->getBulletVehicleRayCaster());
         mActionInterface = v;
         mWorld->addVehicle(this);
         body->setVehicle (this);
