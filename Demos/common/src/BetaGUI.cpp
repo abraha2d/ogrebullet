@@ -168,10 +168,10 @@ namespace BetaGUI
         assert (mDragWindowAction == WA_NONE) ;  
         for(std::vector<Window*>::iterator i=mWindows.begin();i!=mWindows.end();++i) 
         {
-		    if((*i)->isVisible() && 
-                (*i)->check(x, y, LMB)) 
+            Window *w = *i;
+		    if(w->isVisible() && w->check(x, y, LMB))
             {
-                mActiveDraggedWindow = (*i);
+                mActiveDraggedWindow = w;
                 sortZOrder ();
 
                 if (mMousePointerOverlay)

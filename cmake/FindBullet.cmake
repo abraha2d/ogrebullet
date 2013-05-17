@@ -39,23 +39,69 @@ endif()
 #mark_as_advanced(BULLET_INCLUDE_DIR)
 
 if(OSX)
-        find_path(BULLET_INCLUDE_COLLISION_DIR btBulletCollisionCommon.h)
+        find_path(BULLET_INCLUDE_DIR btBulletCollisionCommon.h
+                  PATHS ${HINT_PATHS})
+
+        find_path(BULLET_INCLUDE_COLLISION_DIR BulletCollision/btBulletCollisionCommon.h
+                  PATHS ${HINT_PATHS})
+
+        if(BULLET_INCLUDE_COLLISION_DIR)
+                set(BULLET_INCLUDE_COLLISION_DIR ${BULLET_INCLUDE_COLLISION_DIR}/BulletCollision)
+        endif()
+
+        find_path(BULLET_INCLUDE_DYNAMICS_DIR BulletDynamics/btBulletDynamicsCommon.h
+                  PATHS ${HINT_PATHS})
+
+        if(BULLET_INCLUDE_DYNAMICS_DIR)
+                set(BULLET_INCLUDE_DYNAMICS_DIR ${BULLET_INCLUDE_DYNAMICS_DIR}/BulletDynamics)
+        endif()
+
+        find_path(BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR ConvexDecomposition/ConvexDecomposition.h
+                  PATHS ${HINT_PATHS})
+
+        if(BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR)
+                set(BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR ${BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR}/ConvexDecomposition)
+        endif()
+
+        find_path(BULLET_INCLUDE_SOFTBODY_DIR BulletSoftBody/btSoftBody.h
+                  PATHS ${HINT_PATHS})
+
+        if(BULLET_INCLUDE_SOFTBODY_DIR)
+                set(BULLET_INCLUDE_SOFTBODY_DIR ${BULLET_INCLUDE_SOFTBODY_DIR}/BulletSoftBody)
+        endif()
+
+        mark_as_advanced(BULLET_INCLUDE_COLLISION_DIR
+                         BULLET_INCLUDE_DYNAMICS_DIR
+                         BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR
+                         BULLET_INCLUDE_SOFTBODY_DIR)
 else()
         find_path(BULLET_INCLUDE_COLLISION_DIR BulletCollision/btBulletCollisionCommon.h
                   PATHS ${HINT_PATHS})
-        
+
         if(BULLET_INCLUDE_COLLISION_DIR)
                  set(BULLET_INCLUDE_DIR "${BULLET_INCLUDE_COLLISION_DIR}/../")
                  mark_as_advanced(BULLET_INCLUDE_COLLISION_DIR)
         endif()
 
         find_path(BULLET_INCLUDE_DYNAMICS_DIR BulletDynamics/btBulletDynamicsCommon.h
-                  PATHS ${HINT_PATHS})        
+                  PATHS ${HINT_PATHS})
+        mark_as_advanced(BULLET_INCLUDE_DYNAMICS_DIR)
 
-        if(BULLET_INCLUDE_DYNAMICS_DIR)
-                 mark_as_advanced(BULLET_INCLUDE_DYNAMICS_DIR)
-        endif()
+        find_path(BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR ConvexDecomposition/ConvexDecomposition.h)
+        mark_as_advanced(BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR)
+
+        find_path(BULLET_INCLUDE_SOFTBODY_DIR BulletSoftBody/btSoftBody.h)
+        mark_as_advanced(BULLET_INCLUDE_SOFTBODY_DIR)
 endif()
+
+set(BULLET_INCLUDE_DIRS
+        ${BULLET_INCLUDE_DIR}
+        ${BULLET_INCLUDE_COLLISION_DIR}
+        ${BULLET_INCLUDE_DYNAMICS_DIR}
+        ${BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR}
+        ${BULLET_INCLUDE_SOFTBODY_DIR})
+
+message(STATUS "BULLET_INCLUDE_DIRS: ${BULLET_INCLUDE_DIRS}")
 
 find_library(BULLET_COLLISION_LIBRARY NAMES BulletCollision)
 mark_as_advanced(BULLET_COLLISION_LIBRARY)
@@ -63,10 +109,22 @@ mark_as_advanced(BULLET_COLLISION_LIBRARY)
 find_library(BULLET_DYNAMICS_LIBRARY NAMES BulletDynamics)
 mark_as_advanced(BULLET_DYNAMICS_LIBRARY)
 
-if(BULLET_INCLUDE_DIR)
-	set(BULLET_EXTRAS_INCLUDE_DIR ${BULLET_INCLUDE_DIR}/../Extras)
-	set(BULLET_DEMOS_INCLUDE_DIR ${BULLET_INCLUDE_DIR}/../Demos/OpenGL)
-endif(BULLET_INCLUDE_DIR)
+find_library(BULLET_CONVEXDECOMPOSITION_LIBRARY ConvexDecomposition)
+mark_as_advanced(BULLET_CONVEXDECOMPOSITION_LIBRARY)
+
+find_library(BULLET_SOFTBODY_LIBRARY BulletSoftBody)
+mark_as_advanced(BULLET_SOFTBODY_LIBRARY)
+
+if(BULLET_INCLUDE_DIR AND NOT OSX)
+	set(BULLET_EXTRAS_INCLUDE_DIRS ${BULLET_INCLUDE_DIR}/../Extras)
+	set(BULLET_DEMOS_INCLUDE_DIRS ${BULLET_INCLUDE_DIR}/../Demos/OpenGL)
+endif()
+
+set(BULLET_LIBRARIES
+        ${BULLET_COLLISION_LIBRARY}
+        ${BULLET_DYNAMICS_LIBRARY}
+        ${BULLET_CONVEXDECOMPOSITION_LIBRARY}
+        ${BULLET_SOFTBODY_LIBRARY})
 
 macro(FIND_BULLET_LIBRARY_DIRNAME LIBNAME DIRNAME)
 	message(STATUS "Looking for ${LIBNAME}...")
@@ -137,22 +195,22 @@ macro(FIND_BULLET_LIBRARY LIBNAME)
 	find_bullet_library_dirname(${LIBNAME} ${LIBNAME})
 endmacro(FIND_BULLET_LIBRARY LIBNAME)
 
-find_bullet_library(BulletDynamics)
-find_bullet_library(BulletSoftBody)
-find_bullet_library(BulletCollision)
-find_bullet_library(BulletMultiThreaded)
-find_bullet_library(LinearMath)
-find_bullet_library_dirname(OpenGLSupport OpenGL)
-find_bullet_library(ConvexDecomposition)
+#find_bullet_library(BulletDynamics)
+#find_bullet_library(BulletSoftBody)
+#find_bullet_library(BulletCollision)
+#find_bullet_library(BulletMultiThreaded)
+#find_bullet_library(LinearMath)
+#find_bullet_library_dirname(OpenGLSupport OpenGL)
+#find_bullet_library(ConvexDecomposition)
 
 # Pre-2.76
-find_bullet_library_dirname(XML LibXML)
-find_bullet_library_dirname(ColladaDom COLLADA_DOM)
-find_bullet_library(BulletColladaConverter)
+#find_bullet_library_dirname(XML LibXML)
+#find_bullet_library_dirname(ColladaDom COLLADA_DOM)
+#find_bullet_library(BulletColladaConverter)
 
 # Hide BULLET_LIBRARY in the GUI, since most users can just ignore it
-mark_as_advanced(BULLET_LIBRARIES)
-mark_as_advanced(BULLET_LIBRARIES_debug)
+#mark_as_advanced(BULLET_LIBRARIES)
+#mark_as_advanced(BULLET_LIBRARIES_debug)
 
 set(BULLET_FOUND FALSE)
 if(BULLET_INCLUDE_DIR AND BULLET_LIBRARIES)
@@ -160,6 +218,6 @@ if(BULLET_INCLUDE_DIR AND BULLET_LIBRARIES)
 endif(BULLET_INCLUDE_DIR AND BULLET_LIBRARIES)
 
 # in v2.76, ColladaConverter was removed.
-if(BULLET_BulletColladaConverter_LIBRARY OR BULLET_BulletColladaConverter_LIBRARY_debug)
-	set(BULLET_COLLADACONVERTER_FOUND)
-endif(BULLET_BulletColladaConverter_LIBRARY OR BULLET_BulletColladaConverter_LIBRARY_debug)
+#if(BULLET_BulletColladaConverter_LIBRARY OR BULLET_BulletColladaConverter_LIBRARY_debug)
+#	set(BULLET_COLLADACONVERTER_FOUND)
+#endif(BULLET_BulletColladaConverter_LIBRARY OR BULLET_BulletColladaConverter_LIBRARY_debug)

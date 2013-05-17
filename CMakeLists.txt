@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 
 set(PROJ "OgreBullet")
-set(${PROJ}_BUILD_DEMOS ON)
+option(${PROJ}_BUILD_DEMOS "Build demos")
 
 project(${PROJ})
 
@@ -9,14 +9,15 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 
 find_package(OGRE REQUIRED)
 find_package(Bullet REQUIRED)
+find_package(Boost REQUIRED)
 
 include_directories(${OGRE_INCLUDE_DIR}
-	${BULLET_INCLUDE_DIR}
-	${BULLET_INCLUDE_DIRS}/ConvexDecomposition
-	${CMAKE_CURRENT_SOURCE_DIR}/Collisions/include
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/include)
+        ${Boost_INCLUDE_DIRS}
+        ${BULLET_INCLUDE_DIRS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/Collisions/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/include)
 
-#link_directories(${OGRE_LIB_DIR})
+link_directories(${OGRE_LIB_DIR})
 
 set(SOURCES_Col
 	Collisions/src/Shapes/OgreBulletCollisionsConeShape.cpp
