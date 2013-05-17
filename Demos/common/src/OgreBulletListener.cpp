@@ -270,20 +270,16 @@ void OgreBulletListener::setBasicLight()
 // -------------------------------------------------------------------------
 void OgreBulletListener::setPhysicGUI()
 {
-    BetaGUI::GUI *gui = mGuiListener->getGui ();
+    BetaGUI::GUI *gui = mGuiListener->getGui();
 
-    BetaGUI::Window *menuWindow = gui->addMenuWindow(
-        Vector2(mWindow->getWidth(), 24));
-    menuWindow->hide ();
-
-
-    BetaGUI::Window *aWindow;
+    BetaGUI::Window *menuWindow = gui->addMenuWindow(Vector2(mWindow->getWidth(), 24));
+    menuWindow->hide();
 
 
-    aWindow = menuWindow->addMenuWindowTab("Scene Choice");
+    BetaGUI::Window *aWindow = menuWindow->addMenuWindowTab("Scene Choice");
     {
-        std::vector <OgreBulletListener *> *sceneList = mApplication->getScenesList();
-        std::vector <OgreBulletListener *>::iterator itScenes = sceneList->begin();
+        std::vector<OgreBulletListener *> *sceneList = mApplication->getScenesList();
+        std::vector<OgreBulletListener *>::iterator itScenes = sceneList->begin();
         for (;itScenes < sceneList->end(); ++itScenes)
         {
             if ((*itScenes) == this)
@@ -292,17 +288,17 @@ void OgreBulletListener::setPhysicGUI()
                 aWindow->addBoolButton((*itScenes)->getBoolActivator(), (*itScenes)->getName(), BetaGUI::WPT_VERTICAL);
         }
     }
-    aWindow->hide ();
+    aWindow->hide();
 
 
     aWindow = menuWindow->addMenuWindowTab("Time", false, BetaGUI::WPT_NONE);
     aWindow->addBoolButton(&mPaused, "Play/Pause", BetaGUI::WPT_HORIZONTAL);
     aWindow->addBoolButton(&mDoOnestep, "Single Step", BetaGUI::WPT_HORIZONTAL);
-    aWindow->hide ();
+    aWindow->hide();
 
     // appears and slide in
-    const Vector2 screenRightTop (mWindow->getWidth () - aWindow->getSize ().x, 0);
-    const Vector2 screenRightOffTop (mWindow->getWidth () - aWindow->getSize ().x, - aWindow->getSize ().y);
+    const Vector2 screenRightTop(mWindow->getWidth() - aWindow->getSize().x, 0);
+    const Vector2 screenRightOffTop(mWindow->getWidth() - aWindow->getSize().x, - aWindow->getSize().y);
     gui->addEffect(new BetaGUI::MoveEffect(aWindow, 2, screenRightOffTop, screenRightTop, 0));
     gui->addEffect(new BetaGUI::AlphaEffect(aWindow, 2, 0, 1, 0));
 
@@ -313,7 +309,7 @@ void OgreBulletListener::setPhysicGUI()
     aWindow->addRealButton(&mImpulseForce,
         Vector4(0.1, 5.0, 0.0, 100.0),
         "Impulse Force:", BetaGUI::WPT_VERTICAL);
-    aWindow->hide ();
+    aWindow->hide();
 
     aWindow = menuWindow->addMenuWindowTab("Debug");
     aWindow->addBoolButton(&mWireFrame, "Draw Wireframe", BetaGUI::WPT_VERTICAL);
@@ -327,14 +323,14 @@ void OgreBulletListener::setPhysicGUI()
     aWindow->addBoolButton(&mEnableSatComparison, "Enable Sat Comparison", BetaGUI::WPT_VERTICAL);
     aWindow->addBoolButton(&mDisableBulletLCP, "Disable Bullet LCP", BetaGUI::WPT_VERTICAL);
     aWindow->addBoolButton(&mEnableCCD, "Enable CCD", BetaGUI::WPT_VERTICAL);
-    aWindow->hide ();
+    aWindow->hide();
 
     aWindow = menuWindow ->addMenuWindowTab("FPS", false, BetaGUI::WPT_NONE);
     mFpsStaticText = aWindow->addStaticText("FPS Count", BetaGUI::WPT_VERTICAL);
-    aWindow->hide ();
+    aWindow->hide();
     // appears and slide in
-    const Vector2 screenRightBottom (mWindow->getWidth () - 360, mWindow->getHeight () - 24);
-    const Vector2 screenRightOffBottom (mWindow->getWidth () - 360, mWindow->getHeight ());
+    const Vector2 screenRightBottom(mWindow->getWidth() - 360, mWindow->getHeight() - 24);
+    const Vector2 screenRightOffBottom (mWindow->getWidth() - 360, mWindow->getHeight());
     gui->addEffect(new BetaGUI::MoveEffect(aWindow, 2, screenRightOffBottom, screenRightBottom, 0));
     gui->addEffect(new BetaGUI::AlphaEffect(aWindow, 2, 0, 1, 0));
 
@@ -342,16 +338,16 @@ void OgreBulletListener::setPhysicGUI()
     aWindow = menuWindow->addMenuWindowTab("Help");
     aWindow->addStaticText(mName + " Help Informations", BetaGUI::WPT_VERTICAL);
 
-    std::vector <String>::iterator keyIterator = mHelpKeys.begin();
+    std::vector<String>::iterator keyIterator = mHelpKeys.begin();
     for (;keyIterator < mHelpKeys.end(); ++keyIterator)
     {
         aWindow->addStaticText(*keyIterator, BetaGUI::WPT_VERTICAL); 
     }
 
     // appears and slide
-    const Vector2 halfWindowSize (aWindow->getSize ().x / 2, aWindow->getSize ().y / 2);
-    const Vector2 screenCentered ((mWindow->getWidth () / 2) - halfWindowSize.x,
-        (mWindow->getHeight () / 2) - halfWindowSize.y);
+    const Vector2 halfWindowSize(aWindow->getSize().x / 2, aWindow->getSize().y / 2);
+    const Vector2 screenCentered((mWindow->getWidth() / 2) - halfWindowSize.x,
+        (mWindow->getHeight() / 2) - halfWindowSize.y);
     gui->addEffect(new BetaGUI::MoveEffect(aWindow, 2, -halfWindowSize, screenCentered, 0));
     gui->addEffect(new BetaGUI::AlphaEffect(aWindow, 2, 0, 1, 0));
     // disappears
@@ -360,8 +356,8 @@ void OgreBulletListener::setPhysicGUI()
     menuWindow->addBoolButton(&mQuit, "Quit", BetaGUI::WPT_HORIZONTAL);
 
     // appears and slide in
-    const Vector2 screenLeftTop (- menuWindow->getSize ().x, 0);
-    const Vector2 screenLeftOffTop (0, 0);
+    const Vector2 screenLeftTop(- menuWindow->getSize().x, 0);
+    const Vector2 screenLeftOffTop(0, 0);
     gui->addEffect(new BetaGUI::MoveEffect(menuWindow, 2, screenLeftTop, screenLeftOffTop, 0));
     gui->addEffect(new BetaGUI::AlphaEffect(menuWindow, 2, 0, 1, 0));
 }
@@ -422,7 +418,6 @@ void OgreBulletListener::shutdown ()
     mBodies.clear();
     mEntities.clear();
     mShapes.clear();
-
 }
 
 // -------------------------------------------------------------------------
@@ -493,25 +488,23 @@ void OgreBulletListener::button1Pressed()
             || body->isKinematicObject()
             ))
         {
+            body->enableActiveState();
 
-            body->enableActiveState ();
+            const Ogre::Vector3 relPos(pickPos - body->getCenterOfMassPosition());
+            const Ogre::Vector3 impulse(rayTo.getDirection());
 
-            const Ogre::Vector3 relPos (pickPos - body->getCenterOfMassPosition());
-            const Ogre::Vector3 impulse (rayTo.getDirection ());
-
-            body->applyImpulse (impulse * mImpulseForce, relPos);		
-
+            body->applyImpulse(impulse * mImpulseForce, relPos);
         }
 
         getDebugLines();
-        mDebugRayLine->addLine (rayTo.getOrigin(), pickPos);
+        mDebugRayLine->addLine(rayTo.getOrigin(), pickPos);
         mDebugRayLine->draw();	
     }  
 }
 // -------------------------------------------------------------------------
 void OgreBulletListener::button2Pressed()
 { 
-    mGuiListener->hideMouse ();
+    mGuiListener->hideMouse();
 }
 // -------------------------------------------------------------------------
 void OgreBulletListener::button0Released()
@@ -541,12 +534,12 @@ void OgreBulletListener::button1Released()
 // -------------------------------------------------------------------------
 void OgreBulletListener::button2Released()
 {
-    mGuiListener->showMouse ();
+    mGuiListener->showMouse();
 }
 // -------------------------------------------------------------------------
 void OgreBulletListener::mouseMoved()
 {
-    mGuiListener->setMousePosition(mInputListener->getAbsMouseX (), mInputListener->getAbsMouseY ());
+    mGuiListener->setMousePosition(mInputListener->getAbsMouseX(), mInputListener->getAbsMouseY());
     if (mPickConstraint)
     {
         // dragging
@@ -570,13 +563,13 @@ void OgreBulletListener::mouseMoved()
         setDebugText ("Dragging");
 
         getDebugLines();
-        mDebugRayLine->addLine (mPickedBody->getWorldPosition (), newPos);
+        mDebugRayLine->addLine(mPickedBody->getWorldPosition(), newPos);
         mDebugRayLine->draw();
         mGuiListener->showMouse();
     }
 
-    if (mGuiListener->getGui()->injectMouse(mInputListener->getAbsMouseX ()*mWindow->getWidth(), 
-        mInputListener->getAbsMouseY ()*mWindow->getHeight(), mInputListener->getButton0Pressed()))
+    if (mGuiListener->getGui()->injectMouse(mInputListener->getAbsMouseX() * mWindow->getWidth(), 
+        mInputListener->getAbsMouseY() * mWindow->getHeight(), mInputListener->getButton0Pressed()))
     {
         mGuiListener->hideMouse();
     }
@@ -588,8 +581,8 @@ void OgreBulletListener::mouseMoved()
 
     if (mInputListener->getButton2Pressed())
     {
-        mCameraRotX = Degree(-mInputListener->getRelMouseX () * 0.13);
-        mCameraRotY = Degree(-mInputListener->getRelMouseY () * 0.13);
+        mCameraRotX = Degree(-mInputListener->getRelMouseX() * 0.13);
+        mCameraRotY = Degree(-mInputListener->getRelMouseY() * 0.13);
     }
 
 }
@@ -607,7 +600,7 @@ void OgreBulletListener::keyPressed(BULLET_KEY_CODE key)
         break;
 
     case KC_SYSRQ:
-        mWindow->writeContentsToFile("OgreBulletScreenShot"+StringConverter::toString(count++)+".png");
+        mWindow->writeContentsToFile("OgreBulletScreenShot" + StringConverter::toString(count++) + ".png");
         break;
 
         // Scene Debug Options
@@ -714,13 +707,13 @@ void OgreBulletListener::keyReleased(BULLET_KEY_CODE key)
 // -------------------------------------------------------------------------
 const OgreBulletDynamics::RigidBody* OgreBulletListener::getBodyUnderCursorUsingBullet(Ogre::Vector3 &intersectionPoint, Ray &rayTo)
 {
-    rayTo = mCamera->getCameraToViewportRay (mInputListener->getAbsMouseX(), mInputListener->getAbsMouseY());
+    rayTo = mCamera->getCameraToViewportRay(mInputListener->getAbsMouseX(), mInputListener->getAbsMouseY());
 
 	delete mCollisionClosestRayResultCallback;
 	mCollisionClosestRayResultCallback = new CollisionClosestRayResultCallback(rayTo, mWorld, mCamera->getFarClipDistance());
 
-    mWorld->launchRay (*mCollisionClosestRayResultCallback);
-    if (mCollisionClosestRayResultCallback->doesCollide ())
+    mWorld->launchRay(*mCollisionClosestRayResultCallback);
+    if (mCollisionClosestRayResultCallback->doesCollide())
     {
 	const OgreBulletDynamics::RigidBody *body =
 		static_cast<const OgreBulletDynamics::RigidBody *>(mCollisionClosestRayResultCallback->getCollidedObject());
@@ -734,9 +727,9 @@ const OgreBulletDynamics::RigidBody* OgreBulletListener::getBodyUnderCursorUsing
 // -------------------------------------------------------------------------
 OgreBulletDynamics::RigidBody* OgreBulletListener::getBodyUnderCursorUsingOgre(Ogre::Vector3 &intersectionPoint, Ray &rayTo)
 {
-    rayTo = mCamera->getCameraToViewportRay (mInputListener->getAbsMouseX(), mInputListener->getAbsMouseY());
+    rayTo = mCamera->getCameraToViewportRay(mInputListener->getAbsMouseX(), mInputListener->getAbsMouseY());
 
-    mRayQuery->setRay (rayTo);
+    mRayQuery->setRay(rayTo);
     const RaySceneQueryResult& result = mRayQuery->execute();
     if (!result.empty())
     {
@@ -749,7 +742,7 @@ OgreBulletDynamics::RigidBody* OgreBulletListener::getBodyUnderCursorUsingOgre(O
 #if (OGRE_VERSION >=  ((1 << 16) | (5 << 8) | 0)) // must have at least shoggoth (1.5.0)
 			intersectionPoint = node->_getDerivedPosition ();
 #else
-			intersectionPoint = node->getWorldPosition ();
+			intersectionPoint = node->getWorldPosition();
 #endif
             const unsigned short num = node->numAttachedObjects();
             MovableObject* movable;
@@ -801,7 +794,7 @@ bool OgreBulletListener::frameEnded(Real elapsedTime)
     if (mQuit)
         return false;
 
-    DebugDrawer *debugDrawer = mWorld->getDebugDrawer ();
+    DebugDrawer *debugDrawer = mWorld->getDebugDrawer();
 
 
     // Scene Debug Options
@@ -864,7 +857,7 @@ bool OgreBulletListener::frameEnded(Real elapsedTime)
         mEnableCCD = false;
     }
 
-    mGuiListener->getGui ()->update (elapsedTime);
+    mGuiListener->getGui()->update(elapsedTime);
     updateStats();
     return true;
 }
@@ -873,12 +866,11 @@ bool OgreBulletListener::checkIfEnoughPlaceToAddObject(float maxDist)
 {
     Ogre::Vector3 pickPos;
     Ogre::Ray rayTo;
-    const OgreBulletDynamics::RigidBody *body =
-        getBodyUnderCursorUsingBullet(pickPos, rayTo);
+    const OgreBulletDynamics::RigidBody *body = getBodyUnderCursorUsingBullet(pickPos, rayTo);
         //getBodyUnderCursorUsingOgre(pickPos, rayTo);
     if (body)
     {          
-        if ((pickPos - mCamera->getDerivedPosition ()).length () < maxDist)
+        if ((pickPos - mCamera->getDerivedPosition()).length() < maxDist)
             return false;
     }
     return true;        
@@ -890,54 +882,46 @@ void OgreBulletListener::throwDynamicObject(BULLET_KEY_CODE key)
     switch(key)
     {
     case KC_B: 
-        if ( checkIfEnoughPlaceToAddObject(trowDist))
+        if (checkIfEnoughPlaceToAddObject(trowDist))
         {
-            const Ogre::Vector3 vec (mCamera->getDerivedPosition());
+            const Ogre::Vector3 vec(mCamera->getDerivedPosition());
             OgreBulletDynamics::RigidBody *body = addCube("cube", vec, Quaternion(0,0,0,1), 
                 gCubeBodyBounds, gDynamicBodyRestitution, gDynamicBodyFriction, gDynamicBodyMass);
 
-            body->setLinearVelocity(
-                mCamera->getDerivedDirection().normalisedCopy() * mShootSpeed
-				);
+            body->setLinearVelocity(mCamera->getDerivedDirection().normalisedCopy() * mShootSpeed);
 		}
         break;
     case KC_N: 
-        if ( checkIfEnoughPlaceToAddObject(trowDist))
+        if (checkIfEnoughPlaceToAddObject(trowDist))
         {
-            const Ogre::Vector3 vec (mCamera->getDerivedPosition());
-            OgreBulletDynamics::RigidBody *body = addSphere("sphere", vec, Quaternion(0,0,0,1), 
+            const Ogre::Vector3 vec(mCamera->getDerivedPosition());
+            OgreBulletDynamics::RigidBody *body = addSphere("sphere", vec, Quaternion(0,0,0,1),
                 gSphereBodyBounds, 
                 gDynamicBodyRestitution, gDynamicBodyFriction, gDynamicBodyMass);
 
-            body->setLinearVelocity(
-                mCamera->getDerivedDirection().normalisedCopy() * mShootSpeed
-                );
+            body->setLinearVelocity(mCamera->getDerivedDirection().normalisedCopy() * mShootSpeed);
         }
         break;
     case KC_H: 
-        if ( checkIfEnoughPlaceToAddObject(trowDist))
+        if (checkIfEnoughPlaceToAddObject(trowDist))
         {
             const Ogre::Vector3 vec (mCamera->getDerivedPosition());
             OgreBulletDynamics::RigidBody *body = addCylinder("cylinder", vec, Quaternion(0,0,0,1), 
                 gCylinderBodyBounds, 
                 gDynamicBodyRestitution, gDynamicBodyFriction, gDynamicBodyMass);
 
-            body->setLinearVelocity(
-                mCamera->getDerivedDirection().normalisedCopy() * mShootSpeed
-                );
+            body->setLinearVelocity(mCamera->getDerivedDirection().normalisedCopy() * mShootSpeed);
         }
         break;
-    case KC_G : 
-        if ( checkIfEnoughPlaceToAddObject(trowDist))
+    case KC_G:
+        if (checkIfEnoughPlaceToAddObject(trowDist))
         {
-            const Ogre::Vector3 vec (mCamera->getDerivedPosition());
+            const Ogre::Vector3 vec(mCamera->getDerivedPosition());
             OgreBulletDynamics::RigidBody *body = addCone("cone", vec, Quaternion(0,0,0,1), 
-                gConeBodyBounds, 
+                gConeBodyBounds,
                 gDynamicBodyRestitution, gDynamicBodyFriction, gDynamicBodyMass);
 
-            body->setLinearVelocity(
-                mCamera->getDerivedDirection().normalisedCopy() * mShootSpeed
-                );
+            body->setLinearVelocity(mCamera->getDerivedDirection().normalisedCopy() * mShootSpeed);
         }
         break;
     }
@@ -949,9 +933,9 @@ void OgreBulletListener::dropDynamicObject(BULLET_KEY_CODE key)
     switch(key)
     {
     case KC_J: 
-        if ( checkIfEnoughPlaceToAddObject(dropDist))
+        if (checkIfEnoughPlaceToAddObject(dropDist))
         {
-            const Ogre::Vector3 vec (mCamera->getDerivedPosition());
+            const Ogre::Vector3 vec(mCamera->getDerivedPosition());
             OgreBulletDynamics::RigidBody *body = addCube("cube", 
                 vec + mCamera->getDerivedDirection().normalisedCopy() * 10, 
                 Quaternion(0,0,0,1), 
@@ -960,9 +944,9 @@ void OgreBulletListener::dropDynamicObject(BULLET_KEY_CODE key)
         }
         break;
     case KC_K: 
-        if ( checkIfEnoughPlaceToAddObject(dropDist))
+        if (checkIfEnoughPlaceToAddObject(dropDist))
         {
-            const Ogre::Vector3 vec (mCamera->getDerivedPosition());
+            const Ogre::Vector3 vec(mCamera->getDerivedPosition());
             OgreBulletDynamics::RigidBody *body = addSphere("sphere", 
                 vec + mCamera->getDerivedDirection().normalisedCopy() * 10, 
                 Quaternion(0,0,0,1), 
@@ -972,9 +956,9 @@ void OgreBulletListener::dropDynamicObject(BULLET_KEY_CODE key)
         }
         break;
     case KC_U : 
-        if ( checkIfEnoughPlaceToAddObject(dropDist))
+        if (checkIfEnoughPlaceToAddObject(dropDist))
         {
-            const Ogre::Vector3 vec (mCamera->getDerivedPosition());
+            const Ogre::Vector3 vec(mCamera->getDerivedPosition());
             OgreBulletDynamics::RigidBody *body = addCylinder("Cylinder", vec, Quaternion(0,0,0,1), 
                 gCylinderBodyBounds, 
                 gDynamicBodyRestitution, gDynamicBodyFriction, gDynamicBodyMass);
@@ -982,9 +966,9 @@ void OgreBulletListener::dropDynamicObject(BULLET_KEY_CODE key)
         }
         break;
     case KC_I: 
-        if ( checkIfEnoughPlaceToAddObject(dropDist))
+        if (checkIfEnoughPlaceToAddObject(dropDist))
         {
-            const Ogre::Vector3 vec (mCamera->getDerivedPosition());
+            const Ogre::Vector3 vec(mCamera->getDerivedPosition());
             OgreBulletDynamics::RigidBody *body = addCone("Cone", 
                 vec + mCamera->getDerivedDirection().normalisedCopy() * 10, 
                 Quaternion(0,0,0,1), 
@@ -999,7 +983,7 @@ void OgreBulletListener::initWorld(const Ogre::Vector3 &gravityVector,
                                    const Ogre::AxisAlignedBox &bounds)
 {
     // Start Bullet
-    mWorld = new DynamicsWorld (mSceneMgr, bounds, gravityVector, true, true, 10000);
+    mWorld = new DynamicsWorld(mSceneMgr, bounds, gravityVector, true, true, 10000);
 
     // add Debug info display tool
     DebugDrawer *debugDrawer = new DebugDrawer();
@@ -1007,16 +991,12 @@ void OgreBulletListener::initWorld(const Ogre::Vector3 &gravityVector,
     mWorld->setDebugDrawer(debugDrawer);
 
     SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode("debugDrawer", Ogre::Vector3::ZERO);
-    node->attachObject (static_cast <SimpleRenderable *> (debugDrawer));
-
-
+    node->attachObject(static_cast<SimpleRenderable *>(debugDrawer));
 }
 // -------------------------------------------------------------------------
 void OgreBulletListener::addGround()
 {
-    addStaticPlane(
-        gStaticBodyRestitution, 
-        gStaticBodyFriction);
+    addStaticPlane(gStaticBodyRestitution, gStaticBodyFriction);
 }
 // -------------------------------------------------------------------------
 RigidBody *OgreBulletListener::addCube(const Ogre::String instanceName,
@@ -1046,10 +1026,10 @@ RigidBody *OgreBulletListener::addCube(const Ogre::String instanceName,
         "defaultCubeRigid" + StringConverter::toString(mNumEntitiesInstanced), 
         mWorld);
 
-    SceneNode *node = mSceneMgr->getRootSceneNode ()->createChildSceneNode ();
-    node->attachObject (entity);
+    SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    node->attachObject(entity);
 
-    defaultBody->setShape (node,  sceneCubeShape, bodyRestitution, bodyFriction, bodyMass, pos, q);
+    defaultBody->setShape(node, sceneCubeShape, bodyRestitution, bodyFriction, bodyMass, pos, q);
 
     mEntities.push_back(entity);
     mShapes.push_back(sceneCubeShape);
@@ -1082,10 +1062,10 @@ RigidBody *OgreBulletListener::addSphere(const Ogre::String instanceName,
         "defaultSphereRigid" + StringConverter::toString(mNumEntitiesInstanced),
         mWorld);
 
-    SceneNode *node = mSceneMgr->getRootSceneNode ()->createChildSceneNode ();
-    node->attachObject (entity);
+    SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    node->attachObject(entity);
 
-    defaultBody->setShape (node,  sceneCubeShape, bodyRestitution, bodyFriction, bodyMass, pos, q);
+    defaultBody->setShape(node, sceneCubeShape, bodyRestitution, bodyFriction, bodyMass, pos, q);
 
     mEntities.push_back(entity);
     mShapes.push_back(sceneCubeShape);
@@ -1123,10 +1103,10 @@ RigidBody *OgreBulletListener::addCylinder(const Ogre::String instanceName,
         "defaultCylinderRigid" + StringConverter::toString(mNumEntitiesInstanced), 
         mWorld);
 
-    SceneNode *node = mSceneMgr->getRootSceneNode ()->createChildSceneNode ();
-    node->attachObject (entity);
+    SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    node->attachObject(entity);
 
-    defaultBody->setShape (node, sceneCubeShape, bodyRestitution, bodyFriction, bodyMass, pos, q);
+    defaultBody->setShape(node, sceneCubeShape, bodyRestitution, bodyFriction, bodyMass, pos, q);
 
     mEntities.push_back(entity);
     mShapes.push_back(sceneCubeShape);
@@ -1160,10 +1140,10 @@ RigidBody *OgreBulletListener::addCone(const Ogre::String instanceName,
         "defaultConeRigid" + StringConverter::toString(mNumEntitiesInstanced), 
         mWorld);
 
-    SceneNode *node = mSceneMgr->getRootSceneNode ()->createChildSceneNode ();
-    node->attachObject (entity);
+    SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    node->attachObject(entity);
 
-    defaultBody->setShape (node, sceneCubeShape, bodyRestitution, bodyFriction, bodyMass, pos, q);
+    defaultBody->setShape(node, sceneCubeShape, bodyRestitution, bodyFriction, bodyMass, pos, q);
 
     mEntities.push_back(entity);
     mShapes.push_back(sceneCubeShape);
@@ -1182,7 +1162,7 @@ RigidBody *OgreBulletListener::addStaticTrimesh(const Ogre::String &instanceName
                                                 bool castShadow)
 {
     Entity *sceneEntity = mSceneMgr->createEntity(instanceName + StringConverter::toString(mNumEntitiesInstanced), meshName);
-    sceneEntity->setCastShadows (castShadow);
+    sceneEntity->setCastShadows(castShadow);
 
     StaticMeshToShapeConverter *trimeshConverter = new StaticMeshToShapeConverter(sceneEntity);
     TriangleMeshCollisionShape *sceneTriMeshShape = trimeshConverter->createTrimesh();
@@ -1191,8 +1171,8 @@ RigidBody *OgreBulletListener::addStaticTrimesh(const Ogre::String &instanceName
         instanceName + "Rigid" + StringConverter::toString(mNumEntitiesInstanced),
         mWorld);
 
-    SceneNode *node = mSceneMgr->getRootSceneNode ()->createChildSceneNode ();
-    node->attachObject (sceneEntity);
+    SceneNode *node = mSceneMgr->getRootSceneNode()->createChildSceneNode();
+    node->attachObject(sceneEntity);
 
     sceneRigid->setStaticShape(node, sceneTriMeshShape, bodyRestitution, bodyFriction, pos);
 
@@ -1208,8 +1188,7 @@ RigidBody *OgreBulletListener::addStaticPlane( const Ogre::Real bodyRestitution,
 {
     // Use a load of meshes to represent the floor
     int i = 0;
-    StaticGeometry* s;
-    s = mSceneMgr->createStaticGeometry("StaticFloor");
+    StaticGeometry* s = mSceneMgr->createStaticGeometry("StaticFloor");
     s->setRegionDimensions(Ogre::Vector3(160.0, 100.0, 160.0));
     // Set the region origin so the center is at 0 world
     s->setOrigin(Ogre::Vector3::ZERO);
@@ -1221,7 +1200,7 @@ RigidBody *OgreBulletListener::addStaticPlane( const Ogre::Real bodyRestitution,
 
             Entity* entity = mSceneMgr->createEntity(name, "plane.mesh");
 			entity->setMaterialName("BulletPlane");
-            entity->setQueryFlags (STATIC_GEOMETRY_QUERY_MASK);
+            entity->setQueryFlags(STATIC_GEOMETRY_QUERY_MASK);
             //entity->setUserObject(_plane);
             entity->setCastShadows(false);
             s->addEntity(entity, Ogre::Vector3(x,0,z));
@@ -1231,14 +1210,14 @@ RigidBody *OgreBulletListener::addStaticPlane( const Ogre::Real bodyRestitution,
     //SceneNode* mPlaneNode = mSceneMgr->getRootSceneNode()->createChildSceneNode(name);
 
 
-    CollisionShape *Shape = new StaticPlaneCollisionShape (Ogre::Vector3(0,1,0), 0);
+    CollisionShape *Shape = new StaticPlaneCollisionShape(Ogre::Vector3(0,1,0), 0);
 
     RigidBody *defaultPlaneBody = new RigidBody(
         "Plane" + StringConverter::toString(mNumEntitiesInstanced), 
         mWorld);
 
 
-    defaultPlaneBody->setStaticShape (Shape, bodyRestitution, bodyFriction);
+    defaultPlaneBody->setStaticShape(Shape, bodyRestitution, bodyFriction);
 
     mBodies.push_back(defaultPlaneBody);
     mShapes.push_back(Shape);
@@ -1263,17 +1242,16 @@ void OgreBulletListener::updateStats(void)
         static String tris = "Triangle Count: ";
 
 
-        mFpsStaticText->setValue
-            (
-            avgFps + StringConverter::toString(stats.avgFPS) + " / " +
-            currFps + StringConverter::toString(stats.lastFPS) + " / " +
-            tris + StringConverter::toString(stats.triangleCount)
-            );
+        mFpsStaticText->setValue(avgFps + StringConverter::toString(stats.avgFPS) + " / " +
+                                 currFps + StringConverter::toString(stats.lastFPS) + " / " +
+                                 tris + StringConverter::toString(stats.triangleCount));
     }
 
-    try {
+    try
+    {
         OverlayElement* guiDbg = OverlayManager::getSingleton().getOverlayElement("Core/DebugText");
         guiDbg->setCaption(mDebugText);
     }
-    catch(...) {}
+    catch(...)
+    { }
 }

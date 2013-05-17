@@ -70,11 +70,19 @@ if(OSX)
                 set(BULLET_INCLUDE_SOFTBODY_DIR ${BULLET_INCLUDE_SOFTBODY_DIR}/BulletSoftBody)
         endif()
 
+        find_path(BULLET_INCLUDE_LINEARMATH_DIR LinearMath/btScalar.h
+                  PATHS ${HINT_PATHS})
+
+        if(BULLET_INCLUDE_LINEARMATH_DIR)
+                set(BULLET_INCLUDE_LINEARMATH_DIR ${BULLET_INCLUDE_LINEARMATH_DIR}/LinearMath)
+        endif()
+
         mark_as_advanced(BULLET_INCLUDE_COLLISION_DIR
                          BULLET_INCLUDE_DYNAMICS_DIR
                          BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR
-                         BULLET_INCLUDE_SOFTBODY_DIR)
-else()
+                         BULLET_INCLUDE_SOFTBODY_DIR
+                         BULLET_INCLUDE_LINEARMATH_DIR)
+else(OSX)
         find_path(BULLET_INCLUDE_COLLISION_DIR BulletCollision/btBulletCollisionCommon.h
                   PATHS ${HINT_PATHS})
 
@@ -92,21 +100,22 @@ else()
 
         find_path(BULLET_INCLUDE_SOFTBODY_DIR BulletSoftBody/btSoftBody.h)
         mark_as_advanced(BULLET_INCLUDE_SOFTBODY_DIR)
-endif()
+endif(OSX)
 
 set(BULLET_INCLUDE_DIRS
         ${BULLET_INCLUDE_DIR}
         ${BULLET_INCLUDE_COLLISION_DIR}
         ${BULLET_INCLUDE_DYNAMICS_DIR}
         ${BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR}
-        ${BULLET_INCLUDE_SOFTBODY_DIR})
+        ${BULLET_INCLUDE_SOFTBODY_DIR}
+        ${BULLET_INCLUDE_LINEARMATH_DIR})
 
 message(STATUS "BULLET_INCLUDE_DIRS: ${BULLET_INCLUDE_DIRS}")
 
-find_library(BULLET_COLLISION_LIBRARY NAMES BulletCollision)
+find_library(BULLET_COLLISION_LIBRARY BulletCollision)
 mark_as_advanced(BULLET_COLLISION_LIBRARY)
 
-find_library(BULLET_DYNAMICS_LIBRARY NAMES BulletDynamics)
+find_library(BULLET_DYNAMICS_LIBRARY BulletDynamics)
 mark_as_advanced(BULLET_DYNAMICS_LIBRARY)
 
 find_library(BULLET_CONVEXDECOMPOSITION_LIBRARY ConvexDecomposition)
@@ -114,6 +123,9 @@ mark_as_advanced(BULLET_CONVEXDECOMPOSITION_LIBRARY)
 
 find_library(BULLET_SOFTBODY_LIBRARY BulletSoftBody)
 mark_as_advanced(BULLET_SOFTBODY_LIBRARY)
+
+find_library(BULLET_LINEARMATH_LIBRARY LinearMath)
+mark_as_advanced(BULLET_LINEARMATH_LIBRARY)
 
 if(BULLET_INCLUDE_DIR AND NOT OSX)
 	set(BULLET_EXTRAS_INCLUDE_DIRS ${BULLET_INCLUDE_DIR}/../Extras)
@@ -124,7 +136,8 @@ set(BULLET_LIBRARIES
         ${BULLET_COLLISION_LIBRARY}
         ${BULLET_DYNAMICS_LIBRARY}
         ${BULLET_CONVEXDECOMPOSITION_LIBRARY}
-        ${BULLET_SOFTBODY_LIBRARY})
+        ${BULLET_SOFTBODY_LIBRARY}
+	${BULLET_LINEARMATH_LIBRARY})
 
 macro(FIND_BULLET_LIBRARY_DIRNAME LIBNAME DIRNAME)
 	message(STATUS "Looking for ${LIBNAME}...")

@@ -22,14 +22,21 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/lib)
 find_package(OIS REQUIRED)
 
 set(LIBS
-	${OGRE_LIBRARIES}
-#	${OPENGL_glu_LIBRARY}
-	${COLLISIONS_LIB}
-	${DYNAMICS_LIB}
-	${BULLET_LIBRARIES}
-#	${LUA_LIBRARY}
-#	${CMAKE_THREAD_LIBS_INIT}
-	${OIS_LIBRARIES})
+        ${OGRE_LIBRARIES}
+#        ${OPENGL_glu_LIBRARY}
+        ${COLLISIONS_LIB}
+        ${DYNAMICS_LIB}
+        ${BULLET_LIBRARIES}
+#        ${LUA_LIBRARY}
+#        ${CMAKE_THREAD_LIBS_INIT}
+        ${OIS_LIBRARIES})
+
+if(OSX)
+        find_library(COCOA_LIB Cocoa)
+        find_library(IOKIT_LIB IOKit)
+#        message(STATUS "Cocoa: ${COCOA_LIB}")
+        set(LIBS ${LIBS} ${COCOA_LIB} ${IOKIT_LIB})
+endif()
 
 message(STATUS "LIBS: ${LIBS}")
 
