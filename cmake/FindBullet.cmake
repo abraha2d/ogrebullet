@@ -38,69 +38,69 @@ endif()
 #unset(BULLET_INCLUDE_DIR CACHE)
 #mark_as_advanced(BULLET_INCLUDE_DIR)
 
-if(OSX)
-        find_path(BULLET_INCLUDE_DIR btBulletCollisionCommon.h
-                  PATHS ${HINT_PATHS})
+find_path(BULLET_INCLUDE_DIR btBulletCollisionCommon.h
+          PATHS ${HINT_PATHS})
 
-        find_path(BULLET_INCLUDE_COLLISION_DIR BulletCollision/btBulletCollisionCommon.h
-                  PATHS ${HINT_PATHS})
+find_path(BULLET_INCLUDE_COLLISION_DIR BulletCollision/btBulletCollisionCommon.h
+          PATHS ${HINT_PATHS})
 
-        if(BULLET_INCLUDE_COLLISION_DIR)
-                set(BULLET_INCLUDE_COLLISION_DIR ${BULLET_INCLUDE_COLLISION_DIR}/BulletCollision)
-        endif()
+if(BULLET_INCLUDE_COLLISION_DIR)
+        set(BULLET_INCLUDE_COLLISION_DIR ${BULLET_INCLUDE_COLLISION_DIR}/BulletCollision)
+endif()
 
-        find_path(BULLET_INCLUDE_DYNAMICS_DIR BulletDynamics/btBulletDynamicsCommon.h
-                  PATHS ${HINT_PATHS})
+find_path(BULLET_INCLUDE_DYNAMICS_DIR BulletDynamics/btBulletDynamicsCommon.h
+          PATHS ${HINT_PATHS})
 
-        if(BULLET_INCLUDE_DYNAMICS_DIR)
-                set(BULLET_INCLUDE_DYNAMICS_DIR ${BULLET_INCLUDE_DYNAMICS_DIR}/BulletDynamics)
-        endif()
+if(BULLET_INCLUDE_DYNAMICS_DIR)
+        set(BULLET_INCLUDE_DYNAMICS_DIR ${BULLET_INCLUDE_DYNAMICS_DIR}/BulletDynamics)
+endif()
 
-        find_path(BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR ConvexDecomposition/ConvexDecomposition.h
-                  PATHS ${HINT_PATHS})
+find_path(BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR ConvexDecomposition/ConvexDecomposition.h
+          PATHS ${HINT_PATHS})
 
-        if(BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR)
-                set(BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR ${BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR}/ConvexDecomposition)
-        endif()
+if(BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR)
+        set(BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR ${BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR}/ConvexDecomposition)
+endif()
 
-        find_path(BULLET_INCLUDE_SOFTBODY_DIR BulletSoftBody/btSoftBody.h
-                  PATHS ${HINT_PATHS})
+find_path(BULLET_INCLUDE_SOFTBODY_DIR BulletSoftBody/btSoftBody.h
+          PATHS ${HINT_PATHS})
 
-        if(BULLET_INCLUDE_SOFTBODY_DIR)
-                set(BULLET_INCLUDE_SOFTBODY_DIR ${BULLET_INCLUDE_SOFTBODY_DIR}/BulletSoftBody)
-        endif()
+if(BULLET_INCLUDE_SOFTBODY_DIR)
+        set(BULLET_INCLUDE_SOFTBODY_DIR ${BULLET_INCLUDE_SOFTBODY_DIR}/BulletSoftBody)
+endif()
 
-        find_path(BULLET_INCLUDE_LINEARMATH_DIR LinearMath/btScalar.h
-                  PATHS ${HINT_PATHS})
+find_path(BULLET_INCLUDE_LINEARMATH_DIR LinearMath/btScalar.h
+          PATHS ${HINT_PATHS})
 
-        if(BULLET_INCLUDE_LINEARMATH_DIR)
-                set(BULLET_INCLUDE_LINEARMATH_DIR ${BULLET_INCLUDE_LINEARMATH_DIR}/LinearMath)
-        endif()
+if(BULLET_INCLUDE_LINEARMATH_DIR)
+        set(BULLET_INCLUDE_LINEARMATH_DIR ${BULLET_INCLUDE_LINEARMATH_DIR}/LinearMath)
+endif()
 
-        mark_as_advanced(BULLET_INCLUDE_COLLISION_DIR
-                         BULLET_INCLUDE_DYNAMICS_DIR
-                         BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR
-                         BULLET_INCLUDE_SOFTBODY_DIR
-                         BULLET_INCLUDE_LINEARMATH_DIR)
-else(OSX)
-        find_path(BULLET_INCLUDE_COLLISION_DIR BulletCollision/btBulletCollisionCommon.h
-                  PATHS ${HINT_PATHS})
+mark_as_advanced(BULLET_INCLUDE_COLLISION_DIR
+                 BULLET_INCLUDE_DYNAMICS_DIR
+                 BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR
+                 BULLET_INCLUDE_SOFTBODY_DIR
+                 BULLET_INCLUDE_LINEARMATH_DIR)
 
-        if(BULLET_INCLUDE_COLLISION_DIR)
-                 set(BULLET_INCLUDE_DIR "${BULLET_INCLUDE_COLLISION_DIR}/../")
-                 mark_as_advanced(BULLET_INCLUDE_COLLISION_DIR)
-        endif()
+#else(OSX)
+#        find_path(BULLET_INCLUDE_COLLISION_DIR BulletCollision/btBulletCollisionCommon.h
+#                  PATHS ${HINT_PATHS})
 
-        find_path(BULLET_INCLUDE_DYNAMICS_DIR BulletDynamics/btBulletDynamicsCommon.h
-                  PATHS ${HINT_PATHS})
-        mark_as_advanced(BULLET_INCLUDE_DYNAMICS_DIR)
+#        if(BULLET_INCLUDE_COLLISION_DIR)
+#                 set(BULLET_INCLUDE_DIR "${BULLET_INCLUDE_COLLISION_DIR}/../")
+#                 mark_as_advanced(BULLET_INCLUDE_COLLISION_DIR)
+#        endif()
 
-        find_path(BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR ConvexDecomposition/ConvexDecomposition.h)
-        mark_as_advanced(BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR)
+#        find_path(BULLET_INCLUDE_DYNAMICS_DIR BulletDynamics/btBulletDynamicsCommon.h
+#                  PATHS ${HINT_PATHS})
+#        mark_as_advanced(BULLET_INCLUDE_DYNAMICS_DIR)
 
-        find_path(BULLET_INCLUDE_SOFTBODY_DIR BulletSoftBody/btSoftBody.h)
-        mark_as_advanced(BULLET_INCLUDE_SOFTBODY_DIR)
-endif(OSX)
+#        find_path(BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR ConvexDecomposition/ConvexDecomposition.h)
+#        mark_as_advanced(BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR)
+
+#        find_path(BULLET_INCLUDE_SOFTBODY_DIR BulletSoftBody/btSoftBody.h)
+#        mark_as_advanced(BULLET_INCLUDE_SOFTBODY_DIR)
+#endif(OSX)
 
 set(BULLET_INCLUDE_DIRS
         ${BULLET_INCLUDE_DIR}
@@ -128,8 +128,8 @@ find_library(BULLET_LINEARMATH_LIBRARY LinearMath)
 mark_as_advanced(BULLET_LINEARMATH_LIBRARY)
 
 if(BULLET_INCLUDE_DIR AND NOT OSX)
-	set(BULLET_EXTRAS_INCLUDE_DIRS ${BULLET_INCLUDE_DIR}/../Extras)
-	set(BULLET_DEMOS_INCLUDE_DIRS ${BULLET_INCLUDE_DIR}/../Demos/OpenGL)
+        set(BULLET_EXTRAS_INCLUDE_DIRS ${BULLET_INCLUDE_DIR}/../Extras)
+        set(BULLET_DEMOS_INCLUDE_DIRS ${BULLET_INCLUDE_DIR}/../Demos/OpenGL)
 endif()
 
 set(BULLET_LIBRARIES
