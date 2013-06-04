@@ -2,7 +2,6 @@
 
 This source file is part of OGREBULLET
 (Object-oriented Graphics Rendering Engine Bullet Wrapper)
-For the latest info, see http://www.ogre3d.org/phpBB2addons/viewforum.php?f=10
 
 Copyright (c) 2007 tuan.kuranes@gmail.com (Use it Freely, even Statically, but have to contribute any changes)
 
@@ -236,7 +235,7 @@ Real VertexIndexToShape::getRadius()
 	if (mBoundRadius == (-1))
 	{
 		getSize();
-		mBoundRadius = (std::max(mBounds.x,std::max(mBounds.y,mBounds.z)) * 0.5);
+        mBoundRadius = (std::max(mBounds.x, std::max(mBounds.y, mBounds.z)) * 0.5);
 	}
 	return mBoundRadius;
 }
@@ -244,7 +243,7 @@ Real VertexIndexToShape::getRadius()
 Vector3 VertexIndexToShape::getSize()
 {
     const unsigned int vCount = getVertexCount();
-	if (mBounds == Ogre::Vector3(-1,-1,-1) && vCount > 0)
+    if (mBounds == Ogre::Vector3(-1, -1, -1) && vCount > 0)
 	{
         const Ogre::Vector3 *const v = getVertices();
 
@@ -313,11 +312,11 @@ ConvexHullCollisionShape *VertexIndexToShape::createConvex()
 	//new btConvexTriangleMeshShape();
 
 
-	Ogre::LogManager::getSingleton().logMessage(String("old numTriangles= %d\n") + Ogre::StringConverter::toString(mVertexCount / 3));
-	Ogre::LogManager::getSingleton().logMessage(String("old numIndices = %d\n") + Ogre::StringConverter::toString(mIndexCount));
-	Ogre::LogManager::getSingleton().logMessage(String("old numVertices = %d\n") + Ogre::StringConverter::toString(mVertexCount));
+    Ogre::LogManager::getSingleton().logMessage(String("Old numTriangles = ") + Ogre::StringConverter::toString(mVertexCount / 3));
+    Ogre::LogManager::getSingleton().logMessage(String("Old numIndices = ")   + Ogre::StringConverter::toString(mIndexCount));
+    Ogre::LogManager::getSingleton().logMessage(String("Old numVertices = ")  + Ogre::StringConverter::toString(mVertexCount));
 
-	Ogre::LogManager::getSingleton().logMessage(String("reducing vertices by creating a convex hull\n"));
+    Ogre::LogManager::getSingleton().logMessage(String("Reducing vertices by creating a convex hull"));
 
 	//create a hull approximation
     btShapeHull *hull = new btShapeHull(tmpConvexShape);
@@ -325,12 +324,12 @@ ConvexHullCollisionShape *VertexIndexToShape::createConvex()
 	hull->buildHull(margin);
 	tmpConvexShape->setUserPointer(hull);
 
-	Ogre::LogManager::getSingleton().logMessage(String("new numTriangles = %d\n") + Ogre::StringConverter::toString(hull->numTriangles ()));
-	Ogre::LogManager::getSingleton().logMessage(String("new numIndices = %d\n") + Ogre::StringConverter::toString(hull->numIndices ()));
-	Ogre::LogManager::getSingleton().logMessage(String("new numVertices = %d\n") + Ogre::StringConverter::toString(hull->numVertices ()));
+    Ogre::LogManager::getSingleton().logMessage(String("New numTriangles = ") + Ogre::StringConverter::toString(hull->numTriangles()));
+    Ogre::LogManager::getSingleton().logMessage(String("New numIndices = ")   + Ogre::StringConverter::toString(hull->numIndices()));
+    Ogre::LogManager::getSingleton().logMessage(String("New numVertices = ")  + Ogre::StringConverter::toString(hull->numVertices()));
 
     btConvexHullShape *convexShape = new btConvexHullShape();
-	for (unsigned int i=0;i<(unsigned int )hull->numVertices();i++)
+    for (unsigned int i = 0; i < (unsigned int)hull->numVertices(); ++i)
 	{
 		convexShape->addPoint(hull->getVertexPointer()[i]);	
 	}
@@ -370,8 +369,8 @@ public:
         mHullCount(0)
 		//, mOutputFile(outputFile)
     {
-			mCentroid = btVector3(0,0,0);
-            convexDecompositionObjectOffset = btVector3(10,0,0);
+            mCentroid = btVector3(0, 0 ,0);
+            convexDecompositionObjectOffset = btVector3(10, 0, 0);
     }
 
 	virtual void ConvexDecompResult(ConvexDecomposition::ConvexResult &result)
@@ -379,10 +378,11 @@ public:
         btTriangleMesh *trimesh = new btTriangleMesh();
 		//m_convexDemo->m_trimeshes.push_back(trimesh);
 
-		btVector3 localScaling(1.f,1.f,1.f);
+        btVector3 localScaling(1.0f, 1.0f, 1.0f);
 
 		//export data to .obj
-		printf("ConvexResult. ");
+
+        Ogre::LogManager::getSingleton().logMessage("ConvexResult. ");
 		//if (mOutputFile)
 		{
 			//fprintf(mOutputFile,"## Hull Piece %d with %d vertices and %d triangles.\r\n", mHullCount, result.mHullVcount, result.mHullTcount );
@@ -489,7 +489,7 @@ public:
 
 			//m_convexDemo->m_collisionShapes.push_back(convexShape);
 
-			mBaseCount+=result.mHullVcount; // advance the 'base index' counter.
+            mBaseCount += result.mHullVcount; // advance the 'base index' counter.
 		}
 	}
 
@@ -560,9 +560,7 @@ CompoundCollisionShape *VertexIndexToShape::createConvexDecomposition(unsigned i
 
     MyConvexDecomposition convexDecomposition;
 
-    desc.mCallback = (ConvexDecomposition::ConvexDecompInterface *)&convexDecomposition;
-
-
+    desc.mCallback = &convexDecomposition;
 
 	//convexDecomposition.performConvexDecomposition(desc);
 
@@ -570,7 +568,7 @@ CompoundCollisionShape *VertexIndexToShape::createConvexDecomposition(unsigned i
 	cb.process(desc);
 	//now create some bodies
 
-    btCompoundShape *compound = new btCompoundShape();
+    btCompoundShape *compound = new btCompoundShape;
 
 	//m_collisionShapes.push_back (compound);
 
@@ -674,7 +672,10 @@ void StaticMeshToShapeConverter::addEntity(Entity *entity, const Matrix4 &transf
     mBoundRadius = -1.0f;
 
 	mEntity = entity;
-	mNode = (SceneNode*)(mEntity->getParentNode());
+    if (!mEntity->isParentTagPoint())
+    {
+        mNode = mEntity->getParentSceneNode();
+    }
 	mTransform = transform;
 
 	if (mEntity->getMesh()->sharedVertexData)
@@ -712,7 +713,7 @@ void StaticMeshToShapeConverter::addMesh(const MeshPtr &mesh, const Matrix4 &tra
 
     if (mesh->hasSkeleton())
     {
-		Ogre::LogManager::getSingleton().logMessage("MeshToShapeConverter::addMesh : Mesh " + mesh->getName () + " as skeleton but added to trimesh non animated");
+        Ogre::LogManager::getSingleton().logMessage("MeshToShapeConverter::addMesh : Mesh " + mesh->getName() + " as skeleton but added to trimesh non animated");
     }
 
 	if (mesh->sharedVertexData)
@@ -720,7 +721,7 @@ void StaticMeshToShapeConverter::addMesh(const MeshPtr &mesh, const Matrix4 &tra
 		VertexIndexToShape::addStaticVertexData (mesh->sharedVertexData);
 	}
 
-    for(unsigned int i = 0; i < mesh->getNumSubMeshes(); ++i)
+    for (unsigned int i = 0; i < mesh->getNumSubMeshes(); ++i)
 	{
 		SubMesh *sub_mesh = mesh->getSubMesh(i);
 
@@ -769,7 +770,10 @@ void AnimatedMeshToShapeConverter::addEntity(Entity *entity, const Matrix4 &tran
     mBoundRadius = -1.0f;
 
 	mEntity = entity;
-	mNode = (SceneNode*)(mEntity->getParentNode());
+    if (!mEntity->isParentTagPoint())
+    {
+        mNode = mEntity->getParentSceneNode();
+    }
 	mTransform = transform;
 
     assert(entity->getMesh()->hasSkeleton());
@@ -780,11 +784,11 @@ void AnimatedMeshToShapeConverter::addEntity(Entity *entity, const Matrix4 &tran
 	if (mEntity->getMesh()->sharedVertexData)
 	{
         VertexIndexToShape::addAnimatedVertexData(mEntity->getMesh()->sharedVertexData,
-			mEntity->_getSkelAnimVertexData(),
-			&mEntity->getMesh()->sharedBlendIndexToBoneIndexMap); 
+                                                  mEntity->_getSkelAnimVertexData(),
+                                                  &mEntity->getMesh()->sharedBlendIndexToBoneIndexMap);
 	}
 
-	for (unsigned int i = 0;i < mEntity->getNumSubEntities();++i)
+    for (unsigned int i = 0; i < mEntity->getNumSubEntities(); ++i)
 	{
 		SubMesh *sub_mesh = mEntity->getSubEntity(i)->getSubMesh();
 
@@ -792,13 +796,13 @@ void AnimatedMeshToShapeConverter::addEntity(Entity *entity, const Matrix4 &tran
 		{
 			VertexIndexToShape::addIndexData(sub_mesh->indexData, mVertexCount);
 
-			VertexIndexToShape::addAnimatedVertexData (sub_mesh->vertexData, 
-				mEntity->getSubEntity(i)->_getSkelAnimVertexData(),
-				&sub_mesh->blendIndexToBoneIndexMap); 
+            VertexIndexToShape::addAnimatedVertexData(sub_mesh->vertexData,
+                                                      mEntity->getSubEntity(i)->_getSkelAnimVertexData(),
+                                                      &sub_mesh->blendIndexToBoneIndexMap);
 		}
 		else 
 		{
-			VertexIndexToShape::addIndexData (sub_mesh->indexData);
+            VertexIndexToShape::addIndexData(sub_mesh->indexData);
 		}
 
 	}
@@ -826,7 +830,7 @@ void AnimatedMeshToShapeConverter::addMesh(const MeshPtr &mesh, const Matrix4 &t
                                                   &mesh->sharedBlendIndexToBoneIndexMap);
 	}
 
-    for(unsigned int i = 0; i < mesh->getNumSubMeshes(); ++i)
+    for (unsigned int i = 0; i < mesh->getNumSubMeshes(); ++i)
 	{
 		SubMesh *sub_mesh = mesh->getSubMesh(i);
 
@@ -858,12 +862,14 @@ bool AnimatedMeshToShapeConverter::getBoneVertices(unsigned char bone,
 		return false;
     }
 
-    if (i->second->empty())
+    Vector3Array *array = i->second;
+    const Vector3Array::size_type size = array->size();
+    if (size == 0)
     {
 		return false;
     }
 
-	vertex_count = (unsigned int) i->second->size() + 1;
+    vertex_count = size + 1;
 	if (vertex_count > mTransformedVerticesTempSize)
 	{	
 		if (mTransformedVerticesTemp)
@@ -882,8 +888,8 @@ bool AnimatedMeshToShapeConverter::getBoneVertices(unsigned char bone,
 
 	//mEntity->getSkeleton()->getBone(bone)->_getDerivedOrientation()
 	unsigned int currBoneVertex = 1;
-	Vector3Array::iterator j = i->second->begin();
-	while(j != i->second->end())
+    Vector3Array::iterator j = array->begin();
+    while (j != array->end())
 	{
 		vertices[currBoneVertex] = (*j);
 		++j;
@@ -909,13 +915,13 @@ BoxCollisionShape *AnimatedMeshToShapeConverter::createAlignedBox(unsigned char 
 
     for (unsigned int j = 1; j < vertex_count; ++j)
 	{
-		min_vec.x = std::min(min_vec.x,vertices[j].x);
-		min_vec.y = std::min(min_vec.y,vertices[j].y);
-		min_vec.z = std::min(min_vec.z,vertices[j].z);
+        min_vec.x = std::min(min_vec.x, vertices[j].x);
+        min_vec.y = std::min(min_vec.y, vertices[j].y);
+        min_vec.z = std::min(min_vec.z, vertices[j].z);
 
-		max_vec.x = std::max(max_vec.x,vertices[j].x);
-		max_vec.y = std::max(max_vec.y,vertices[j].y);
-		max_vec.z = std::max(max_vec.z,vertices[j].z);
+        max_vec.x = std::max(max_vec.x, vertices[j].x);
+        max_vec.y = std::max(max_vec.y, vertices[j].y);
+        max_vec.z = std::max(max_vec.z, vertices[j].z);
 	}
 
 	const Ogre::Vector3 maxMinusMin(max_vec - min_vec);
@@ -1055,7 +1061,7 @@ CapsuleCollisionShape *AnimatedMeshToShapeConverter::createOrientedCapsuleCollis
 	Ogre::Vector3 box_afExtent;
 	Ogre::Vector3 box_afCenter;
 
-	if (!getOrientedBox(bone,  bonePosition, boneOrientation,
+    if (!getOrientedBox(bone, bonePosition, boneOrientation,
 						box_afExtent,
 						box_akAxis,
 						box_afCenter))

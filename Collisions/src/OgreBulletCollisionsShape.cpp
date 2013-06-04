@@ -2,10 +2,9 @@
 
 This source file is part of OGREBULLET
 (Object-oriented Graphics Rendering Engine Bullet Wrapper)
-For the latest info, see http://www.ogre3d.org/phpBB2addons/viewforum.php?f=10
 
 Copyright (c) 2007 tuan.kuranes@gmail.com (Use it Freely, even Statically, but have to contribute any changes)
-
+Copyright (c) 2013 alexey.knyshev@gmail.com
 
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -36,6 +35,11 @@ THE SOFTWARE.
 
 using namespace Ogre;
 using namespace OgreBulletCollisions;
+
+inline static Vector3 getVertex(const btVector3 &vec, const btTransform &transform, const btConvexShape *convex)
+{
+    return BtOgreConverter::to(transform * convex->localGetSupportingVertex(vec));
+}
 
 namespace OgreBulletCollisions
 {
@@ -68,16 +72,17 @@ namespace OgreBulletCollisions
 
         if (0 && mShape->getShapeType() <= CUSTOM_POLYHEDRAL_SHAPE_TYPE)
 		{
-            const btPolyhedralConvexShape * const polyshape = static_cast <btPolyhedralConvexShape *>(mShape);
+            const btPolyhedralConvexShape * const polyshape = static_cast<btPolyhedralConvexShape *>(mShape);
 
 			const bool hasVecTransform = (pos != Vector3::ZERO);
 			const bool hasQuatTransform = (quat != Quaternion::IDENTITY);
 			const bool hasTransform = (hasVecTransform) || (hasQuatTransform);
 
-            btTransform trans(OgreBulletCollisions::OgreBtConverter::to(quat), OgreBulletCollisions::OgreBtConverter::to(pos));
-			int i;
-			btVector3 a,b;
-			for (i=0;i<polyshape->getNumEdges();i++)
+            const btTransform trans(OgreBulletCollisions::OgreBtConverter::to(quat),
+                                    OgreBulletCollisions::OgreBtConverter::to(pos));
+
+            btVector3 a, b;
+            for (int i = 0; i < polyshape->getNumEdges(); ++i)
 			{
 				polyshape->getEdge(i, a, b);
 
@@ -85,12 +90,10 @@ namespace OgreBulletCollisions
 				{
 					a = trans * a;
 					b = trans * b;
-				}
+                }
 
-				 wire->addLine(
-					OgreBulletCollisions::BtOgreConverter::to(a), 
-					OgreBulletCollisions::BtOgreConverter::to(b)
-					);
+                wire->addLine(OgreBulletCollisions::BtOgreConverter::to(a),
+                              OgreBulletCollisions::BtOgreConverter::to(b));
 
 			}
 		}
@@ -98,80 +101,99 @@ namespace OgreBulletCollisions
 		{
 			Vector3 lastVec;
 			bool sideBeginning;
-            const btConvexShape * const s = static_cast <btConvexShape *>(mShape);
+            const btConvexShape * const s = static_cast<btConvexShape *>(mShape);
 
-            btTransform trans( OgreBulletCollisions::OgreBtConverter::to(quat), OgreBulletCollisions::OgreBtConverter::to(pos));
+            const btTransform trans(OgreBulletCollisions::OgreBtConverter::to(quat),
+                                    OgreBulletCollisions::OgreBtConverter::to(pos));
 
-	#define getVertex(X,Y,Z) BtOgreConverter::to(trans * s->localGetSupportingVertex (btVector3(X,Y,Z)))
+//#define getVertex(X,Y,Z) BtOgreConverter::to(trans * s->localGetSupportingVertex (btVector3(X,Y,Z)))
 
 			Vector3 curVec;
 			size_t i = 0;
 			const int subDivisionCount = 1;
 			const float subDivide = 1.0f / subDivisionCount;
-			for (int x = -subDivisionCount; x <= subDivisionCount; x++)
+            for (int x = -subDivisionCount; x <= subDivisionCount; ++x)
 			{
-				for (int y = -subDivisionCount; y <= subDivisionCount; y++)
+                for (int y = -subDivisionCount; y <= subDivisionCount; ++y)
 				{
 					sideBeginning = true;
-					for (int z = -subDivisionCount; z <= subDivisionCount; z++)
+                    for (int z = -subDivisionCount; z <= subDivisionCount; ++z)
 					{
-						curVec = getVertex(x*subDivide, y*subDivide, z*subDivide);
+//                        curVec = getVertex(x * subDivide, y * subDivide, z * subDivide);
+                        curVec = getVertex(btVector3(x * subDivide, y * subDivide, z * subDivide),
+                                           trans, s);
 
 						if (sideBeginning)
+                        {
 							sideBeginning = false;
+                        }
 						else
+                        {
 							wire->addLine (lastVec, curVec);
+                        }
+
 						lastVec = curVec;
 
-						i++;
+                        ++i;
 					}
 				}
 			}
 
 
-			for (int x = -subDivisionCount; x <= subDivisionCount; x++)
+            for (int x = -subDivisionCount; x <= subDivisionCount; ++x)
 			{
-				for (int z = -subDivisionCount; z <= subDivisionCount; z++)
+                for (int z = -subDivisionCount; z <= subDivisionCount; ++z)
 				{
 					sideBeginning = true;
-					for (int y = -subDivisionCount; y <= subDivisionCount; y++)
+                    for (int y = -subDivisionCount; y <= subDivisionCount; ++y)
 					{
-						curVec = getVertex(x*subDivide, y*subDivide, z*subDivide);
+                        curVec = getVertex(btVector3(x * subDivide, y * subDivide, z * subDivide),
+                                           trans, s);
 
 						if (sideBeginning)
+                        {
 							sideBeginning = false;
+                        }
 						else
+                        {
 							wire->addLine (lastVec, curVec);
+                        }
+
 						lastVec = curVec;
 
-						i++;
+                        ++i;
 					}
 				}
 			}
 
 
-
-			for (int z = -subDivisionCount; z <= subDivisionCount; z++)
+            for (int z = -subDivisionCount; z <= subDivisionCount; ++z)
 			{
-				for (int y = -subDivisionCount; y <= subDivisionCount; y++)
+                for (int y = -subDivisionCount; y <= subDivisionCount; ++y)
 				{
 					sideBeginning = true;
-					for (int x = -subDivisionCount; x <= subDivisionCount; x++)
+                    for (int x = -subDivisionCount; x <= subDivisionCount; ++x)
 					{
-						curVec = getVertex(x*subDivide, y*subDivide, z*subDivide);
+                        curVec = getVertex(btVector3(x * subDivide, y * subDivide, z * subDivide),
+                                           trans, s);
 						
 
 						if (sideBeginning)
+                        {
 							sideBeginning = false;
+                        }
 						else
+                        {
 							wire->addLine (lastVec, curVec);
+                        }
+
 						lastVec = curVec;
 
-						i++;
+                        ++i;
 					}
 				}
 			}
-	#undef getVertex
+//#undef getVertex
 		}
         return true;
     }

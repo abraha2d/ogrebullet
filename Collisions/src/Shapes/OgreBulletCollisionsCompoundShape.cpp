@@ -2,7 +2,6 @@
 
 This source file is part of OGREBULLET
 (Object-oriented Graphics Rendering Engine Bullet Wrapper)
-For the latest info, see http://www.ogre3d.org/phpBB2addons/viewforum.php?f=10
 
 Copyright (c) 2007 tuan.kuranes@gmail.com (Use it Freely, even Statically, but have to contribute any changes)
 
@@ -79,7 +78,9 @@ namespace OgreBulletCollisions
     {
     }
     // -------------------------------------------------------------------------
-    void CompoundCollisionShape::addChildShape(CollisionShape *shape, const Vector3 &pos, const Quaternion &quat)
+    void CompoundCollisionShape::addChildShape(CollisionShape *shape,
+                                               const Vector3 &pos,
+                                               const Quaternion &quat)
     {
         btTransform localTrans;
         
@@ -93,9 +94,9 @@ namespace OgreBulletCollisions
         mShapes.push_back(shape);
     }
     // -------------------------------------------------------------------------
-    bool CompoundCollisionShape::drawWireFrame(DebugLines *wire, 
-        const Ogre::Vector3 &pos, 
-        const Ogre::Quaternion &quat) const
+    bool CompoundCollisionShape::drawWireFrame(DebugLines *wire,
+                                               const Ogre::Vector3 &pos,
+                                               const Ogre::Quaternion &quat) const
     {
         bool isVisual = false;
 
@@ -119,7 +120,7 @@ namespace OgreBulletCollisions
             const btTransform &localTrans = myBtCompoundShape->getChildTransform(i);
 
             const Vector3 pos(BtOgreConverter::to(localTrans.getOrigin()));
-            const Quaternion quat( BtOgreConverter::to(localTrans.getRotation()));
+            const Quaternion quat(BtOgreConverter::to(localTrans.getRotation()));
 
             if ((*itShape)->drawWireFrame(wire, pos, quat))
             {
