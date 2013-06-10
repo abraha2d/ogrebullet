@@ -13,131 +13,106 @@ This source file is not LGPL, it's public source code that you can reuse.
 #include "OgreBulletApplication.h"
 #include "OgreBulletListener.h"
 
-
 #include "OgreResourceGroupManager.h"
 
 using namespace Ogre;
 
-#if !(OGRE_VERSION <  ((1 << 16) | (3 << 8) | 0))
-    using namespace OIS;
-#endif //OGRE_VERSION not Eihort
+using namespace OIS;
 
 using namespace OgreBulletDynamics;
 using namespace OgreBulletCollisions;
-//using namespace OgreBulletLoader;
 
 // -------------------------------------------------------------------------
-OgreBulletApplication::OgreBulletApplication(std::vector <OgreBulletListener *> *bulletListeners) : 
-    ExampleApplication(),
-    FrameListener(),
-    mInputSystem(0),
-    mInput(0),
-    mBulletListener(0)
+OgreBulletApplication::OgreBulletApplication(std::vector<OgreBulletListener *> *bulletListeners)
+    : mRoot(NULL),
+      mWindow(NULL),
+      mInputSystem(NULL),
+      mKeyboard(NULL),
+      mMouse(NULL),
+      mBulletListener(NULL),
+      mBulletListeners(bulletListeners)
 {
-    mBulletListeners = bulletListeners;
-    assert (!mBulletListeners->empty());
+    assert(!mBulletListeners->empty());
+
+    mRoot = new Ogre::Root;
 }
 // -------------------------------------------------------------------------
 OgreBulletApplication::~OgreBulletApplication()
 { 
-    if (mInputSystem || mInput)
-    {
-        #if (OGRE_VERSION <  ((1 << 16) | (3 << 8) | 0))
-       
-            delete mInputSystem;
-        #else
-           
-            mInputSystem->destroyInputObject(mInput);
-            mInputSystem->destroyInputObject(mMouse);
-            InputManager::destroyInputSystem(mInputSystem);
-        #endif //OGRE_VERSION not Eihort
+    if (mInputSystem || mKeyboard)
+    {      
+        mInputSystem->destroyInputObject(mKeyboard);
+        mInputSystem->destroyInputObject(mMouse);
+        InputManager::destroyInputSystem(mInputSystem);
     }
+
+    mWindow->destroy();
+    delete mWindow;
+    mWindow = NULL;
+
+    delete mRoot;
+    mRoot = NULL;
 }
 // -------------------------------------------------------------------------
 bool OgreBulletApplication::switchListener(OgreBulletListener *newListener)
 {
-
-#if (OGRE_VERSION <  ((1 << 16) | (3 << 8) | 0))
-
     if (mBulletListener)
     {
-        mInputSystem->removeMouseMotionListener(mBulletListener->getInputListener());
-        mInputSystem->removeMouseListener(mBulletListener->getInputListener());
-        mInputSystem->removeKeyListener(mBulletListener->getInputListener());
-        mBulletListener->shutdown ();
+        mKeyboard->setEventCallback(NULL);
+        mMouse->setEventCallback(NULL);
+        mBulletListener->shutdown();
     }
 
-    newListener->init (mRoot, mWindow);
-
-    mInputSystem->addMouseMotionListener(newListener->getInputListener());
-    mInputSystem->addMouseListener(newListener->getInputListener());   
-    mInputSystem->addKeyListener(newListener->getInputListener());             
-
-#else
-
-    if (mBulletListener)
-    {
-        mInput->setEventCallback (0);
-        mMouse->setEventCallback (0);
-        mBulletListener->shutdown ();
-    }
-
-    newListener->init (mRoot, mWindow, this);
-    mInput->setEventCallback (newListener->getInputListener());
-    mMouse->setEventCallback (newListener->getInputListener());
-
-#endif //OGRE_VERSION not Eihort
+    newListener->init(Ogre::Root::getSingletonPtr(), mWindow, this);
+    mKeyboard->setEventCallback(newListener->getInputListener());
+    mMouse->setEventCallback(newListener->getInputListener());
 
     mBulletListener = newListener;
 
     return true;
 }
 // -------------------------------------------------------------------------
-bool OgreBulletApplication::frameStarted(const FrameEvent& evt)
+bool OgreBulletApplication::frameStarted(const Ogre::FrameEvent &evt)
 {
+    mMouse->capture();
+    mKeyboard->capture();
 
-#if !(OGRE_VERSION <  ((1 << 16) | (3 << 8) | 0))
-        mMouse->capture();
-        mInput->capture();
-#else
-    mInput->capture();
-#endif 
-
-    std::vector <OgreBulletListener *>::iterator it =  mBulletListeners->begin();
-    while (it != mBulletListeners->end())
+    std::vector<OgreBulletListener *>::iterator it = mBulletListeners->begin();
+    const std::vector<OgreBulletListener *>::iterator end = mBulletListeners->end();
+    for (; it != end; ++it)
     {
-        if ((*(*it)->getBoolActivator()) == true ||
-            mInput->isKeyDown ((*it)->getNextKey ()))
+        OgreBulletListener *listener = *it;
+        if (*(listener->getBoolActivator()) == true ||
+            mKeyboard->isKeyDown(listener->getNextKey()))
         {
             //if ((*it) !=  mBulletListener)
             {
-                switchListener(*it);
+                switchListener(listener);
             }
             break;
         }
         ++it;
     }	
 
-    assert (mBulletListener);
+    assert(mBulletListener);
 
     if (!mBulletListener->frameStarted(evt.timeSinceLastFrame))
     {
-        mBulletListener->shutdown ();
+        mBulletListener->shutdown();
         return false;
     }
     return true;
 }
 
 // -------------------------------------------------------------------------
-bool OgreBulletApplication::frameEnded(const FrameEvent& evt)
+bool OgreBulletApplication::frameEnded(const Ogre::FrameEvent &evt)
 {
-    assert (mBulletListener);
+    assert(mBulletListener);
     // we're running a scene, tell it that a frame's started 
-    ;
 
     if (!mBulletListener->frameEnded(evt.timeSinceLastFrame))
     {
-        mBulletListener->shutdown ();
+        mBulletListener->shutdown();
         return false;
     }
     return true; 
@@ -146,20 +121,7 @@ bool OgreBulletApplication::frameEnded(const FrameEvent& evt)
 // -------------------------------------------------------------------------
 void OgreBulletApplication::createFrameListener(void)
 {
-    mFrameListener = 0;
-
-#if (OGRE_VERSION <  ((1 << 16) | (3 << 8) | 0))
-
-    mInput = PlatformManager::getSingleton().createInputReader();
-    //mInput->initialise(mWindow, false, false);
-
-    mInputSystem = new EventProcessor();
-    mInputSystem->initialise (mWindow);
-    mInputSystem->startProcessingEvents();
-    mInput = mInputSystem->getInputReader();
-
-
-#else
+//    mFrameListener = 0;
 
     size_t windowHnd = 0;
     std::ostringstream windowHndStr;
@@ -168,23 +130,23 @@ void OgreBulletApplication::createFrameListener(void)
     #if defined OIS_WIN32_PLATFORM
         mWindow->getCustomAttribute("WINDOW", &windowHnd);
     #elif defined OIS_LINUX_PLATFORM
-        //mWindow->getCustomAttribute( "GLXWINDOW", &windowHnd );
-		mWindow->getCustomAttribute( "WINDOW", &windowHnd );
+        //mWindow->getCustomAttribute("GLXWINDOW", &windowHnd);
+        mWindow->getCustomAttribute("WINDOW", &windowHnd);
     #endif    
 
     // Fill parameter list
     windowHndStr << (unsigned int) windowHnd;
-    pl.insert( std::make_pair( std::string( "WINDOW" ), windowHndStr.str() ) );
+    pl.insert(std::make_pair(std::string("WINDOW"), windowHndStr.str()));
 
     // Uncomment these two lines to allow users to switch keyboards via the language bar
     //paramList.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_FOREGROUND") ));
     //paramList.insert(std::make_pair(std::string("w32_keyboard"), std::string("DISCL_NONEXCLUSIVE") ));
 
-    mInputSystem  = InputManager::createInputSystem( pl );
+    mInputSystem  = InputManager::createInputSystem(pl);
 
     //Create all devices (We only catch joystick exceptions here, as, most people have Key/Mouse)
-    mInput = static_cast<Keyboard*>(mInputSystem->createInputObject( OISKeyboard, true ));
-    mMouse = static_cast<Mouse*>(mInputSystem->createInputObject( OISMouse, true ));
+    mKeyboard = static_cast<Keyboard *>(mInputSystem->createInputObject(OISKeyboard, true));
+    mMouse = static_cast<Mouse *>(mInputSystem->createInputObject(OISMouse, true));
 
     unsigned int width, height, depth;
     int left, top;
@@ -194,24 +156,21 @@ void OgreBulletApplication::createFrameListener(void)
     ms.width = width;
     ms.height = height;
 
-#endif //OGRE_VERSION not Eihort
-
-    switchListener (*(mBulletListeners->begin()));
+    switchListener(*(mBulletListeners->begin()));
     mRoot->addFrameListener(this);
 
 }
 // -------------------------------------------------------------------------
 void OgreBulletApplication::setupResources(void)
 {
-	ExampleApplication::setupResources(); 
 	ResourceGroupManager *rsm = ResourceGroupManager::getSingletonPtr();
 	StringVector groups = rsm->getResourceGroups();        
 	FileInfoListPtr finfo =  ResourceGroupManager::getSingleton().findResourceFileInfo (
 		"Bootstrap", "axes.mesh");
-	const bool isSDK =  (!finfo->empty()) && 
+    const bool isSDK = (!finfo->empty()) &&
 		StringUtil::startsWith (finfo->begin()->archive->getName(), "../../media/packs/ogrecore.zip", true);
 
-	const String resName ("OgreBullet");
+    const String resName("OgreBullet");
 	{
 		if (std::find(groups.begin(), groups.end(), resName) == groups.end())
 		{
@@ -226,13 +185,13 @@ void OgreBulletApplication::setupResources(void)
 				baseName = "../../../../../ogreaddons/ogrebullet/";
 			}
 
-			rsm->addResourceLocation (baseName + "demos/Media","FileSystem", resName);
-			rsm->addResourceLocation (baseName + "demos/Media/textures", "FileSystem", resName);
-			rsm->addResourceLocation (baseName + "demos/Media/overlays", "FileSystem", resName);
-			rsm->addResourceLocation (baseName + "demos/Media/materials", "FileSystem", resName);
-			rsm->addResourceLocation (baseName + "demos/Media/models", "FileSystem", resName);
+            rsm->addResourceLocation(baseName + "demos/Media","FileSystem", resName);
+            rsm->addResourceLocation(baseName + "demos/Media/textures", "FileSystem", resName);
+            rsm->addResourceLocation(baseName + "demos/Media/overlays", "FileSystem", resName);
+            rsm->addResourceLocation(baseName + "demos/Media/materials", "FileSystem", resName);
+            rsm->addResourceLocation(baseName + "demos/Media/models", "FileSystem", resName);
 
-			rsm->addResourceLocation (baseName + "demos/Media/gui", "FileSystem", resName);
+            rsm->addResourceLocation(baseName + "demos/Media/gui", "FileSystem", resName);
 		}
 	}
 }

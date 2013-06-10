@@ -46,14 +46,14 @@ This source file is not LGPL, it's public source code that you can reuse.
 #include "OgreBulletDynamicsConstraint.h"
 #include "Constraints/OgreBulletDynamicsPoint2pointConstraint.h" 
 
+#include <Gui3D/Gui3D.h>
+#include <Gui3D/Gui3DCaption.h>
+#include <Gui3D/Gui3DPanel.h>
+
 using namespace Ogre;
 using namespace OgreBulletCollisions;
 using namespace OgreBulletDynamics;
-//using namespace OgreBulletLoader;
-
-#if !(OGRE_VERSION <  ((1 << 16) | (3 << 8) | 0))
 using namespace OIS;
-#endif //OGRE_VERSION not Eihort
 
 size_t OgreBulletListener::mNumEntitiesInstanced = 0;
 
@@ -98,55 +98,60 @@ int convertShadowTechniqueToInt(Ogre::ShadowTechnique i)
 	}
 }
 // -------------------------------------------------------------------------
-const Ogre::ColourValue g_minLightColour(0.2, 0.1, 0.0);
-const Ogre::ColourValue g_maxLightColour(0.5, 0.3, 0.1);
+static const Ogre::ColourValue g_minLightColour(0.2, 0.1, 0.0);
+static const Ogre::ColourValue g_maxLightColour(0.5, 0.3, 0.1);
 // -------------------------------------------------------------------------
 
-const float      gStaticBodyRestitution  = 0.1f;
-const float      gStaticBodyFriction     = 0.8f;
+static const float gStaticBodyRestitution  = 0.1f;
+static const float gStaticBodyFriction     = 0.8f;
 
-const float      gDynamicBodyRestitution = 0.6f;
-const float      gDynamicBodyFriction    = 0.6f;
-const float      gDynamicBodyMass        = 1.0f;
+static const float gDynamicBodyRestitution = 0.6f;
+static const float gDynamicBodyFriction    = 0.6f;
+static const float gDynamicBodyMass        = 1.0f;
 
-const Ogre::Vector3    gCubeBodyBounds      = Ogre::Vector3 (1, 1, 1);
-const Ogre::Vector3    gCylinderBodyBounds  = Ogre::Vector3 (0.5, 1, 0.5); 
-const Ogre::Vector3    gConeBodyBounds      = Ogre::Vector3 (1, 1, 1);
-const Real       gSphereBodyBounds    = 1.0f;
-// -------------------------------------------------------------------------
-OgreBulletListener::OgreBulletListener() :    
-mCameraMove (0.1f),
-mCameraTrans (Ogre::Vector3::ZERO),
-mCamera(0),
-mRoot(0),
-mSceneMgr(0),
-mWindow(0),
-mWorld(0),
-mStatsOn (true),
-mPaused (false),
-mShootSpeed (7.f),
-mImpulseForce (10.f),
-mDebugRayLine(0),
-mRayQuery(0),
-mInputListener(0),
-mGuiListener(0),
-mPickConstraint(0),
-mCollisionClosestRayResultCallback(0)
+static const Ogre::Vector3 gCubeBodyBounds      = Ogre::Vector3(1, 1, 1);
+static const Ogre::Vector3 gCylinderBodyBounds  = Ogre::Vector3(0.5, 1, 0.5);
+static const Ogre::Vector3 gConeBodyBounds      = Ogre::Vector3(1, 1, 1);
+static const Ogre::Real gSphereBodyBounds = 1.0f;
+
+
+OgreBulletListener::OgreBulletListener()
+    : mCameraMove(0.1f),
+      mCameraTrans(Ogre::Vector3::ZERO),
+      mCamera(NULL),
+      mRoot(NULL),
+      mSceneMgr(NULL),
+      mWindow(NULL),
+      mWorld(NULL),
+      mStatsOn(true),
+      mPaused(false),
+      mShootSpeed(7.0f),
+      mImpulseForce (10.0f),
+      mDebugRayLine(NULL),
+      mRayQuery(NULL),
+      mInputListener(NULL),
+      mGuiListener(NULL),
+      mPickConstraint(NULL),
+      mCollisionClosestRayResultCallback(NULL)
 {
 
 
 }
 // -------------------------------------------------------------------------
-void OgreBulletListener::init(Ogre::Root *root, Ogre::RenderWindow *win, OgreBulletApplication *application)
+void OgreBulletListener::init(Ogre::Root *root,
+                              Ogre::RenderWindow *window,
+                              OgreBulletApplication *application)
 {
     mRoot = root;
-    mWindow = win;
+    mWindow = window;
     mApplication = application;
     mCameraTrans = Ogre::Vector3::ZERO;
 
-    mGuiListener = new OgreBulletGuiListener(this, win);
+    mGuiListener = new OgreBulletGuiListener(this,
+                                             window->getViewportByZOrder(0),
+                                             "");
 
-    mInputListener = new OgreBulletInputListener(this, win);
+    mInputListener = new OgreBulletInputListener(this, window);
 
     /******************* CREATESHADOWS ***************************/
 #if 0
@@ -204,7 +209,7 @@ void OgreBulletListener::init(Ogre::Root *root, Ogre::RenderWindow *win, OgreBul
 
     /******************* CREATE Queries ***************************/
     mRayQuery = mSceneMgr->createRayQuery(Ray());
-    mRayQuery->setQueryMask (GEOMETRY_QUERY_MASK);
+    mRayQuery->setQueryMask(GEOMETRY_QUERY_MASK);
     mRayQuery->setQueryTypeMask(SceneManager::ENTITY_TYPE_MASK);
     MovableObject::setDefaultQueryFlags (ANY_QUERY_MASK);
 
@@ -213,7 +218,7 @@ void OgreBulletListener::init(Ogre::Root *root, Ogre::RenderWindow *win, OgreBul
     mPaused = false;
     mActivationBool = false;
 
-    mPickConstraint = 0;
+    mPickConstraint = NULL;
 
     mWireFrame = false;
     mDrawAabb = false;
@@ -255,7 +260,6 @@ void OgreBulletListener::setBasicLight()
 	mLight->setDiffuseColour(0.70, 0.70, 0.72);
 	mLight->setSpecularColour(0.1, 0.1, 0.3);
 
-
 	mLight2 = mSceneMgr->createLight("Spot2");
 	mLight2->setType(Light::LT_SPOTLIGHT);
 	mLight2->setPosition(-100.0, 80.5, 10.0);
@@ -265,113 +269,24 @@ void OgreBulletListener::setBasicLight()
 	mLight2->setDirection(dir);
 	mLight2->setDiffuseColour(0.72, 0.70, 0.70);
 	mLight2->setSpecularColour(0.3, 0.1, 0.1);
-
 }
 // -------------------------------------------------------------------------
 void OgreBulletListener::setPhysicGUI()
 {
-    BetaGUI::GUI *gui = mGuiListener->getGui();
-
-    BetaGUI::Window *menuWindow = gui->addMenuWindow(Vector2(mWindow->getWidth(), 24));
-    menuWindow->hide();
-
-
-    BetaGUI::Window *aWindow = menuWindow->addMenuWindowTab("Scene Choice");
-    {
-        std::vector<OgreBulletListener *> *sceneList = mApplication->getScenesList();
-        std::vector<OgreBulletListener *>::iterator itScenes = sceneList->begin();
-        for (;itScenes < sceneList->end(); ++itScenes)
-        {
-            if ((*itScenes) == this)
-                aWindow->addBoolButton((*itScenes)->getBoolActivator(), "reset " + (*itScenes)->getName(), BetaGUI::WPT_VERTICAL);
-            else
-                aWindow->addBoolButton((*itScenes)->getBoolActivator(), (*itScenes)->getName(), BetaGUI::WPT_VERTICAL);
-        }
-    }
-    aWindow->hide();
-
-
-    aWindow = menuWindow->addMenuWindowTab("Time", false, BetaGUI::WPT_NONE);
-    aWindow->addBoolButton(&mPaused, "Play/Pause", BetaGUI::WPT_HORIZONTAL);
-    aWindow->addBoolButton(&mDoOnestep, "Single Step", BetaGUI::WPT_HORIZONTAL);
-    aWindow->hide();
-
-    // appears and slide in
-    const Vector2 screenRightTop(mWindow->getWidth() - aWindow->getSize().x, 0);
-    const Vector2 screenRightOffTop(mWindow->getWidth() - aWindow->getSize().x, - aWindow->getSize().y);
-    gui->addEffect(new BetaGUI::MoveEffect(aWindow, 2, screenRightOffTop, screenRightTop, 0));
-    gui->addEffect(new BetaGUI::AlphaEffect(aWindow, 2, 0, 1, 0));
-
-    aWindow = menuWindow->addMenuWindowTab("Interaction");
-    aWindow->addRealButton(&mShootSpeed,
-        Vector4(0.1, 5.0, 0.0, 100.0),
-        "Shoot Speed:", BetaGUI::WPT_VERTICAL);
-    aWindow->addRealButton(&mImpulseForce,
-        Vector4(0.1, 5.0, 0.0, 100.0),
-        "Impulse Force:", BetaGUI::WPT_VERTICAL);
-    aWindow->hide();
-
-    aWindow = menuWindow->addMenuWindowTab("Debug");
-    aWindow->addBoolButton(&mWireFrame, "Draw Wireframe", BetaGUI::WPT_VERTICAL);
-    aWindow->addBoolButton(&mDrawAabb, "Draw Aabb", BetaGUI::WPT_VERTICAL);
-    aWindow->addBoolButton(&mDrawFeaturesText, "Draw Features Text", BetaGUI::WPT_VERTICAL);
-    aWindow->addBoolButton(&mDrawContactPoints, "Draw Contact Points", BetaGUI::WPT_VERTICAL);
-    aWindow->addBoolButton(&mNoDeactivation, "No Deactivation", BetaGUI::WPT_VERTICAL);
-    aWindow->addBoolButton(&mNoHelpText, "No Help Text", BetaGUI::WPT_VERTICAL);
-    aWindow->addBoolButton(&mDrawText, "Draw Text", BetaGUI::WPT_VERTICAL);
-    aWindow->addBoolButton(&mProfileTimings, "Profile Timings", BetaGUI::WPT_VERTICAL);
-    aWindow->addBoolButton(&mEnableSatComparison, "Enable Sat Comparison", BetaGUI::WPT_VERTICAL);
-    aWindow->addBoolButton(&mDisableBulletLCP, "Disable Bullet LCP", BetaGUI::WPT_VERTICAL);
-    aWindow->addBoolButton(&mEnableCCD, "Enable CCD", BetaGUI::WPT_VERTICAL);
-    aWindow->hide();
-
-    aWindow = menuWindow ->addMenuWindowTab("FPS", false, BetaGUI::WPT_NONE);
-    mFpsStaticText = aWindow->addStaticText("FPS Count", BetaGUI::WPT_VERTICAL);
-    aWindow->hide();
-    // appears and slide in
-    const Vector2 screenRightBottom(mWindow->getWidth() - 360, mWindow->getHeight() - 24);
-    const Vector2 screenRightOffBottom (mWindow->getWidth() - 360, mWindow->getHeight());
-    gui->addEffect(new BetaGUI::MoveEffect(aWindow, 2, screenRightOffBottom, screenRightBottom, 0));
-    gui->addEffect(new BetaGUI::AlphaEffect(aWindow, 2, 0, 1, 0));
-
-
-    aWindow = menuWindow->addMenuWindowTab("Help");
-    aWindow->addStaticText(mName + " Help Informations", BetaGUI::WPT_VERTICAL);
-
-    std::vector<String>::iterator keyIterator = mHelpKeys.begin();
-    for (;keyIterator < mHelpKeys.end(); ++keyIterator)
-    {
-        aWindow->addStaticText(*keyIterator, BetaGUI::WPT_VERTICAL); 
-    }
-
-    // appears and slide
-    const Vector2 halfWindowSize(aWindow->getSize().x / 2, aWindow->getSize().y / 2);
-    const Vector2 screenCentered((mWindow->getWidth() / 2) - halfWindowSize.x,
-        (mWindow->getHeight() / 2) - halfWindowSize.y);
-    gui->addEffect(new BetaGUI::MoveEffect(aWindow, 2, -halfWindowSize, screenCentered, 0));
-    gui->addEffect(new BetaGUI::AlphaEffect(aWindow, 2, 0, 1, 0));
-    // disappears
-    gui->addEffect(new BetaGUI::AlphaEffect(aWindow, 2, 1, 0, 3));
-
-    menuWindow->addBoolButton(&mQuit, "Quit", BetaGUI::WPT_HORIZONTAL);
-
-    // appears and slide in
-    const Vector2 screenLeftTop(- menuWindow->getSize().x, 0);
-    const Vector2 screenLeftOffTop(0, 0);
-    gui->addEffect(new BetaGUI::MoveEffect(menuWindow, 2, screenLeftTop, screenLeftOffTop, 0));
-    gui->addEffect(new BetaGUI::AlphaEffect(menuWindow, 2, 0, 1, 0));
+    Gui3D::Gui3D *gui = mGuiListener->getGui();
 }
 // -------------------------------------------------------------------------
 void OgreBulletListener::getDebugLines()
 {
-    if (mDebugRayLine == 0)
+    if (!mDebugRayLine)
     {
-        mDebugRayLine = new DebugLines();
-        mSceneMgr->getRootSceneNode ()->createChildSceneNode ()->attachObject (mDebugRayLine);
+        mDebugRayLine = new DebugLines;
+        mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(
+                    mDebugRayLine);
     }
 }
 // -------------------------------------------------------------------------
-void OgreBulletListener::shutdown ()
+void OgreBulletListener::shutdown()
 {
     delete mInputListener;
     delete mGuiListener;
@@ -385,35 +300,37 @@ void OgreBulletListener::shutdown ()
     }
 
     delete mWorld->getDebugDrawer();
-    mWorld->setDebugDrawer(0);
+    mWorld->setDebugDrawer(NULL);
     delete mWorld;
+    mWorld = NULL;
 
     // Ogre delete 
-    mSceneMgr->destroyQuery (mRayQuery);
+    mSceneMgr->destroyQuery(mRayQuery);
     std::deque<Ogre::Entity *>::iterator itEntity = mEntities.begin();
     while (mEntities.end() != itEntity)
     {
         SceneNode *node = static_cast<SceneNode*>((*itEntity)->getParentNode());
         node->detachObject(*itEntity);
         mSceneMgr->destroyEntity(*itEntity);
-        assert (node->getParent());
-        static_cast <SceneNode *> (node->getParent())->removeAndDestroyChild(node->getName());
+        assert(node->getParent());
+        static_cast<SceneNode *>(node->getParent())->removeAndDestroyChild(
+                    node->getName());
 
         ++itEntity;
     }
     mEntities.clear();
-    mSceneMgr->destroyCamera(mCamera->getName ());
+    mSceneMgr->destroyCamera(mCamera->getName());
     mWindow->removeViewport(0);
-    mRoot->destroySceneManager (mSceneMgr);
+    mRoot->destroySceneManager(mSceneMgr);
     delete mDebugRayLine;
 
-    mInputListener = 0;
-    mGuiListener = 0;
-    mRayQuery = 0;
-    mWorld = 0;
-    mCamera = 0;
-    mSceneMgr = 0;
-    mDebugRayLine = 0;
+    mInputListener = NULL;
+    mGuiListener = NULL;
+    mRayQuery = NULL;
+    mWorld = NULL;
+    mCamera = NULL;
+    mSceneMgr = NULL;
+    mDebugRayLine = NULL;
 
     mBodies.clear();
     mEntities.clear();
@@ -451,24 +368,26 @@ void OgreBulletListener::button0Pressed()
             mOldPickingDist  = (pickPos - eyePos).length();
 
             //very weak constraint for picking
-            p2p->setTau (0.1f);
+            p2p->setTau(0.1f);
             mPickConstraint = p2p;
 
 
         }
         getDebugLines();
-        mDebugRayLine->addLine (rayTo.getOrigin(), pickPos);
+        mDebugRayLine->addLine(rayTo.getOrigin(), pickPos);
         mDebugRayLine->draw();
     }
 
-    if (mGuiListener->getGui()->injectMouse(mInputListener->getAbsMouseX ()*mWindow->getWidth(), 
-        mInputListener->getAbsMouseY ()*mWindow->getHeight(), true))
+    if (mGuiListener->getMainPanel()->injectMousePressed( ->injectMouse(
+                mInputListener->getAbsMouseX () * mWindow->getWidth(),
+                mInputListener->getAbsMouseY() * mWindow->getHeight(),
+                true))
     {
-        mGuiListener->hideMouse();
+        mGuiListener->setMouseVisiable(false);
     }
     else
     {
-        mGuiListener->showMouse ();
+        mGuiListener->setMouseVisiable(true);
     }
 }
 // -------------------------------------------------------------------------
@@ -484,9 +403,7 @@ void OgreBulletListener::button1Pressed()
         //getBodyUnderCursorUsingOgre(pickPos, rayTo);
     if (body)
     {  
-        if (!(body->isStaticObject() 
-            || body->isKinematicObject()
-            ))
+        if (!(body->isStaticObject() || body->isKinematicObject()))
         {
             body->enableActiveState();
 
@@ -504,7 +421,7 @@ void OgreBulletListener::button1Pressed()
 // -------------------------------------------------------------------------
 void OgreBulletListener::button2Pressed()
 { 
-    mGuiListener->hideMouse();
+    mGuiListener->setMouseVisiable(false);
 }
 // -------------------------------------------------------------------------
 void OgreBulletListener::button0Released()
@@ -516,15 +433,15 @@ void OgreBulletListener::button0Released()
         mWorld->removeConstraint(mPickConstraint);
         delete mPickConstraint;
 
-        mPickConstraint = 0;
+        mPickConstraint = NULL;
         mPickedBody->forceActivationState();
-        mPickedBody->setDeactivationTime( 0.f );
-        mPickedBody = 0;	
+        mPickedBody->setDeactivationTime(0.0f);
+        mPickedBody = NULL;
 
         getDebugLines();
-        mDebugRayLine->addLine (Ogre::Vector3::ZERO, Ogre::Vector3::ZERO);	
+        mDebugRayLine->addLine(Ogre::Vector3::ZERO, Ogre::Vector3::ZERO);
         mDebugRayLine->draw();  
-        mGuiListener->showMouse(); 
+        mGuiListener->setMouseVisiable(true);
     }
 }
 // -------------------------------------------------------------------------
@@ -534,48 +451,56 @@ void OgreBulletListener::button1Released()
 // -------------------------------------------------------------------------
 void OgreBulletListener::button2Released()
 {
-    mGuiListener->showMouse();
+    mGuiListener->setMouseVisiable(true);
 }
 // -------------------------------------------------------------------------
 void OgreBulletListener::mouseMoved()
 {
-    mGuiListener->setMousePosition(mInputListener->getAbsMouseX(), mInputListener->getAbsMouseY());
+    mGuiListener->setMousePosition(mInputListener->getAbsMouseX(),
+                                   mInputListener->getAbsMouseY());
     if (mPickConstraint)
     {
         // dragging
         //add a point to point constraint for picking	
-        Ogre::Ray rayTo = mCamera->getCameraToViewportRay (mInputListener->getAbsMouseX(), mInputListener->getAbsMouseY());
-        //move the constraint pivot
-        OgreBulletDynamics::PointToPointConstraint * p2p = static_cast <OgreBulletDynamics::PointToPointConstraint *>(mPickConstraint);
-        //keep it at the same picking distance
+        Ogre::Ray rayTo = mCamera->getCameraToViewportRay(
+                    mInputListener->getAbsMouseX(),
+                    mInputListener->getAbsMouseY());
 
+        //move the constraint pivot
+        OgreBulletDynamics::PointToPointConstraint * p2p =
+                static_cast <OgreBulletDynamics::PointToPointConstraint *>
+                (mPickConstraint);
+
+        //keep it at the same picking distance
         const Ogre::Vector3 eyePos(mCamera->getDerivedPosition());
 
-        //Ogre::Vector3 dir = rayTo.getDirection () - eyePos;
+        //Ogre::Vector3 dir = rayTo.getDirection() - eyePos;
         //dir.normalise();
         //dir *= mOldPickingDist;
-        Ogre::Vector3 dir = rayTo.getDirection () * mOldPickingDist;
+        Ogre::Vector3 dir = rayTo.getDirection() * mOldPickingDist;
         dir.normalise();
 
-        const Ogre::Vector3 newPos (eyePos + dir);
-        p2p->setPivotB (newPos);    
+        const Ogre::Vector3 newPos(eyePos + dir);
+        p2p->setPivotB(newPos);
 
-        setDebugText ("Dragging");
+        setDebugText("Dragging");
 
         getDebugLines();
         mDebugRayLine->addLine(mPickedBody->getWorldPosition(), newPos);
         mDebugRayLine->draw();
-        mGuiListener->showMouse();
+        mGuiListener->setMouseVisiable(true);
     }
 
-    if (mGuiListener->getGui()->injectMouse(mInputListener->getAbsMouseX() * mWindow->getWidth(), 
-        mInputListener->getAbsMouseY() * mWindow->getHeight(), mInputListener->getButton0Pressed()))
+    if (mGuiListener-> ->injectMouse(
+                mInputListener->getAbsMouseX() * mWindow->getWidth(),
+                mInputListener->getAbsMouseY() * mWindow->getHeight(),
+                mInputListener->getButton0Pressed()))
     {
-        mGuiListener->hideMouse();
+        mGuiListener->setMouseVisiable(false);
     }
     else 
     {
-        mGuiListener->showMouse();
+        mGuiListener->setMouseVisiable(true);
     }
 
 
@@ -600,9 +525,10 @@ void OgreBulletListener::keyPressed(BULLET_KEY_CODE key)
         break;
 
     case KC_SYSRQ:
-        mWindow->writeContentsToFile("OgreBulletScreenShot" + StringConverter::toString(count++) + ".png");
+        mWindow->writeContentsToFile("OgreBulletScreenShot" +
+                                     StringConverter::toString(count++) +
+                                     ".png");
         break;
-
         // Scene Debug Options
 
     case KC_T:
@@ -707,16 +633,19 @@ void OgreBulletListener::keyReleased(BULLET_KEY_CODE key)
 // -------------------------------------------------------------------------
 const OgreBulletDynamics::RigidBody* OgreBulletListener::getBodyUnderCursorUsingBullet(Ogre::Vector3 &intersectionPoint, Ray &rayTo)
 {
-    rayTo = mCamera->getCameraToViewportRay(mInputListener->getAbsMouseX(), mInputListener->getAbsMouseY());
+    rayTo = mCamera->getCameraToViewportRay(mInputListener->getAbsMouseX(),
+                                            mInputListener->getAbsMouseY());
 
 	delete mCollisionClosestRayResultCallback;
-	mCollisionClosestRayResultCallback = new CollisionClosestRayResultCallback(rayTo, mWorld, mCamera->getFarClipDistance());
+    mCollisionClosestRayResultCallback = new CollisionClosestRayResultCallback(
+                rayTo, mWorld, mCamera->getFarClipDistance());
 
     mWorld->launchRay(*mCollisionClosestRayResultCallback);
     if (mCollisionClosestRayResultCallback->doesCollide())
     {
 	const OgreBulletDynamics::RigidBody *body =
-		static_cast<const OgreBulletDynamics::RigidBody *>(mCollisionClosestRayResultCallback->getCollidedObject());
+        static_cast<const OgreBulletDynamics::RigidBody *>(
+                mCollisionClosestRayResultCallback->getCollidedObject());
 		
 	intersectionPoint = mCollisionClosestRayResultCallback->getCollisionPoint();
         setDebugText("Hit :" + body->getName());
@@ -725,9 +654,11 @@ const OgreBulletDynamics::RigidBody* OgreBulletListener::getBodyUnderCursorUsing
     return 0;
 }
 // -------------------------------------------------------------------------
-OgreBulletDynamics::RigidBody* OgreBulletListener::getBodyUnderCursorUsingOgre(Ogre::Vector3 &intersectionPoint, Ray &rayTo)
+OgreBulletDynamics::RigidBody* OgreBulletListener::getBodyUnderCursorUsingOgre(
+        Ogre::Vector3 &intersectionPoint, Ray &rayTo)
 {
-    rayTo = mCamera->getCameraToViewportRay(mInputListener->getAbsMouseX(), mInputListener->getAbsMouseY());
+    rayTo = mCamera->getCameraToViewportRay(mInputListener->getAbsMouseX(),
+                                            mInputListener->getAbsMouseY());
 
     mRayQuery->setRay(rayTo);
     const RaySceneQueryResult& result = mRayQuery->execute();
@@ -738,22 +669,29 @@ OgreBulletDynamics::RigidBody* OgreBulletListener::getBodyUnderCursorUsingOgre(O
         mRayQuery->setSortByDistance (true, 1);//only one hit
         while((i != result.end()))
         {
-            SceneNode *node = i->movable->getParentSceneNode() ;
-#if (OGRE_VERSION >=  ((1 << 16) | (5 << 8) | 0)) // must have at least shoggoth (1.5.0)
-			intersectionPoint = node->_getDerivedPosition ();
+            SceneNode *node = i->movable->getParentSceneNode();
+
+// must have at least shoggoth (1.5.0)
+#if (OGRE_VERSION >=  ((1 << 16) | (5 << 8) | 0))
+            intersectionPoint = node->_getDerivedPosition();
 #else
 			intersectionPoint = node->getWorldPosition();
 #endif
             const unsigned short num = node->numAttachedObjects();
-            MovableObject* movable;
-            for (unsigned short cur = 0;cur < num; cur++)
+            MovableObject* movable = NULL;
+            for (unsigned short cur = 0; cur < num; ++cur)
             {
                 movable = node->getAttachedObject(cur);
-                if (movable->getMovableType() == OgreBulletCollisions::Object::mMovableType) 
+                if (movable->getMovableType() ==
+                        OgreBulletCollisions::Object::mMovableType)
                 {
-                    OgreBulletCollisions::Object *object = static_cast <OgreBulletCollisions::Object *>(movable);
-                    OgreBulletDynamics::RigidBody *body = static_cast <OgreBulletDynamics::RigidBody *>(object);
-                    setDebugText ("Hit :" + body->getName());
+                    OgreBulletCollisions::Object *object =
+                            static_cast<OgreBulletCollisions::Object *>(movable);
+
+                    OgreBulletDynamics::RigidBody *body =
+                            static_cast<OgreBulletDynamics::RigidBody *>(object);
+
+                    setDebugText("Hit :" + body->getName());
 
                     return body;
                 }
@@ -767,7 +705,9 @@ OgreBulletDynamics::RigidBody* OgreBulletListener::getBodyUnderCursorUsingOgre(O
 bool OgreBulletListener::frameStarted(Real elapsedTime)
 {
     if (mQuit)
+    {
         return false;
+    }
 
     if (mInputListener->getButton2Pressed())
     {
@@ -782,7 +722,9 @@ bool OgreBulletListener::frameStarted(Real elapsedTime)
 
     // update physics
     if (!mPaused || mDoOnestep)
+    {
         mWorld->stepSimulation(elapsedTime);
+    }
 
     mDoOnestep = false;
 
@@ -792,7 +734,9 @@ bool OgreBulletListener::frameStarted(Real elapsedTime)
 bool OgreBulletListener::frameEnded(Real elapsedTime)
 {
     if (mQuit)
+    {
         return false;
+    }
 
     DebugDrawer *debugDrawer = mWorld->getDebugDrawer();
 
@@ -805,53 +749,64 @@ bool OgreBulletListener::frameEnded(Real elapsedTime)
         mWorld->setShowDebugShapes(!wasWireframeShapes);
         mWireFrame = false;
     }
+
     if (mDrawAabb) 
     {
         debugDrawer->setDrawAabb(!debugDrawer->doesDrawAabb());
         mDrawAabb = false;
     }
-    if ( mDrawFeaturesText)
+
+    if (mDrawFeaturesText)
     {
         debugDrawer->setDrawFeaturesText(!debugDrawer->doesDrawFeaturesText());
         mDrawFeaturesText = false;
     }
-    if ( mDrawContactPoints)
+
+    if (mDrawContactPoints)
     {
         debugDrawer->setDrawContactPoints(!debugDrawer->doesDrawContactPoints());
 		mWorld->setShowDebugContactPoints(debugDrawer->doesDrawContactPoints());
         mDrawContactPoints = false;
     }
-    if ( mNoDeactivation)
+
+    if (mNoDeactivation)
     {
         debugDrawer->setNoDeactivation(!debugDrawer->doesNoDeactivation());
         mNoDeactivation = false;
     }
-    if ( mNoHelpText)
+
+    if (mNoHelpText)
     {
         debugDrawer->setNoHelpText(!debugDrawer->doesNoHelpText());
         mNoHelpText = false;
     }
-    if ( mDrawText)
+
+    if (mDrawText)
     {
         debugDrawer->setDrawText(!debugDrawer->doesDrawText());
         mDrawText = false;
     }
-    if ( mProfileTimings)
+
+    if (mProfileTimings)
     {
         debugDrawer->setProfileTimings(!debugDrawer->doesProfileTimings());
         mProfileTimings = false;
     }
-    if ( mEnableSatComparison)
+
+    if (mEnableSatComparison)
     {
-        debugDrawer->setEnableSatComparison(!debugDrawer->doesEnableSatComparison());
+        debugDrawer->setEnableSatComparison(
+                    !debugDrawer->doesEnableSatComparison());
         mEnableSatComparison = false;
     }
-    if ( mDisableBulletLCP)
+
+    if (mDisableBulletLCP)
     {
         debugDrawer->setDisableBulletLCP(!debugDrawer->doesDisableBulletLCP());
         mDisableBulletLCP = false;
     }
-    if ( mEnableCCD)
+
+    if (mEnableCCD)
     {
         debugDrawer->setEnableCCD(!debugDrawer->doesEnableCCD());
         mEnableCCD = false;
@@ -866,7 +821,8 @@ bool OgreBulletListener::checkIfEnoughPlaceToAddObject(float maxDist)
 {
     Ogre::Vector3 pickPos;
     Ogre::Ray rayTo;
-    const OgreBulletDynamics::RigidBody *body = getBodyUnderCursorUsingBullet(pickPos, rayTo);
+    const OgreBulletDynamics::RigidBody *body = getBodyUnderCursorUsingBullet(
+                pickPos, rayTo);
         //getBodyUnderCursorUsingOgre(pickPos, rayTo);
     if (body)
     {          
@@ -1242,9 +1198,9 @@ void OgreBulletListener::updateStats(void)
         static String tris = "Triangle Count: ";
 
 
-        mFpsStaticText->setValue(avgFps + StringConverter::toString(stats.avgFPS) + " / " +
-                                 currFps + StringConverter::toString(stats.lastFPS) + " / " +
-                                 tris + StringConverter::toString(stats.triangleCount));
+        mFpsStaticText->text(avgFps + StringConverter::toString(stats.avgFPS) + " / " +
+                             currFps + StringConverter::toString(stats.lastFPS) + " / " +
+                             tris + StringConverter::toString(stats.triangleCount));
     }
 
     try

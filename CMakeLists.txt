@@ -18,6 +18,12 @@ set(INCLUDE_DIRS
         ${CMAKE_CURRENT_SOURCE_DIR}/Collisions/include
         ${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/include)
 
+if((${OGRE_VERSION} VERSION_EQUAL "1.9.0") OR (${OGRE_VERSION} VERSION_GREATER "1.9.0"))
+	list(APPEND INCLUDE_DIRS ${OGRE_Overlay_INCLUDE_DIR})
+#	message("Overlay: ${OGRE_Overlay_INCLUDE_DIR}")
+endif()
+#message("OGRE_VER: ${OGRE_VERSION}")
+
 if(${PROJ}_USE_BOOST)
         find_package(Boost REQUIRED)
         set(INCLUDE_DIRS ${INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})

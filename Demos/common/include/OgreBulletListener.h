@@ -42,29 +42,36 @@ enum QueryFlags
 
 class OgreBulletApplication;
 
+namespace Gui3D
+{
+    class Caption;
+}
+
 /*
-The base Test class, is also able to listen for collisions and thus change the contact properties
+The base Test class, is also able to listen for collisions and
+thus change the contact properties
 */
 class OgreBulletListener 
 {
 public:
-
-	// Constructor/destructor
     OgreBulletListener();
-    virtual ~OgreBulletListener(){};
-    virtual void init(Ogre::Root *root, Ogre::RenderWindow *win, OgreBulletApplication *application);
+    virtual ~OgreBulletListener() { }
+
+    virtual void init(Ogre::Root *root,
+                      Ogre::RenderWindow *window,
+                      OgreBulletApplication *application);
 
     virtual void shutdown();
 
     void setPhysicGUI();
     void setBasicLight();
 
-    const BULLET_KEY_CODE getNextKey() const {return mActivationKeyCode;};
-    void setNextKey(BULLET_KEY_CODE code){mActivationKeyCode = code;};
+    inline const BULLET_KEY_CODE getNextKey() const { return mActivationKeyCode; }
+    inline void setNextKey(BULLET_KEY_CODE code) { mActivationKeyCode = code; }
 
     void setInfoText();
 
-    const Ogre::String getName() {return mName;}
+    inline const Ogre::String getName() { return mName; }
 
     virtual bool frameStarted(Ogre::Real elapsedTime);
     virtual bool frameEnded(Ogre::Real elapsedTime);
@@ -73,7 +80,8 @@ public:
     void throwDynamicObject(BULLET_KEY_CODE key);
     void dropDynamicObject(BULLET_KEY_CODE key);
 
-    OgreBulletInputListener *getInputListener(){return mInputListener;}
+    inline OgreBulletInputListener *getInputListener() const
+    { return mInputListener; }
 
     virtual void mouseMoved();
 
@@ -88,46 +96,58 @@ public:
     virtual void keyPressed(BULLET_KEY_CODE key);
     virtual void keyReleased(BULLET_KEY_CODE key);
 
-    bool *getBoolActivator(){return &mActivationBool;}
+    bool *getBoolActivator() { return &mActivationBool; }
 
-    void setDebugText(const Ogre::String &debugText){mDebugText = debugText;}
+    void setDebugText(const Ogre::String &debugText) { mDebugText = debugText; }
 
 protected:
-
-    void initWorld (const Ogre::Vector3 &gravityVector = Ogre::Vector3 (0,-9.81,0), 
-                    const Ogre::AxisAlignedBox &bounds = Ogre::AxisAlignedBox (Ogre::Vector3 (-10000, -10000, -10000),
-                                                                               Ogre::Vector3 (10000,  10000,  10000)));
+    void initWorld(const Ogre::Vector3 &gravityVector = Ogre::Vector3(0, -9.81, 0),
+                   const Ogre::AxisAlignedBox &bounds =
+            Ogre::AxisAlignedBox(Ogre::Vector3 (-10000, -10000, -10000),
+                                 Ogre::Vector3 (10000,  10000,  10000)));
 
     void addGround();
 
     OgreBulletDynamics::RigidBody *addCube(const Ogre::String instanceName,
-        const Ogre::Vector3 &pos, const Ogre::Quaternion &q, const Ogre::Vector3 &size,
-        const Ogre::Real bodyRestitution, const Ogre::Real bodyFriction, 
-        const Ogre::Real bodyMass);
+                                           const Ogre::Vector3 &pos,
+                                           const Ogre::Quaternion &q,
+                                           const Ogre::Vector3 &size,
+                                           const Ogre::Real bodyRestitution,
+                                           const Ogre::Real bodyFriction,
+                                           const Ogre::Real bodyMass);
 
     OgreBulletDynamics::RigidBody *addCylinder(const Ogre::String instanceName,
-        const Ogre::Vector3 &pos, const Ogre::Quaternion &q, const Ogre::Vector3 &size,
-        const Ogre::Real bodyRestitution, const Ogre::Real bodyFriction, 
-        const Ogre::Real bodyMass);
+                                               const Ogre::Vector3 &pos,
+                                               const Ogre::Quaternion &q,
+                                               const Ogre::Vector3 &size,
+                                               const Ogre::Real bodyRestitution,
+                                               const Ogre::Real bodyFriction,
+                                               const Ogre::Real bodyMass);
 
     OgreBulletDynamics::RigidBody *addSphere(const Ogre::String instanceName,
-        const Ogre::Vector3 &pos, const Ogre::Quaternion &q, const Ogre::Real radius,
-        const Ogre::Real bodyRestitution, const Ogre::Real bodyFriction, 
-        const Ogre::Real bodyMass);
+                                             const Ogre::Vector3 &pos,
+                                             const Ogre::Quaternion &q,
+                                             const Ogre::Real radius,
+                                             const Ogre::Real bodyRestitution,
+                                             const Ogre::Real bodyFriction,
+                                             const Ogre::Real bodyMass);
 
 
     OgreBulletDynamics::RigidBody *addCone(const Ogre::String instanceName,
-        const Ogre::Vector3 &pos, const Ogre::Quaternion &q, const Ogre::Vector3 &size,
-        const Ogre::Real bodyRestitution, const Ogre::Real bodyFriction, 
-        const Ogre::Real bodyMass);
+                                           const Ogre::Vector3 &pos,
+                                           const Ogre::Quaternion &q,
+                                           const Ogre::Vector3 &size,
+                                           const Ogre::Real bodyRestitution,
+                                           const Ogre::Real bodyFriction,
+                                           const Ogre::Real bodyMass);
 
     OgreBulletDynamics::RigidBody *addStaticTrimesh(const Ogre::String &instanceName,
-                                                        const Ogre::String &meshName,
-                                                        const Ogre::Vector3 &pos, 
-                                                        const Ogre::Quaternion &q, 
-                                                        const Ogre::Real bodyRestitution, 
-                                                        const Ogre::Real bodyFriction,
-                                                        const bool castShadow = true);
+                                                    const Ogre::String &meshName,
+                                                    const Ogre::Vector3 &pos,
+                                                    const Ogre::Quaternion &q,
+                                                    const Ogre::Real bodyRestitution,
+                                                    const Ogre::Real bodyFriction,
+                                                    const bool castShadow = true);
 
     OgreBulletDynamics::RigidBody *addStaticPlane( const Ogre::Real bodyRestitution, 
                                                    const Ogre::Real bodyFriction);
@@ -135,9 +155,11 @@ protected:
     
     void getDebugLines();
 
-    const OgreBulletDynamics::RigidBody* getBodyUnderCursorUsingBullet(Ogre::Vector3 &intersectionPoint, Ogre::Ray &rayTo);
-    OgreBulletDynamics::RigidBody* getBodyUnderCursorUsingOgre(Ogre::Vector3 &intersectionPoint, Ogre::Ray &rayTo);
+    const OgreBulletDynamics::RigidBody* getBodyUnderCursorUsingBullet(
+            Ogre::Vector3 &intersectionPoint, Ogre::Ray &rayTo);
 
+    OgreBulletDynamics::RigidBody* getBodyUnderCursorUsingOgre(
+            Ogre::Vector3 &intersectionPoint, Ogre::Ray &rayTo);
 
 protected:
     static size_t mNumEntitiesInstanced;
@@ -151,67 +173,65 @@ protected:
 	Ogre::Light *mLight;
 	Ogre::Light *mLight2;
 
+    Ogre::Camera *mCamera;
 
-    Ogre::Camera            *mCamera;
-    Ogre::Radian             mCameraRotX;
-    Ogre::Radian             mCameraRotY;
-    float                    mCameraMove;
-    Ogre::Vector3            mCameraTrans;
+    Ogre::Radian mCameraRotX;
+    Ogre::Radian mCameraRotY;
+    Ogre::Real mCameraMove;
+    Ogre::Vector3 mCameraTrans;
 
     OgreBulletDynamics::DynamicsWorld *mWorld;
     OgreBulletApplication *mApplication;
 
+    std::deque<Ogre::Entity *> mEntities;
+    std::deque<OgreBulletDynamics::RigidBody *> mBodies;
+    std::deque<OgreBulletCollisions::CollisionShape *> mShapes;
 
-    std::deque<Ogre::Entity *>                          mEntities;
-    std::deque<OgreBulletDynamics::RigidBody *>         mBodies;
-    std::deque<OgreBulletCollisions::CollisionShape *>  mShapes;
+    bool mStatsOn;
+    bool mQuit;
+    bool mDoOnestep;
 
-    bool                    mStatsOn;
-    bool                    mQuit;
-    bool                    mDoOnestep;
+    Ogre::Real mShootSpeed;
+    Ogre::Real mImpulseForce;
+    bool mPaused;
 
-    float                    mShootSpeed;
-    float                    mImpulseForce;
-    bool                     mPaused;
+    bool mWireFrame;
+    bool mDrawAabb;
+    bool mDrawFeaturesText;
+    bool mDrawContactPoints;
+    bool mNoDeactivation;
+    bool mNoHelpText;
+    bool mDrawText;
+    bool mProfileTimings;
+    bool mEnableSatComparison;
+    bool mDisableBulletLCP;
+    bool mEnableCCD;
 
+    Gui3D::Caption *mFpsStaticText;
 
-    bool                    mWireFrame;
-    bool                    mDrawAabb;
-    bool                    mDrawFeaturesText;
-    bool                    mDrawContactPoints;
-    bool                    mNoDeactivation;
-    bool                    mNoHelpText;
-    bool                    mDrawText;
-    bool                    mProfileTimings;
-    bool                    mEnableSatComparison;
-    bool                    mDisableBulletLCP;
-    bool                    mEnableCCD;
+    // picking Drag&Drop, impulse
+    OgreBulletDynamics::RigidBody *mPickedBody;
+    OgreBulletDynamics::TypedConstraint *mPickConstraint;
+    Ogre::Vector3 mOldPickingPos;
+    Ogre::Vector3 mOldPickingDist;
 
+    OgreBulletCollisions::CollisionClosestRayResultCallback
+        *mCollisionClosestRayResultCallback;
 
-   BetaGUI::StaticText*  mFpsStaticText;
-
-
-   // picking Drag&Drop, impulse
-   OgreBulletDynamics::RigidBody        *mPickedBody;
-   OgreBulletDynamics::TypedConstraint  *mPickConstraint;
-   Ogre::Vector3                        mOldPickingPos;
-   Ogre::Vector3                        mOldPickingDist;
-   OgreBulletCollisions::CollisionClosestRayResultCallback  *mCollisionClosestRayResultCallback;
-
-   OgreBulletCollisions::DebugLines    *mDebugRayLine;
-   Ogre::RaySceneQuery                 *mRayQuery;
+    OgreBulletCollisions::DebugLines *mDebugRayLine;
+    Ogre::RaySceneQuery *mRayQuery;
    
-   BULLET_KEY_CODE mActivationKeyCode;
-   bool mActivationBool;
+    BULLET_KEY_CODE mActivationKeyCode;
+    bool mActivationBool;
 
-   OgreBulletInputListener *mInputListener;
-   OgreBulletGuiListener *mGuiListener;
+    OgreBulletInputListener *mInputListener;
+    OgreBulletGuiListener *mGuiListener;
 
-   Ogre::String mDebugText;
+    Ogre::String mDebugText;
 
-   Ogre::String mName;
-   std::vector<Ogre::String> mHelpKeys;
-   void updateStats();
+    Ogre::String mName;
+    std::vector<Ogre::String> mHelpKeys;
+    void updateStats();
 };
 
 #endif
