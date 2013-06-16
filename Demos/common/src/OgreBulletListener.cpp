@@ -124,8 +124,8 @@ OgreBulletListener::OgreBulletListener()
       mWindow(NULL),
       mWorld(NULL),
       mStatsOn(true),
-      mPaused(false),
       mShootSpeed(7.0f),
+      mPaused(false),
       mImpulseForce (10.0f),
       mDebugRayLine(NULL),
       mRayQuery(NULL),
@@ -378,7 +378,7 @@ void OgreBulletListener::button0Pressed()
         mDebugRayLine->draw();
     }
 
-    if (mGuiListener->getMainPanel()->injectMousePressed( ->injectMouse(
+    if (mGuiListener->getMainPanel()->injectMousePressed(
                 mInputListener->getAbsMouseX () * mWindow->getWidth(),
                 mInputListener->getAbsMouseY() * mWindow->getHeight(),
                 true))
@@ -512,7 +512,12 @@ void OgreBulletListener::mouseMoved()
 
 }
 // -------------------------------------------------------------------------
-void OgreBulletListener::keyPressed(BULLET_KEY_CODE key)
+bool OgreBulletListener::keyPressed(const KeyEvent &event)
+{
+
+}
+
+void OgreBulletListener::_keyPressed(BULLET_KEY_CODE key)
 {
     static int count = 0;
     // Scene Debug Options

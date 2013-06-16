@@ -44,12 +44,11 @@ namespace OgreBulletCollisions
 	class CollisionShape 
 #endif
     {
-
     public:
-	    CollisionShape();
+        CollisionShape();
         virtual ~CollisionShape();
         
-        inline btCollisionShape* getBulletShape() { return mShape; }
+        inline btCollisionShape *getBulletShape() { return mShape; }
 
         virtual bool drawWireFrame(DebugLines *wire,
                                    const Ogre::Vector3 &pos = Ogre::Vector3::ZERO,
@@ -58,8 +57,9 @@ namespace OgreBulletCollisions
 		bool drawConvexWireFrame(DebugLines *wire, const Ogre::Vector3 &pos, const Ogre::Quaternion &quat) const;
 
     protected:
-        btCollisionShape *mShape;
+        CollisionShape(btCollisionShape *shape);
 
+        btCollisionShape *mShape;
     };
 }
 #endif //_OGREBULLETCOLLISIONS_Shape_H

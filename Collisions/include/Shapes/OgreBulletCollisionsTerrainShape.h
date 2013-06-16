@@ -8,6 +8,7 @@
 #include "Debug/OgreBulletCollisionsDebugLines.h"
 
 #include "BulletCollision/CollisionShapes/btTriangleCallback.h"
+#include "Utils/OgreBulletConverter.h"
 
 namespace OgreBulletCollisions
 {
@@ -15,20 +16,19 @@ namespace OgreBulletCollisions
 	{
 	public:
 
-        DebugHelper(DebugLines* pLines)
+        DebugHelper(DebugLines *pLines)
             : m_pLines(pLines)
         { }
 
         ~DebugHelper()
         { }
 
-        void drawLine(const btVector3& from,
-                      const btVector3& to,
-                      const btVector3& color)
+        void drawLine(const btVector3 &from,
+                      const btVector3 &to,
+                      const btVector3 &color)
 		{
-			Ogre::Vector3 a(from.x(), from.y(), from.z());
-			Ogre::Vector3 b(to.x(), to.y(), to.z());
-			m_pLines->addLine(a, b);
+            m_pLines->addLine(BtOgreConverter::to(from),
+                              BtOgreConverter::to(to));
 		}
 
         void draw3dText(const btVector3 &, const char *)
@@ -38,7 +38,7 @@ namespace OgreBulletCollisions
                               const btVector3 &normalOnB,
                               btScalar distance,
                               int lifeTime,
-                              const btVector3 & color)
+                              const btVector3 &color)
 		{
 		}
 
@@ -69,20 +69,20 @@ namespace OgreBulletCollisions
 	public:
         DebugTriangleDrawCallback(DebugHelper *db,
                                   btTransform &bt,
-                                  const btVector3& color)
+                                  const btVector3 &color)
             : btTriangleCallback(),
               mDebugHelper(db),
               mTransform(bt),
               mColor(color)
         { }
 
-        void processTriangle(btVector3* triangle,
+        void processTriangle(btVector3 *triangle,
                              int partId,
                              int triangleIndex)
 		{
-            mDebugHelper->drawLine(*triangle,     *(triangle+1), mColor);
-            mDebugHelper->drawLine(*(triangle+1), *(triangle+2), mColor);
-            mDebugHelper->drawLine(*(triangle+2), *triangle,     mColor);
+            mDebugHelper->drawLine(*triangle,       *(triangle + 1), mColor);
+            mDebugHelper->drawLine(*(triangle + 1), *(triangle + 2), mColor);
+            mDebugHelper->drawLine(*(triangle + 2), *triangle,       mColor);
 		}						 
 	};
 

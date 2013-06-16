@@ -39,10 +39,10 @@ using namespace OgreBulletCollisions;
 namespace OgreBulletCollisions
 {
     // -------------------------------------------------------------------------
-    BoxCollisionShape::BoxCollisionShape(const Vector3 &bodyBounds):
-        CollisionShape()
+    BoxCollisionShape::BoxCollisionShape(const Vector3 &bodyBounds)
+        : CollisionShape()
     {
-            mShape = new btBoxShape(OgreBtConverter::to(bodyBounds));
+        mShape = new btBoxShape(OgreBtConverter::to(bodyBounds));
     }
     // -------------------------------------------------------------------------
     BoxCollisionShape::~BoxCollisionShape()

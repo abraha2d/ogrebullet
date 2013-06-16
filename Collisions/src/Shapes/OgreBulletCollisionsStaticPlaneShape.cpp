@@ -32,13 +32,13 @@ THE SOFTWARE.
 #include "Shapes/OgreBulletCollisionsStaticPlaneShape.h"
 #include "Debug/OgreBulletCollisionsDebugLines.h"
 
-using namespace Ogre;
 using namespace OgreBulletCollisions;
 
 namespace OgreBulletCollisions
 {
     // -------------------------------------------------------------------------
-    StaticPlaneCollisionShape::StaticPlaneCollisionShape(const Vector3 &normal, Real distance)
+    StaticPlaneCollisionShape::StaticPlaneCollisionShape(const Ogre::Vector3 &normal,
+                                                         Ogre::Real distance)
         : CollisionShape()
     {
         mShape = new btStaticPlaneShape(btVector3(normal.x, normal.y, normal.z), btScalar(distance));

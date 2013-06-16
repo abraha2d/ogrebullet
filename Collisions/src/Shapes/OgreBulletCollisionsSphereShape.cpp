@@ -32,13 +32,12 @@ THE SOFTWARE.
 #include "Shapes/OgreBulletCollisionsSphereShape.h"
 #include "Debug/OgreBulletCollisionsDebugLines.h"
 
-using namespace Ogre;
 using namespace OgreBulletCollisions;
 
 namespace OgreBulletCollisions
 {
     // -------------------------------------------------------------------------
-    SphereCollisionShape::SphereCollisionShape(const Real radius)
+    SphereCollisionShape::SphereCollisionShape(const Ogre::Real radius)
         : CollisionShape()
     {
         mShape = new btSphereShape(radius);

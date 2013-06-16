@@ -46,8 +46,11 @@ namespace OgreBulletCollisions
     // -------------------------------------------------------------------------
     CollisionShape::CollisionShape()
         : mShape(NULL)
-    {
-    }
+    { }
+    // -------------------------------------------------------------------------
+    CollisionShape::CollisionShape(btCollisionShape *shape)
+        : mShape(shape)
+    { }
     // -------------------------------------------------------------------------
     CollisionShape::~CollisionShape()
     {

@@ -51,7 +51,7 @@ namespace Gui3D
 The base Test class, is also able to listen for collisions and
 thus change the contact properties
 */
-class OgreBulletListener 
+class OgreBulletListener
 {
 public:
     OgreBulletListener();
@@ -83,8 +83,6 @@ public:
     inline OgreBulletInputListener *getInputListener() const
     { return mInputListener; }
 
-    virtual void mouseMoved();
-
     virtual void button0Pressed();
     virtual void button1Pressed();
     virtual void button2Pressed();
@@ -93,8 +91,15 @@ public:
     virtual void button1Released();
     virtual void button2Released();
 
-    virtual void keyPressed(BULLET_KEY_CODE key);
-    virtual void keyReleased(BULLET_KEY_CODE key);
+    virtual bool keyPressed(const OIS::KeyEvent &event);
+    virtual bool keyReleased(const OIS::KeyEvent &event);
+
+    virtual bool mouseMoved(const OIS::MouseEvent &event);
+
+    virtual void _mouseMoved();
+
+    virtual void _keyPressed(BULLET_KEY_CODE key);
+    virtual void _keyReleased(BULLET_KEY_CODE key);
 
     bool *getBoolActivator() { return &mActivationBool; }
 

@@ -45,17 +45,15 @@ namespace OgreBulletCollisions
         mShape = new btCompoundShape();
 	}
 	//---------------------------------------------------------
-	CompoundCollisionShape::CompoundCollisionShape(btCompoundShape *shape):	
-		CollisionShape()
-	{
-		mShape = shape;
-		
+    CompoundCollisionShape::CompoundCollisionShape(btCompoundShape *shape)
+        : CollisionShape(shape)
+	{	
 		// TODO : create a list of child ogre bullet collision shapes using child list, recursively		
         btCompoundShape *cShapes = static_cast<btCompoundShape *>(mShape);
-		unsigned int numChildren = cShapes->getNumChildShapes();
-		for (unsigned int i = 0; i < numChildren; i++)	
+        int numChildren = cShapes->getNumChildShapes();
+        for (int i = 0; i < numChildren; ++i)
 		{
-			CollisionShape *s = 0;
+            CollisionShape *s = NULL;
 			switch (cShapes->getChildList()[i].m_childShapeType)
 			{
 			case CONVEX_HULL_SHAPE_PROXYTYPE:
@@ -86,8 +84,8 @@ namespace OgreBulletCollisions
         
         //localTrans.setIdentity();
         //localTrans effectively shifts the center of mass with respect to the chassis
-		localTrans.setOrigin (OgreBtConverter::to(pos));
-		localTrans.setRotation (OgreBtConverter::to(quat));
+        localTrans.setOrigin(OgreBtConverter::to(pos));
+        localTrans.setRotation(OgreBtConverter::to(quat));
 
         static_cast<btCompoundShape *>(mShape)->addChildShape(localTrans, shape->getBulletShape());
     
@@ -104,11 +102,12 @@ namespace OgreBulletCollisions
         int numChildShapes = myBtCompoundShape->getNumChildShapes ();
 
         int i;
+        std::vector<CollisionShape *>::const_iterator end = mShapes.end();
         for (std::vector<CollisionShape *>::const_iterator itShape = mShapes.begin(); 
-            itShape != mShapes.end(); ++itShape)
+            itShape != end; ++itShape)
         {
             const btCollisionShape * const shape = (*itShape)->getBulletShape();
-            for (i = 0; i < numChildShapes; i++)
+            for (i = 0; i < numChildShapes; ++i)
             {
                 if (myBtCompoundShape->getChildShape(i) == shape)
                 {
