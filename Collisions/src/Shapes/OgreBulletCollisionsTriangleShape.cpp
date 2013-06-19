@@ -2,7 +2,6 @@
 
 This source file is part of OGREBULLET
 (Object-oriented Graphics Rendering Engine Bullet Wrapper)
-For the latest info, see http://www.ogre3d.org/phpBB2addons/viewforum.php?f=10
 
 Copyright (c) 2007 tuan.kuranes@gmail.com (Use it Freely, even Statically, but have to contribute any changes)
 
@@ -52,13 +51,13 @@ namespace OgreBulletCollisions
                                          OgreBtConverter::to(p3)); 
     }
     // -------------------------------------------------------------------------
-    TriangleCollisionShape::TriangleCollisionShape( 
-        Ogre::Real p1X, Ogre::Real p1Y, Ogre::Real p1Z, 
-        Ogre::Real p2X, Ogre::Real p2Y, Ogre::Real p2Z,  
-        Ogre::Real p3X, Ogre::Real p3Y, Ogre::Real p3Z):
-        CollisionShape()
+    TriangleCollisionShape::TriangleCollisionShape(
+            Ogre::Real p1X, Ogre::Real p1Y, Ogre::Real p1Z,
+            Ogre::Real p2X, Ogre::Real p2Y, Ogre::Real p2Z,
+            Ogre::Real p3X, Ogre::Real p3Y, Ogre::Real p3Z)
+        : CollisionShape()
     {
-        mShape = new btTriangleShape(btVector3(p1X, p1Z, p1Z), 
+        mShape = new btTriangleShape(btVector3(p1X, p1Y, p1Z),
                                      btVector3(p2X, p2Y, p2Z), 
                                      btVector3(p3X, p3Y, p3Z)); 
     }

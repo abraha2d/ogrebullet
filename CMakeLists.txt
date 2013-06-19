@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 2.8)
 
 set(PROJ "OgreBullet")
-set(${PROJ}_BUILD_DEMOS ON)
+
+option(${PROJ}_BUILD_DEMOS "Build demos")
+option(${PROJ}_USE_BOOST "Use Boost (when Ogre compiled with Boost)" ON)
 
 project(${PROJ})
 
@@ -10,13 +12,35 @@ set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 find_package(OGRE REQUIRED)
 find_package(Bullet REQUIRED)
 
-include_directories(${OGRE_INCLUDE_DIR}
-	${BULLET_INCLUDE_DIR}
-	${BULLET_INCLUDE_DIRS}/ConvexDecomposition
-	${CMAKE_CURRENT_SOURCE_DIR}/Collisions/include
-	${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/include)
+set(INCLUDE_DIRS
+        ${OGRE_INCLUDE_DIR}
+        ${BULLET_INCLUDE_DIRS}
+        ${CMAKE_CURRENT_SOURCE_DIR}/Collisions/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/Dynamics/include)
 
-#link_directories(${OGRE_LIB_DIR})
+if((${OGRE_VERSION} VERSION_EQUAL "1.9.0") OR (${OGRE_VERSION} VERSION_GREATER "1.9.0"))
+	list(APPEND INCLUDE_DIRS ${OGRE_Overlay_INCLUDE_DIR})
+#	message("Overlay: ${OGRE_Overlay_INCLUDE_DIR}")
+endif()
+#message("OGRE_VER: ${OGRE_VERSION}")
+
+if(${PROJ}_USE_BOOST)
+        find_package(Boost REQUIRED)
+        set(INCLUDE_DIRS ${INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
+        if(NOT Boost_FOUND)
+                message("")
+                message("---------------------------------------------")
+                message("---- Seems that your system has not Boost.")
+                message("---- Set Boost_DIR variable to Boost root dir")
+                message("---- if Ogre built with Boost or uncheck ${PROJ}_USE_BOOST option.")
+                message("---------------------------------------------")
+                message("")
+        endif()
+endif()
+
+include_directories(${INCLUDE_DIRS})
+
+link_directories(${OGRE_LIB_DIR})
 
 set(SOURCES_Col
 	Collisions/src/Shapes/OgreBulletCollisionsConeShape.cpp

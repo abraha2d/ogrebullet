@@ -2,7 +2,6 @@
 
 This source file is part of OGREBULLET
 (Object-oriented Graphics Rendering Engine Bullet Wrapper)
-For the latest info, see http://www.ogre3d.org/phpBB2addons/viewforum.php?f=10
 
 Copyright (c) 2007 tuan.kuranes@gmail.com (Use it Freely, even Statically, but have to contribute any changes)
 
@@ -37,14 +36,15 @@ THE SOFTWARE.
 
 namespace OgreBulletCollisions
 {
-    // -------------------------------------------------------------------------
-    // basic BoxShape
+    /**
+      * Basic BoxShape
+      */
+
     class BoxCollisionShape : public CollisionShape
     {
     public:
         BoxCollisionShape(const Ogre::Vector3 &boxBounds);
-	    virtual ~BoxCollisionShape();
-
+        virtual ~BoxCollisionShape();
     };
 }
 #endif //_OGREBULLETCOLLISIONS_BoxShape_H

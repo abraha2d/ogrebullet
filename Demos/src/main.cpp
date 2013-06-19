@@ -31,12 +31,10 @@ Windows entry point
 */
 INT WINAPI WinMain( HINSTANCE hInst, HINSTANCE, LPSTR strCmdLine, INT nCmdShow)
 #else
-int main(int argc,char* argv[])
+int main()
 #endif
-
 {
     std::vector<OgreBulletListener *> ogrebulletscenes;
-    std::vector <OgreBulletListener *>::iterator it;
 
     ogrebulletscenes.push_back(new Primitives_Demo());
     ogrebulletscenes.push_back(new Trimesh_Demo());
@@ -78,7 +76,7 @@ int main(int argc,char* argv[])
 #endif
     }
 
-    it =  ogrebulletscenes.begin();
+    std::vector <OgreBulletListener *>::iterator it =  ogrebulletscenes.begin();
     while (it != ogrebulletscenes.end())
     {
         delete *it;

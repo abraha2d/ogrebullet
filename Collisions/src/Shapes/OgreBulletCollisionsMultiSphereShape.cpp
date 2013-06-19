@@ -2,7 +2,6 @@
 
 This source file is part of OGREBULLET
 (Object-oriented Graphics Rendering Engine Bullet Wrapper)
-For the latest info, see http://www.ogre3d.org/phpBB2addons/viewforum.php?f=10
 
 Copyright (c) 2007 tuan.kuranes@gmail.com (Use it Freely, even Statically, but have to contribute any changes)
 
@@ -34,7 +33,6 @@ THE SOFTWARE.
 #include "Debug/OgreBulletCollisionsDebugLines.h"
 #include "Utils/OgreBulletConverter.h"
 
-using namespace Ogre;
 using namespace OgreBulletCollisions;
 
 namespace OgreBulletCollisions
@@ -46,7 +44,7 @@ namespace OgreBulletCollisions
                                                          int numSpheres)
         : CollisionShape()
     {
-		btVector3 * btPositions = new btVector3[numSpheres];
+        btVector3 *btPositions = new btVector3[numSpheres];
 		{
 			unsigned int currNum = numSpheres;
 			while (currNum-- > 0)
@@ -55,8 +53,7 @@ namespace OgreBulletCollisions
 			}
 		}
 
-        mShape = new btMultiSphereShape(//OgreBtConverter::to(inertiaHalfExtents),
-                                        (btVector3 *) btPositions,
+        mShape = new btMultiSphereShape(btPositions,
                                         (const btScalar *)radi,
                                         numSpheres);
 

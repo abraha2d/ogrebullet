@@ -2,7 +2,6 @@
 
 This source file is part of OGREBULLET
 (Object-oriented Graphics Rendering Engine Bullet Wrapper)
-For the latest info, see http://www.ogre3d.org/phpBB2addons/viewforum.php?f=10
 
 Copyright (c) 2007 tuan.kuranes@gmail.com (Use it Freely, even Statically, but have to contribute any changes)
 
@@ -37,6 +36,11 @@ THE SOFTWARE.
 using namespace Ogre;
 using namespace OgreBulletCollisions;
 
+static inline void setVector(btVector3 &vec, float *data)
+{
+    vec.setValue(data[0], data[1], data[2]);
+}
+
 namespace OgreBulletCollisions
 {
     GImpactConcaveShape::GImpactConcaveShape(Ogre::Vector3 *_vertices,
@@ -50,7 +54,7 @@ namespace OgreBulletCollisions
 #ifndef BVH
 		mTriMesh = new btTriangleMesh();
 
-		unsigned int numFaces = int_index_count / 3;
+        const unsigned int numFaces = int_index_count / 3;
 
         btVector3 vertexPos[3];
 		for (size_t n = 0; n < numFaces; ++n)
@@ -67,7 +71,7 @@ namespace OgreBulletCollisions
 			mTriMesh->addTriangle(vertexPos[0], vertexPos[1], vertexPos[2]);
 		}
 
-		btGImpactMeshShape * trimesh = new btGImpactMeshShape(mTriMesh);
+        btGImpactMeshShape *trimesh = new btGImpactMeshShape(mTriMesh);
 		trimesh->setLocalScaling(btVector3(1, 1, 1));
 		trimesh->setMargin(0.0f);
 		trimesh->updateBound();
@@ -96,7 +100,7 @@ namespace OgreBulletCollisions
 		buffer = btAlignedAlloc(numBytes,16);
 		bool swapEndian = false;
         trimeshShape->getOptimizedBvh()->serialize(buffer, numBytes, swapEndian);
-		FILE* file = fopen("bvh.bin","wb");
+        FILE *file = fopen("bvh.bin","wb");
 		fwrite(buffer,1,numBytes,file);
 		fclose(file);
 		btAlignedFree(buffer);
@@ -150,7 +154,7 @@ namespace OgreBulletCollisions
 		if (numTris > 0)
 		{
             const int numSubParts = mTriMesh->getNumSubParts();
-			for (int currSubPart = 0; currSubPart < numSubParts; currSubPart++)
+            for (int currSubPart = 0; currSubPart < numSubParts; ++currSubPart)
 			{
                 const unsigned char *vertexBase = NULL;
 				int numVerts;
@@ -161,44 +165,41 @@ namespace OgreBulletCollisions
 				int numFaces;
 				PHY_ScalarType indexType;
 
-                mTriMesh->getLockedReadOnlyVertexIndexBase (&vertexBase, numVerts,
-                                                            vertexType, vertexStride,
-                                                            &indexBase, indexStride,
-                                                            numFaces, indexType,
-                                                            currSubPart);
+                mTriMesh->getLockedReadOnlyVertexIndexBase(&vertexBase, numVerts,
+                                                           vertexType, vertexStride,
+                                                           &indexBase, indexStride,
+                                                           numFaces, indexType,
+                                                           currSubPart);
 
                 float *p = NULL;
 				btVector3 vert0;
 				btVector3 vert1;
 				btVector3 vert2;
 
-				for (int t = 0; t < numFaces; t++)
+                for (int t = 0; t < numFaces; ++t)
 				{
-#define setVector(A, B) {A.setX(B[0]);A.setY(B[1]);A.setZ(B[2]);};
-
 					if (indexType == PHY_SHORT)
 					{
-						short int* index = (short int*)(indexBase + t*indexStride);
+                        short int *index = (short int *)(indexBase + t * indexStride);
 
-						p = (float*)(vertexBase + index[0]*vertexStride);
+                        p = (float *)(vertexBase + index[0] * vertexStride);
 						setVector(vert0, p);						
-						p = (float*)(vertexBase + index[1]*vertexStride);
+                        p = (float *)(vertexBase + index[1] * vertexStride);
 						setVector(vert1, p);			
-						p = (float*)(vertexBase + index[2]*vertexStride);
+                        p = (float *)(vertexBase + index[2] * vertexStride);
 						setVector(vert2, p);		
 					} 
 					else
 					{
-						int* index = (int*)(indexBase + t*indexStride);
+                        int *index = (int *)(indexBase + t * indexStride);
 
-						p = (float*)(vertexBase + index[0]*vertexStride);
+                        p = (float *)(vertexBase + index[0] * vertexStride);
 						setVector(vert0, p);						
-						p = (float*)(vertexBase + index[1]*vertexStride);
+                        p = (float *)(vertexBase + index[1] * vertexStride);
 						setVector(vert1, p);			
-						p = (float*)(vertexBase + index[2]*vertexStride);
+                        p = (float *)(vertexBase + index[2] * vertexStride);
 						setVector(vert2, p);		
 					}
-#undef setVector
 
                     wire->addLine(BtOgreConverter::to(vert0), BtOgreConverter::to(vert1));
                     wire->addLine(BtOgreConverter::to(vert1), BtOgreConverter::to(vert2));

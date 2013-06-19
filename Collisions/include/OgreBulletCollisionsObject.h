@@ -59,15 +59,15 @@ namespace OgreBulletCollisions
 
         // override Movables
 #if (OGRE_VERSION >=  ((1 << 16) | (5 << 8) | 0)) // must have at least shoggoth (1.5.0)
-		void visitRenderables(Ogre::Renderable::Visitor* visitor, bool debugRenderables);
+        void visitRenderables(Ogre::Renderable::Visitor *visitor, bool debugRenderables);
 #endif
-        virtual const Ogre::String& getMovableType() const; 
-        virtual void _notifyAttached(Ogre::Node* parent, bool isTagPoint = false);
+        virtual const Ogre::String &getMovableType() const;
+        virtual void _notifyAttached(Ogre::Node *parent, bool isTagPoint = false);
         //virtual const Ogre::String& getName(void) const {return mName};
-        virtual void _notifyCurrentCamera(Ogre::Camera* camera);
-        virtual const Ogre::AxisAlignedBox& getBoundingBox(void) const;
+        virtual void _notifyCurrentCamera(Ogre::Camera *camera);
+        virtual const Ogre::AxisAlignedBox &getBoundingBox(void) const;
         virtual Ogre::Real getBoundingRadius(void) const;
-        virtual void _updateRenderQueue(Ogre::RenderQueue* queue);
+        virtual void _updateRenderQueue(Ogre::RenderQueue *queue);
 
 
         inline const Ogre::Vector3 &getWorldPosition() const { return mRootNode->_getDerivedPosition(); }
@@ -84,12 +84,12 @@ namespace OgreBulletCollisions
         virtual void setTransform(const btVector3 &pos, const btQuaternion &quat);
         virtual void setTransform(const btTransform& worldTrans);
 
-        inline btCollisionObject* getBulletObject() const { return mObject; }
-        inline btCollisionWorld* getBulletCollisionWorld() const { return mWorld->getBulletCollisionWorld(); }
-        inline CollisionsWorld* getCollisionWorld() const { return mWorld; }
+        inline btCollisionObject *getBulletObject() const { return mObject; }
+        inline btCollisionWorld *getBulletCollisionWorld() const { return mWorld->getBulletCollisionWorld(); }
+        inline CollisionsWorld *getCollisionWorld() const { return mWorld; }
         
         inline CollisionShape *getShape() const { return mShape; }
-        inline DebugCollisionShape* getDebugShape() const { return mDebugShape; }
+        inline DebugCollisionShape *getDebugShape() const { return mDebugShape; }
 
         void setShape(CollisionShape *shape,
                       const Ogre::Vector3 &pos,

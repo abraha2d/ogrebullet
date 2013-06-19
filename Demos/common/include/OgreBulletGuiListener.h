@@ -18,46 +18,70 @@ A basic test framework that minimize code in each test scene listener.
 #ifndef _OgreBulletGuiListener_H_
 #define _OgreBulletGuiListener_H_
 
-// We'll need the OgreBulletListener definitions
-#include "BetaGUI.h"
+#include <OGRE/OgreString.h>
+
+namespace Gui3D {
+    class Gui3D;
+    class Panel;
+    class PanelElement;
+}
+
+namespace Gorilla {
+    class Screen;
+    class Layer;
+    class Rectangle;
+}
 
 class OgreBulletListener;
 
 /*
 The base Test class, is also able to listen for collisions and thus change the contact properties
 */
-class OgreBulletGuiListener : public BetaGUI::BetaGUIListener
+class OgreBulletGuiListener
 {
 public:
 	// Constructor/destructor
-    OgreBulletGuiListener(OgreBulletListener *listener, Ogre::RenderWindow *win);
+    OgreBulletGuiListener(OgreBulletListener *listener,
+                          Ogre::Viewport *viewport,
+                          const Ogre::String &atlasName);
+
     virtual ~OgreBulletGuiListener();
 
     // Gui Callbacks
-    void onButtonPress(BetaGUI::Button *ref, Ogre::uchar type);
+    void onButtonPress(Gui3D::PanelElement *element);
+    bool onBoxCheck(Gui3D::PanelElement *element);
 
+    inline Gui3D::Gui3D *getGui() const
+    {
+        return mGui;
+    }
 
-    BetaGUI::GUI *getGui(){return mGui;}
+    inline Gui3D::Panel *getMainPanel() const
+    {
 
-    void addBool(BetaGUI::Window *mainWindow, bool* value, const Ogre::String &label, Ogre::Vector2 &pos);
+    }
 
-    void hideMouse();
-    void showMouse();
-    void setMousePosition(Ogre::Real x, Ogre::Real y);
+    void addBool(Gui3D::Panel *panel,
+                 bool* value,
+                 const Ogre::String &label,
+                 const Ogre::Vector2 &pos);
+
+    void setMouseVisiable(bool visiable);
+    void setMousePosition(const Ogre::Vector2 &pos);
     
     void showHelp(bool show);
+
 protected:
+    Gui3D::Gui3D *mGui;
 
-   BetaGUI::GUI *mGui;
+    OgreBulletListener *mListener;
 
-   OgreBulletListener *mListener;
-   Ogre::RenderWindow *mWindow;
+    Gorilla::Screen *mScreen;
+    Gorilla::Layer *mMouseLayer;
+    Gorilla::Rectangle *mMousePointer;
 
-
-   Ogre::Overlay		    *mMouseOverlay;
-   Ogre::OverlayElement		*mMousePanel;
-   Ogre::Real              mMouseCursorHalfWidth;
-   Ogre::Real              mMouseCursorHalfHeight;
+    Ogre::Real mMouseCursorHalfWidth;
+    Ogre::Real mMouseCursorHalfHeight;
 
 };
 

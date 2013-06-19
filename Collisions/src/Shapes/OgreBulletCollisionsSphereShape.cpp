@@ -2,7 +2,6 @@
 
 This source file is part of OGREBULLET
 (Object-oriented Graphics Rendering Engine Bullet Wrapper)
-For the latest info, see http://www.ogre3d.org/phpBB2addons/viewforum.php?f=10
 
 Copyright (c) 2007 tuan.kuranes@gmail.com (Use it Freely, even Statically, but have to contribute any changes)
 
@@ -33,13 +32,12 @@ THE SOFTWARE.
 #include "Shapes/OgreBulletCollisionsSphereShape.h"
 #include "Debug/OgreBulletCollisionsDebugLines.h"
 
-using namespace Ogre;
 using namespace OgreBulletCollisions;
 
 namespace OgreBulletCollisions
 {
     // -------------------------------------------------------------------------
-    SphereCollisionShape::SphereCollisionShape(const Real radius)
+    SphereCollisionShape::SphereCollisionShape(const Ogre::Real radius)
         : CollisionShape()
     {
         mShape = new btSphereShape(radius);

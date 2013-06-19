@@ -2,7 +2,6 @@
 
 This source file is part of OGREBULLET
 (Object-oriented Graphics Rendering Engine Bullet Wrapper)
-For the latest info, see http://www.ogre3d.org/phpBB2addons/viewforum.php?f=10
 
 Copyright (c) 2007 tuan.kuranes@gmail.com (Use it Freely, even Statically, but have to contribute any changes)
 
@@ -64,7 +63,7 @@ namespace OgreBulletDynamics
         if (init)
         {
             mWorld = new btDiscreteDynamicsWorld(mDispatcher, mBroadphase, mConstraintsolver, &mDefaultCollisionConfiguration);
-            static_cast<btDiscreteDynamicsWorld *>(mWorld)->setGravity(btVector3(gravity.x,gravity.y,gravity.z));
+            static_cast<btDiscreteDynamicsWorld *>(mWorld)->setGravity(btVector3(gravity.x, gravity.y, gravity.z));
 
 			//btCollisionDispatcher * dispatcher = static_cast<btCollisionDispatcher *>(mWorld->getDispatcher());
 			//btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);

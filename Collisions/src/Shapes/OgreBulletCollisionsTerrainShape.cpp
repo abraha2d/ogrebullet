@@ -2,7 +2,6 @@
 
 This source file is part of OGREBULLET
 (Object-oriented Graphics Rendering Engine Bullet Wrapper)
-For the latest info, see http://www.ogre3d.org/phpBB2addons/viewforum.php?f=10
 
 Copyright (c) 2013 alexey.knyshev@gmail.com (Use it Freely, even Statically, but have to contribute any changes)
 
@@ -29,41 +28,50 @@ THE SOFTWARE.
 */
 
 #include "Shapes/OgreBulletCollisionsTerrainShape.h"
+#include "Utils/OgreBulletConverter.h"
 
 #include "BulletCollision/CollisionShapes/btHeightfieldTerrainShape.h"
 
 namespace OgreBulletCollisions
 {
-    HeightmapCollisionShape::HeightmapCollisionShape(int width, int length, const Ogre::Vector3 &scale, Ogre::Real *pHeightData, bool bFlip)
+    HeightmapCollisionShape::HeightmapCollisionShape(int width, int length,
+                                                     const Ogre::Vector3 &scale,
+                                                     Ogre::Real *pHeightData,
+                                                     bool bFlip)
 	{
 		int upIndex = 1;
-		bool useFloatDatam=true;
-		bool flipQuadEdges=bFlip;
+        bool useFloatDatam = true;
+        bool flipQuadEdges = bFlip;
 
 		btHeightfieldTerrainShape* pHeightShape = 
-			new btHeightfieldTerrainShape(width, length, pHeightData, scale.y, upIndex, useFloatDatam, flipQuadEdges);
+            new btHeightfieldTerrainShape(width, length, pHeightData,
+                                          scale.y, upIndex, useFloatDatam, flipQuadEdges);
+
 		pHeightShape->setUseDiamondSubdivision(true);
 
 		mShape = pHeightShape;
 
-		btVector3 sc(scale.x, scale.y, scale.z);
-		mShape->setLocalScaling(sc);
+        mShape->setLocalScaling(OgreBtConverter::to(scale));
 	}
 	
-	bool HeightmapCollisionShape::drawWireFrame(DebugLines *wire, const Ogre::Vector3 &pos, const Ogre::Quaternion &quat) const
+    bool HeightmapCollisionShape::drawWireFrame(DebugLines *wire, const Ogre::Vector3 &pos,
+                                                const Ogre::Quaternion &quat) const
 	{
-		btHeightfieldTerrainShape* pHeightShape = static_cast<btHeightfieldTerrainShape*>(mShape);
+        btHeightfieldTerrainShape *pHeightShape =
+                static_cast<btHeightfieldTerrainShape *>(mShape);
 
 		btTransform bt;
 		bt.setIdentity();
 
-		btVector3 colour(255.0, 255.0, 255.0);
+        const btVector3 colour(255.0, 255.0, 255.0);
 
 		DebugHelper ddraw(wire);
 		DebugTriangleDrawCallback cb(&ddraw, bt, colour);
 
-        btVector3 aabbMax(btScalar(1e30), btScalar(1e30), btScalar(1e30));
-        btVector3 aabbMin(btScalar(-1e30), btScalar(-1e30), btScalar(-1e30));
+        const btScalar max(BT_LARGE_FLOAT);
+        const btScalar min(-BT_LARGE_FLOAT);
+        const btVector3 aabbMax(max, max, max);
+        const btVector3 aabbMin(min, min, min);
 		pHeightShape->processAllTriangles(&cb, aabbMin, aabbMax);
 		return true;
 	}

@@ -2,7 +2,6 @@
 
 This source file is part of OGREBULLET
 (Object-oriented Graphics Rendering Engine Bullet Wrapper)
-For the latest info, see http://www.ogre3d.org/phpBB2addons/viewforum.php?f=10
 
 Copyright (c) 2007 tuan.kuranes@gmail.com (Use it Freely, even Statically, but have to contribute any changes)
 
@@ -34,13 +33,17 @@ THE SOFTWARE.
 #include "Debug/OgreBulletCollisionsDebugLines.h"
 #include "Utils/OgreBulletConverter.h"
 
-using namespace Ogre;
 using namespace OgreBulletCollisions;
+
+static inline void setVector(btVector3 &vec, float *data)
+{
+    vec.setValue(data[0], data[1], data[2]);
+}
 
 namespace OgreBulletCollisions
 {
     // -------------------------------------------------------------------------
-    TriangleMeshCollisionShape::TriangleMeshCollisionShape(Vector3 *vertices,
+    TriangleMeshCollisionShape::TriangleMeshCollisionShape(Ogre::Vector3 *vertices,
                                                            unsigned int vertexCount,
                                                            unsigned int *indices,
                                                            unsigned int indexCount,
@@ -56,19 +59,19 @@ namespace OgreBulletCollisions
         for (unsigned int n = 0; n < numFaces; ++n)
         {
 			{
-				const Vector3 &vec = vertices[*indices];
+                const Ogre::Vector3 &vec = vertices[*indices];
 				vertexPos[0][0] = vec.x;
 				vertexPos[0][1] = vec.y;
 				vertexPos[0][2] = vec.z;
 			}
 			{
-				const Vector3 &vec = vertices[*(indices + 1)];
+                const Ogre::Vector3 &vec = vertices[*(indices + 1)];
 				vertexPos[1][0] = vec.x;
 				vertexPos[1][1] = vec.y;
 				vertexPos[1][2] = vec.z;
 			}
 			{
-				const Vector3 &vec = vertices[*(indices + 2)];
+                const Ogre::Vector3 &vec = vertices[*(indices + 2)];
 				vertexPos[2][0] = vec.x;
 				vertexPos[2][1] = vec.y;
 				vertexPos[2][2] = vec.z;
@@ -81,7 +84,6 @@ namespace OgreBulletCollisions
 
 		const bool useQuantizedAABB = true;
         mShape = new btBvhTriangleMeshShape(mTriMesh, useQuantizedAABB);
-
     }
     // -------------------------------------------------------------------------
     TriangleMeshCollisionShape::~TriangleMeshCollisionShape()
@@ -90,7 +92,7 @@ namespace OgreBulletCollisions
         {
             delete mTriMesh;
         }
-        mTriMesh = 0;
+        mTriMesh = NULL;
     }
     // -------------------------------------------------------------------------
     bool TriangleMeshCollisionShape::drawWireFrame(DebugLines *wire,
@@ -100,9 +102,8 @@ namespace OgreBulletCollisions
         const int numTris = mTriMesh->getNumTriangles();
         if (numTris > 0)
         {
-
             const int numSubParts = mTriMesh->getNumSubParts();
-			for (int currSubPart = 0; currSubPart < numSubParts; currSubPart++)
+            for (int currSubPart = 0; currSubPart < numSubParts; ++currSubPart)
 			{
                 const unsigned char *vertexBase = NULL;
 				int numVerts;
@@ -124,10 +125,8 @@ namespace OgreBulletCollisions
 				btVector3 vert1;
 				btVector3 vert2;
 
-				for (int t = 0; t < numFaces; t++)
+                for (int t = 0; t < numFaces; ++t)
 				{
-#define setVector(A, B) {A.setX(B[0]);A.setY(B[1]);A.setZ(B[2]);};
-
 					if (indexType == PHY_SHORT)
 					{
 						short int* index = (short int*)(indexBase + t*indexStride);
@@ -150,7 +149,6 @@ namespace OgreBulletCollisions
 						p = (float*)(vertexBase + index[2]*vertexStride);
 						setVector(vert2, p);		
 					}
-#undef setVector
 
                     wire->addLine(BtOgreConverter::to(vert0), BtOgreConverter::to(vert1));
                     wire->addLine(BtOgreConverter::to(vert1), BtOgreConverter::to(vert2));

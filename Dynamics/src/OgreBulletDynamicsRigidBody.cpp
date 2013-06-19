@@ -2,7 +2,6 @@
 
 This source file is part of OGREBULLET
 (Object-oriented Graphics Rendering Engine Bullet Wrapper)
-For the latest info, see http://www.ogre3d.org/phpBB2addons/viewforum.php?f=10
 
 Copyright (c) 2007 tuan.kuranes@gmail.com (Use it Freely, even Statically, but have to contribute any changes)
 
@@ -71,19 +70,19 @@ namespace OgreBulletDynamics
         mShapeNode = mRootNode->createChildSceneNode(mName + "Node");
         mShapeNode->attachObject(this);
 
-        node->setPosition (pos);
-        node->setOrientation (quat);
+        node->setPosition(pos);
+        node->setOrientation(quat);
 
         mShape = shape;
         showDebugShape(mWorld->getShowDebugShapes());
 
-        btVector3 localInertiaTensor = btVector3(0,0,0);
+        btVector3 localInertiaTensor = btVector3(0, 0, 0);
 		if (bodyMass > 0.0)
         {
-	        mShape->getBulletShape ()->calculateLocalInertia(bodyMass, localInertiaTensor);
+            mShape->getBulletShape()->calculateLocalInertia(bodyMass, localInertiaTensor);
         }
 
-        btRigidBody *body = new btRigidBody(bodyMass, mState, mShape->getBulletShape (), localInertiaTensor);
+        btRigidBody *body = new btRigidBody(bodyMass, mState, mShape->getBulletShape(), localInertiaTensor);
         body->setRestitution(bodyRestitution);
         body->setFriction(bodyFriction);
 
@@ -118,8 +117,8 @@ namespace OgreBulletDynamics
         body->setRestitution(bodyRestitution);
         body->setFriction(bodyFriction);
 
-        body->getWorldTransform().setOrigin(btVector3(pos.x, pos.y, pos.z));
-        body->getWorldTransform().setRotation(btQuaternion(quat.x, quat.y, quat.z, quat.w));
+        body->getWorldTransform().setOrigin(OgreBtConverter::to(pos));
+        body->getWorldTransform().setRotation(OgreBtConverter::to(quat));
 
         mObject = body;
 		getDynamicsWorld()->addRigidBody(this, mCollisionGroup, mCollisionMask);
@@ -138,12 +137,12 @@ namespace OgreBulletDynamics
         body->setRestitution(bodyRestitution);
         body->setFriction(bodyFriction);
 
-        body->getWorldTransform().setOrigin(btVector3(pos.x, pos.y, pos.z));
-        body->getWorldTransform().setRotation(btQuaternion(quat.x, quat.y, quat.z, quat.w));
+        body->getWorldTransform().setOrigin(OgreBtConverter::to(pos));
+        body->getWorldTransform().setRotation(OgreBtConverter::to(quat));
 
         mObject = body;
         getDynamicsWorld()->addRigidBody(this, mCollisionGroup, mCollisionMask);
-   }		
+    }
     // -------------------------------------------------------------------------
     void RigidBody::setStaticShape(OgreBulletCollisions::CollisionShape *shape,
                                    const float bodyRestitution,
@@ -159,8 +158,8 @@ namespace OgreBulletDynamics
         body->setRestitution(bodyRestitution);
         body->setFriction(bodyFriction);
 
-        body->getWorldTransform().setOrigin(btVector3(pos.x, pos.y, pos.z));
-        body->getWorldTransform().setRotation(btQuaternion(quat.x, quat.y, quat.z, quat.w));
+        body->getWorldTransform().setOrigin(OgreBtConverter::to(pos));
+        body->getWorldTransform().setRotation(OgreBtConverter::to(quat));
 
         mObject = body;
 		getDynamicsWorld()->addRigidBody(this, mCollisionGroup, mCollisionMask);
@@ -168,27 +167,27 @@ namespace OgreBulletDynamics
 	// -------------------------------------------------------------------------
     void RigidBody::setKinematicObject(bool isKinematic)
     {
-        if (this->isKinematicObject() != isKinematic)
+        if (isKinematicObject() != isKinematic)
         {
 			//flip kinematic state
-            getBulletRigidBody()->setCollisionFlags(
-                        getBulletRigidBody()->getCollisionFlags() ^ btCollisionObject::CF_KINEMATIC_OBJECT);
+            getBulletRigidBody()->setCollisionFlags(getBulletRigidBody()->getCollisionFlags() ^
+                                                    btCollisionObject::CF_KINEMATIC_OBJECT);
 		}
 	} 
     // -------------------------------------------------------------------------
     void RigidBody::setLinearVelocity(const Ogre::Vector3 &vel)
     {
-        getBulletRigidBody()->setLinearVelocity(btVector3(vel.x, vel.y, vel.z));
+        getBulletRigidBody()->setLinearVelocity(OgreBtConverter::to(vel));
     }
     // -------------------------------------------------------------------------
-    void RigidBody::setLinearVelocity( const Ogre::Real x, const Ogre::Real y, const Ogre::Real z )
+    void RigidBody::setLinearVelocity(const Ogre::Real x, const Ogre::Real y, const Ogre::Real z)
     {
         getBulletRigidBody()->setLinearVelocity(btVector3(x, y, z));
     }
     // -------------------------------------------------------------------------
 	Ogre::Vector3 RigidBody::getLinearVelocity()
 	{
-		const btVector3 lv = getBulletRigidBody()->getLinearVelocity();
+        const btVector3 &lv = getBulletRigidBody()->getLinearVelocity();
 		return BtOgreConverter::to(lv);
 	}
     // -------------------------------------------------------------------------
@@ -223,26 +222,26 @@ namespace OgreBulletDynamics
     void WheeledRigidBody::setPosition(const btVector3 &pos)
     { 
         //should update wheels as well ?
-        mRootNode->setPosition(pos[0], pos[1], pos[2]);
+        mRootNode->setPosition(BtOgreConverter::to(pos));
     }
     // -------------------------------------------------------------------------
     void WheeledRigidBody::setOrientation(const btQuaternion &quat)
     { 
-        mRootNode->setOrientation(quat.getW(),quat.getX(), quat.getY(), quat.getZ());
+        mRootNode->setOrientation(BtOgreConverter::to(quat));
     }
     // -------------------------------------------------------------------------
     void WheeledRigidBody::setTransform(const btVector3 &pos, const btQuaternion &quat)
     {
-        mRootNode->setPosition(pos[0], pos[1], pos[2]);
-        mRootNode->setOrientation(quat.getW(),quat.getX(), quat.getY(), quat.getZ());
+        mRootNode->setPosition(BtOgreConverter::to(pos));
+        mRootNode->setOrientation(BtOgreConverter::to(quat));
 
         mVehicle->setTransform();
     }
     // -------------------------------------------------------------------------
     void WheeledRigidBody::setTransform(const btTransform& worldTrans)
     { 
-        mRootNode->setPosition(worldTrans.getOrigin()[0], worldTrans.getOrigin()[1],worldTrans.getOrigin()[2]);
-        mRootNode->setOrientation(worldTrans.getRotation().getW(),worldTrans.getRotation().getX(), worldTrans.getRotation().getY(), worldTrans.getRotation().getZ());
+        mRootNode->setPosition(BtOgreConverter::to(worldTrans.getOrigin()));
+        mRootNode->setOrientation(BtOgreConverter::to(worldTrans.getRotation()));
 
         mVehicle->setTransform();
     }

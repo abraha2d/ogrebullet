@@ -2,7 +2,6 @@
 
 This source file is part of OGREBULLET
 (Object-oriented Graphics Rendering Engine Bullet Wrapper)
-For the latest info, see http://www.ogre3d.org/phpBB2addons/viewforum.php?f=10
 
 Copyright (c) 2007 tuan.kuranes@gmail.com (Use it Freely, even Statically, but have to contribute any changes)
 
@@ -40,10 +39,10 @@ using namespace OgreBulletCollisions;
 namespace OgreBulletCollisions
 {
     // -------------------------------------------------------------------------
-    BoxCollisionShape::BoxCollisionShape(const Vector3 &bodyBounds):
-        CollisionShape()
+    BoxCollisionShape::BoxCollisionShape(const Vector3 &bodyBounds)
+        : CollisionShape()
     {
-            mShape = new btBoxShape(OgreBtConverter::to(bodyBounds));
+        mShape = new btBoxShape(OgreBtConverter::to(bodyBounds));
     }
     // -------------------------------------------------------------------------
     BoxCollisionShape::~BoxCollisionShape()

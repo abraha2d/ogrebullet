@@ -2,7 +2,6 @@
 
 This source file is part of OGREBULLET
 (Object-oriented Graphics Rendering Engine Bullet Wrapper)
-For the latest info, see http://www.ogre3d.org/phpBB2addons/viewforum.php?f=10
 
 Copyright (c) 2007 tuan.kuranes@gmail.com (Use it Freely, even Statically, but have to contribute any changes)
 
@@ -45,27 +44,25 @@ THE SOFTWARE.
 #include "Shapes/OgreBulletCollisionsCapsuleShape.h"
 #include "Shapes/OgreBulletCollisionsCompoundShape.h"
 
-
 using namespace OgreBulletCollisions;
-using namespace Ogre;
 
 //------------------------------------------------------------------------------------------------
-void VertexIndexToShape::addStaticVertexData(const VertexData *vertex_data)
+void VertexIndexToShape::addStaticVertexData(const Ogre::VertexData *vertex_data)
 {
     if (!vertex_data)
     {
         return;
     }
 
-	const VertexData *data = vertex_data;
+    const Ogre::VertexData *data = vertex_data;
 
 	const unsigned int prev_size = mVertexCount;
     mVertexCount += (unsigned int)data->vertexCount;
 
-    Ogre::Vector3* tmp_vert = new Ogre::Vector3[mVertexCount];
+    Ogre::Vector3 *tmp_vert = new Ogre::Vector3[mVertexCount];
 	if (mVertexBuffer)
 	{
-		memcpy(tmp_vert, mVertexBuffer, sizeof(Vector3) * prev_size);
+        memcpy(tmp_vert, mVertexBuffer, sizeof(Ogre::Vector3) * prev_size);
 		delete[] mVertexBuffer;
 	}
 	mVertexBuffer = tmp_vert;
@@ -105,13 +102,13 @@ void VertexIndexToShape::addAnimatedVertexData(const Ogre::VertexData *vertex_da
 	// Get the bone index element
 	assert(vertex_data);
 
-	const VertexData *data = blend_data;
+    const Ogre::VertexData *data = blend_data;
 	const unsigned int prev_size = mVertexCount;
 	mVertexCount += (unsigned int)data->vertexCount;
     Ogre::Vector3 *tmp_vert = new Ogre::Vector3[mVertexCount];
 	if (mVertexBuffer)
 	{
-		memcpy(tmp_vert, mVertexBuffer, sizeof(Vector3) * prev_size);
+        memcpy(tmp_vert, mVertexBuffer, sizeof(Ogre::Vector3) * prev_size);
 		delete[] mVertexBuffer;
 	}
 	mVertexBuffer = tmp_vert;
@@ -156,18 +153,17 @@ void VertexIndexToShape::addAnimatedVertexData(const Ogre::VertexData *vertex_da
         {
 			mBoneIndex = new BoneIndex();	
         }
-		BoneIndex::iterator i;
 
         Ogre::Vector3 *curVertices = &mVertexBuffer[prev_size];
 
 		const unsigned int vertexCount = (unsigned int)vertex_data->vertexCount;
-		for(unsigned int j = 0; j < vertexCount; ++j)
+        for (unsigned int j = 0; j < vertexCount; ++j)
 		{
 			bneElem->baseVertexPointerToElement(vertex, &pBone);
 			vertex += vSize;
 
 			const unsigned char currBone = (indexMap) ? (*indexMap)[*pBone] : *pBone;
-            i = mBoneIndex->find(currBone);
+            const BoneIndex::iterator i = mBoneIndex->find(currBone);
             Vector3Array *l = NULL;
 			if (i == mBoneIndex->end())
 			{
@@ -188,7 +184,7 @@ void VertexIndexToShape::addAnimatedVertexData(const Ogre::VertexData *vertex_da
 }
 
 //------------------------------------------------------------------------------------------------
-void VertexIndexToShape::addIndexData(IndexData *data, const unsigned int offset)
+void VertexIndexToShape::addIndexData(Ogre::IndexData *data, const unsigned int offset)
 {
     const unsigned int prev_size = mIndexCount;
     mIndexCount += (unsigned int)data->indexCount;
@@ -202,14 +198,14 @@ void VertexIndexToShape::addIndexData(IndexData *data, const unsigned int offset
 	mIndexBuffer = tmp_ind;
 
 	const unsigned int numTris = (unsigned int) data->indexCount / 3;
-	HardwareIndexBufferSharedPtr ibuf = data->indexBuffer;	
-	const bool use32bitindexes = (ibuf->getType() == HardwareIndexBuffer::IT_32BIT);
+    Ogre::HardwareIndexBufferSharedPtr ibuf = data->indexBuffer;
+    const bool use32bitindexes = (ibuf->getType() == Ogre::HardwareIndexBuffer::IT_32BIT);
     unsigned int index_offset = prev_size;
 
 	if (use32bitindexes) 
     {
-        const unsigned int *pInt = static_cast<unsigned int*>(ibuf->lock(HardwareBuffer::HBL_READ_ONLY));
-        for(unsigned int k = 0; k < numTris; ++k)
+        const unsigned int *pInt = static_cast<unsigned int*>(ibuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
+        for (unsigned int k = 0; k < numTris; ++k)
         {
             mIndexBuffer[index_offset ++] = offset + *pInt++;
             mIndexBuffer[index_offset ++] = offset + *pInt++;
@@ -219,39 +215,39 @@ void VertexIndexToShape::addIndexData(IndexData *data, const unsigned int offset
     }
 	else 
     {
-        const unsigned short *pShort = static_cast<unsigned short*>(ibuf->lock(HardwareBuffer::HBL_READ_ONLY));
+        const unsigned short *pShort = static_cast<unsigned short*>(ibuf->lock(Ogre::HardwareBuffer::HBL_READ_ONLY));
 		for(unsigned int k = 0; k < numTris; ++k)
         {
-            mIndexBuffer[index_offset ++] = offset + static_cast<unsigned int> (*pShort++);
-            mIndexBuffer[index_offset ++] = offset + static_cast<unsigned int> (*pShort++);
-            mIndexBuffer[index_offset ++] = offset + static_cast<unsigned int> (*pShort++);
+            mIndexBuffer[index_offset ++] = offset + static_cast<unsigned int>(*pShort++);
+            mIndexBuffer[index_offset ++] = offset + static_cast<unsigned int>(*pShort++);
+            mIndexBuffer[index_offset ++] = offset + static_cast<unsigned int>(*pShort++);
         }
         ibuf->unlock();
     }
 
 }
 //------------------------------------------------------------------------------------------------
-Real VertexIndexToShape::getRadius()
+Ogre::Real VertexIndexToShape::getRadius()
 {
-	if (mBoundRadius == (-1))
+    if (mBoundRadius == Ogre::Real(-1))
 	{
 		getSize();
-		mBoundRadius = (std::max(mBounds.x,std::max(mBounds.y,mBounds.z)) * 0.5);
+        mBoundRadius = (std::max(mBounds.x, std::max(mBounds.y, mBounds.z)) * 0.5);
 	}
 	return mBoundRadius;
 }
 //------------------------------------------------------------------------------------------------
-Vector3 VertexIndexToShape::getSize()
+Ogre::Vector3 VertexIndexToShape::getSize()
 {
     const unsigned int vCount = getVertexCount();
-	if (mBounds == Ogre::Vector3(-1,-1,-1) && vCount > 0)
+    if (mBounds == Ogre::Vector3(-1, -1, -1) && vCount > 0)
 	{
-        const Ogre::Vector3 *const v = getVertices();
+        const Ogre::Vector3 * const v = getVertices();
 
         Ogre::Vector3 vmin(v[0]);
         Ogre::Vector3 vmax(v[0]);
 
-        for (unsigned int j = 1; j < vCount; j++)
+        for (unsigned int j = 1; j < vCount; ++j)
 		{
 			vmin.x = std::min(vmin.x, v[j].x);
 			vmin.y = std::min(vmin.y, v[j].y);
@@ -297,7 +293,7 @@ CylinderCollisionShape *VertexIndexToShape::createCylinder()
     assert((sz.x > 0.0) && (sz.y > 0.0) && (sz.y > 0.0) &&
            "Size of Cylinder must be greater than zero on all axes");
 
-    CylinderCollisionShape *shape = new CylinderCollisionShape(sz, Vector3::UNIT_X);
+    CylinderCollisionShape *shape = new CylinderCollisionShape(sz, Ogre::Vector3::UNIT_X);
     return shape;
 }
 //------------------------------------------------------------------------------------------------
@@ -309,28 +305,31 @@ ConvexHullCollisionShape *VertexIndexToShape::createConvex()
 
 	//TriangleMeshCollisionShape *trimesh = createTrimesh();
 
-    btConvexShape *tmpConvexShape = new btConvexHullShape((btScalar*) &mVertexBuffer[0].x, mVertexCount, sizeof(Vector3));
+    btConvexShape *tmpConvexShape = new btConvexHullShape((btScalar *)&mVertexBuffer[0].x,
+                                                          mVertexCount,
+                                                          sizeof(Ogre::Vector3));
 	//new btConvexTriangleMeshShape();
 
+/*
+    Ogre::LogManager::getSingleton().logMessage(Ogre::String("Old numTriangles = ") + Ogre::StringConverter::toString(mVertexCount / 3));
+    Ogre::LogManager::getSingleton().logMessage(Ogre::String("Old numIndices = ")   + Ogre::StringConverter::toString(mIndexCount));
+    Ogre::LogManager::getSingleton().logMessage(Ogre::String("Old numVertices = ")  + Ogre::StringConverter::toString(mVertexCount));
 
-	Ogre::LogManager::getSingleton().logMessage(String("old numTriangles= %d\n") + Ogre::StringConverter::toString(mVertexCount / 3));
-	Ogre::LogManager::getSingleton().logMessage(String("old numIndices = %d\n") + Ogre::StringConverter::toString(mIndexCount));
-	Ogre::LogManager::getSingleton().logMessage(String("old numVertices = %d\n") + Ogre::StringConverter::toString(mVertexCount));
-
-	Ogre::LogManager::getSingleton().logMessage(String("reducing vertices by creating a convex hull\n"));
+    Ogre::LogManager::getSingleton().logMessage(Ogre::String("Reducing vertices by creating a convex hull"));
+*/
 
 	//create a hull approximation
     btShapeHull *hull = new btShapeHull(tmpConvexShape);
     btScalar margin = 0.001f;//tmpConvexShape->getMargin();
 	hull->buildHull(margin);
 	tmpConvexShape->setUserPointer(hull);
-
-	Ogre::LogManager::getSingleton().logMessage(String("new numTriangles = %d\n") + Ogre::StringConverter::toString(hull->numTriangles ()));
-	Ogre::LogManager::getSingleton().logMessage(String("new numIndices = %d\n") + Ogre::StringConverter::toString(hull->numIndices ()));
-	Ogre::LogManager::getSingleton().logMessage(String("new numVertices = %d\n") + Ogre::StringConverter::toString(hull->numVertices ()));
-
+/*
+    Ogre::LogManager::getSingleton().logMessage(String("New numTriangles = ") + Ogre::StringConverter::toString(hull->numTriangles()));
+    Ogre::LogManager::getSingleton().logMessage(String("New numIndices = ")   + Ogre::StringConverter::toString(hull->numIndices()));
+    Ogre::LogManager::getSingleton().logMessage(String("New numVertices = ")  + Ogre::StringConverter::toString(hull->numVertices()));
+*/
     btConvexHullShape *convexShape = new btConvexHullShape();
-	for (unsigned int i=0;i<(unsigned int )hull->numVertices();i++)
+    for (unsigned int i = 0; i < (unsigned int)hull->numVertices(); ++i)
 	{
 		convexShape->addPoint(hull->getVertexPointer()[i]);	
 	}
@@ -370,8 +369,8 @@ public:
         mHullCount(0)
 		//, mOutputFile(outputFile)
     {
-			mCentroid = btVector3(0,0,0);
-            convexDecompositionObjectOffset = btVector3(10,0,0);
+            mCentroid = btVector3(0, 0 ,0);
+            convexDecompositionObjectOffset = btVector3(10, 0, 0);
     }
 
 	virtual void ConvexDecompResult(ConvexDecomposition::ConvexResult &result)
@@ -379,10 +378,11 @@ public:
         btTriangleMesh *trimesh = new btTriangleMesh();
 		//m_convexDemo->m_trimeshes.push_back(trimesh);
 
-		btVector3 localScaling(1.f,1.f,1.f);
+        btVector3 localScaling(1.0f, 1.0f, 1.0f);
 
 		//export data to .obj
-		printf("ConvexResult. ");
+
+        Ogre::LogManager::getSingleton().logMessage("ConvexResult. ");
 		//if (mOutputFile)
 		{
 			//fprintf(mOutputFile,"## Hull Piece %d with %d vertices and %d triangles.\r\n", mHullCount, result.mHullVcount, result.mHullTcount );
@@ -489,7 +489,7 @@ public:
 
 			//m_convexDemo->m_collisionShapes.push_back(convexShape);
 
-			mBaseCount+=result.mHullVcount; // advance the 'base index' counter.
+            mBaseCount += result.mHullVcount; // advance the 'base index' counter.
 		}
 	}
 
@@ -560,9 +560,7 @@ CompoundCollisionShape *VertexIndexToShape::createConvexDecomposition(unsigned i
 
     MyConvexDecomposition convexDecomposition;
 
-    desc.mCallback = (ConvexDecomposition::ConvexDecompInterface *)&convexDecomposition;
-
-
+    desc.mCallback = &convexDecomposition;
 
 	//convexDecomposition.performConvexDecomposition(desc);
 
@@ -570,7 +568,7 @@ CompoundCollisionShape *VertexIndexToShape::createConvexDecomposition(unsigned i
 	cb.process(desc);
 	//now create some bodies
 
-    btCompoundShape *compound = new btCompoundShape();
+    btCompoundShape *compound = new btCompoundShape;
 
 	//m_collisionShapes.push_back (compound);
 
@@ -620,12 +618,12 @@ VertexIndexToShape::~VertexIndexToShape()
 	}
 }
 //------------------------------------------------------------------------------------------------
-VertexIndexToShape::VertexIndexToShape(const Matrix4 &transform)
+VertexIndexToShape::VertexIndexToShape(const Ogre::Matrix4 &transform)
     : mVertexBuffer(NULL),
       mIndexBuffer(NULL),
       mVertexCount(0),
       mIndexCount(0),
-      mBounds(Vector3(-1.0f, -1.0f, -1.0f)),
+      mBounds(Ogre::Vector3(-1.0f, -1.0f, -1.0f)),
       mBoundRadius(-1.0f),
       mBoneIndex(NULL),
       mTransform(transform)
@@ -643,7 +641,8 @@ StaticMeshToShapeConverter::~StaticMeshToShapeConverter()
 {
 }
 //------------------------------------------------------------------------------------------------
-StaticMeshToShapeConverter::StaticMeshToShapeConverter(Entity *entity, const Matrix4 &transform)
+StaticMeshToShapeConverter::StaticMeshToShapeConverter(Ogre::Entity *entity,
+                                                       const Ogre::Matrix4 &transform)
     : VertexIndexToShape(transform),
       mEntity(NULL),
       mNode(NULL)
@@ -651,12 +650,13 @@ StaticMeshToShapeConverter::StaticMeshToShapeConverter(Entity *entity, const Mat
 	addEntity(entity, transform);	
 }
 //------------------------------------------------------------------------------------------------
-StaticMeshToShapeConverter::StaticMeshToShapeConverter(Renderable *rend, const Matrix4 &transform)
+StaticMeshToShapeConverter::StaticMeshToShapeConverter(Ogre::Renderable *rend,
+                                                       const Ogre::Matrix4 &transform)
     : VertexIndexToShape(transform),
       mEntity(NULL),
       mNode(NULL)
 {
-	RenderOperation op;
+    Ogre::RenderOperation op;
 	rend->getRenderOperation(op);
 	VertexIndexToShape::addStaticVertexData(op.vertexData);
     if (op.useIndexes)
@@ -666,7 +666,8 @@ StaticMeshToShapeConverter::StaticMeshToShapeConverter(Renderable *rend, const M
 
 }
 //------------------------------------------------------------------------------------------------
-void StaticMeshToShapeConverter::addEntity(Entity *entity, const Matrix4 &transform)
+void StaticMeshToShapeConverter::addEntity(Ogre::Entity *entity,
+                                           const Ogre::Matrix4 &transform)
 {
 	// Each entity added need to reset size and radius
 	// next time getRadius and getSize are asked, they're computed.
@@ -674,7 +675,10 @@ void StaticMeshToShapeConverter::addEntity(Entity *entity, const Matrix4 &transf
     mBoundRadius = -1.0f;
 
 	mEntity = entity;
-	mNode = (SceneNode*)(mEntity->getParentNode());
+    if (!mEntity->isParentTagPoint())
+    {
+        mNode = mEntity->getParentSceneNode();
+    }
 	mTransform = transform;
 
 	if (mEntity->getMesh()->sharedVertexData)
@@ -684,7 +688,7 @@ void StaticMeshToShapeConverter::addEntity(Entity *entity, const Matrix4 &transf
 
     for (unsigned int i = 0; i < mEntity->getNumSubEntities(); ++i)
 	{
-		SubMesh *sub_mesh = mEntity->getSubEntity(i)->getSubMesh();
+        Ogre::SubMesh *sub_mesh = mEntity->getSubEntity(i)->getSubMesh();
 
 		if (!sub_mesh->useSharedVertices)
 		{
@@ -699,7 +703,8 @@ void StaticMeshToShapeConverter::addEntity(Entity *entity, const Matrix4 &transf
 	}
 }
 //------------------------------------------------------------------------------------------------
-void StaticMeshToShapeConverter::addMesh(const MeshPtr &mesh, const Matrix4 &transform)
+void StaticMeshToShapeConverter::addMesh(const Ogre::MeshPtr &mesh,
+                                         const Ogre::Matrix4 &transform)
 {
 	// Each entity added need to reset size and radius
 	// next time getRadius and getSize are asked, they're computed.
@@ -712,7 +717,7 @@ void StaticMeshToShapeConverter::addMesh(const MeshPtr &mesh, const Matrix4 &tra
 
     if (mesh->hasSkeleton())
     {
-		Ogre::LogManager::getSingleton().logMessage("MeshToShapeConverter::addMesh : Mesh " + mesh->getName () + " as skeleton but added to trimesh non animated");
+        Ogre::LogManager::getSingleton().logMessage("MeshToShapeConverter::addMesh : Mesh " + mesh->getName() + " as skeleton but added to trimesh non animated");
     }
 
 	if (mesh->sharedVertexData)
@@ -720,9 +725,9 @@ void StaticMeshToShapeConverter::addMesh(const MeshPtr &mesh, const Matrix4 &tra
 		VertexIndexToShape::addStaticVertexData (mesh->sharedVertexData);
 	}
 
-    for(unsigned int i = 0; i < mesh->getNumSubMeshes(); ++i)
+    for (unsigned int i = 0; i < mesh->getNumSubMeshes(); ++i)
 	{
-		SubMesh *sub_mesh = mesh->getSubMesh(i);
+        Ogre::SubMesh *sub_mesh = mesh->getSubMesh(i);
 
 		if (!sub_mesh->useSharedVertices)
 		{
@@ -737,7 +742,8 @@ void StaticMeshToShapeConverter::addMesh(const MeshPtr &mesh, const Matrix4 &tra
 	}
 }
 //------------------------------------------------------------------------------------------------
-AnimatedMeshToShapeConverter::AnimatedMeshToShapeConverter(Entity *entity,const Matrix4 &transform)
+AnimatedMeshToShapeConverter::AnimatedMeshToShapeConverter(Ogre::Entity *entity,
+                                                           const Ogre::Matrix4 &transform)
     : VertexIndexToShape(transform),
       mEntity(NULL),
       mNode(NULL),
@@ -761,7 +767,8 @@ AnimatedMeshToShapeConverter::~AnimatedMeshToShapeConverter()
 	delete[] mTransformedVerticesTemp;
 }
 //------------------------------------------------------------------------------------------------
-void AnimatedMeshToShapeConverter::addEntity(Entity *entity, const Matrix4 &transform)
+void AnimatedMeshToShapeConverter::addEntity(Ogre::Entity *entity,
+                                             const Ogre::Matrix4 &transform)
 {
 	// Each entity added need to reset size and radius
 	// next time getRadius and getSize are asked, they're computed.
@@ -769,7 +776,10 @@ void AnimatedMeshToShapeConverter::addEntity(Entity *entity, const Matrix4 &tran
     mBoundRadius = -1.0f;
 
 	mEntity = entity;
-	mNode = (SceneNode*)(mEntity->getParentNode());
+    if (!mEntity->isParentTagPoint())
+    {
+        mNode = mEntity->getParentSceneNode();
+    }
 	mTransform = transform;
 
     assert(entity->getMesh()->hasSkeleton());
@@ -780,25 +790,25 @@ void AnimatedMeshToShapeConverter::addEntity(Entity *entity, const Matrix4 &tran
 	if (mEntity->getMesh()->sharedVertexData)
 	{
         VertexIndexToShape::addAnimatedVertexData(mEntity->getMesh()->sharedVertexData,
-			mEntity->_getSkelAnimVertexData(),
-			&mEntity->getMesh()->sharedBlendIndexToBoneIndexMap); 
+                                                  mEntity->_getSkelAnimVertexData(),
+                                                  &mEntity->getMesh()->sharedBlendIndexToBoneIndexMap);
 	}
 
-	for (unsigned int i = 0;i < mEntity->getNumSubEntities();++i)
+    for (unsigned int i = 0; i < mEntity->getNumSubEntities(); ++i)
 	{
-		SubMesh *sub_mesh = mEntity->getSubEntity(i)->getSubMesh();
+        Ogre::SubMesh *sub_mesh = mEntity->getSubEntity(i)->getSubMesh();
 
 		if (!sub_mesh->useSharedVertices)
 		{
 			VertexIndexToShape::addIndexData(sub_mesh->indexData, mVertexCount);
 
-			VertexIndexToShape::addAnimatedVertexData (sub_mesh->vertexData, 
-				mEntity->getSubEntity(i)->_getSkelAnimVertexData(),
-				&sub_mesh->blendIndexToBoneIndexMap); 
+            VertexIndexToShape::addAnimatedVertexData(sub_mesh->vertexData,
+                                                      mEntity->getSubEntity(i)->_getSkelAnimVertexData(),
+                                                      &sub_mesh->blendIndexToBoneIndexMap);
 		}
 		else 
 		{
-			VertexIndexToShape::addIndexData (sub_mesh->indexData);
+            VertexIndexToShape::addIndexData(sub_mesh->indexData);
 		}
 
 	}
@@ -806,7 +816,8 @@ void AnimatedMeshToShapeConverter::addEntity(Entity *entity, const Matrix4 &tran
 	mEntity->removeSoftwareAnimationRequest(false);
 }
 //------------------------------------------------------------------------------------------------
-void AnimatedMeshToShapeConverter::addMesh(const MeshPtr &mesh, const Matrix4 &transform)
+void AnimatedMeshToShapeConverter::addMesh(const Ogre::MeshPtr &mesh,
+                                           const Ogre::Matrix4 &transform)
 {
 	// Each entity added need to reset size and radius
 	// next time getRadius and getSize are asked, they're computed.
@@ -826,9 +837,9 @@ void AnimatedMeshToShapeConverter::addMesh(const MeshPtr &mesh, const Matrix4 &t
                                                   &mesh->sharedBlendIndexToBoneIndexMap);
 	}
 
-    for(unsigned int i = 0; i < mesh->getNumSubMeshes(); ++i)
+    for (unsigned int i = 0; i < mesh->getNumSubMeshes(); ++i)
 	{
-		SubMesh *sub_mesh = mesh->getSubMesh(i);
+        Ogre::SubMesh *sub_mesh = mesh->getSubMesh(i);
 
 		if (!sub_mesh->useSharedVertices)
 		{
@@ -849,7 +860,7 @@ void AnimatedMeshToShapeConverter::addMesh(const MeshPtr &mesh, const Matrix4 &t
 bool AnimatedMeshToShapeConverter::getBoneVertices(unsigned char bone, 
                                                    unsigned int &vertex_count,
                                                    Ogre::Vector3 *&vertices,
-                                                   const Vector3 &bonePosition)
+                                                   const Ogre::Vector3 &bonePosition)
 {
 	BoneIndex::iterator i = mBoneIndex->find(bone);
 
@@ -858,12 +869,14 @@ bool AnimatedMeshToShapeConverter::getBoneVertices(unsigned char bone,
 		return false;
     }
 
-    if (i->second->empty())
+    Vector3Array *array = i->second;
+    const Vector3Array::size_type size = array->size();
+    if (size == 0)
     {
 		return false;
     }
 
-	vertex_count = (unsigned int) i->second->size() + 1;
+    vertex_count = size + 1;
 	if (vertex_count > mTransformedVerticesTempSize)
 	{	
 		if (mTransformedVerticesTemp)
@@ -882,8 +895,8 @@ bool AnimatedMeshToShapeConverter::getBoneVertices(unsigned char bone,
 
 	//mEntity->getSkeleton()->getBone(bone)->_getDerivedOrientation()
 	unsigned int currBoneVertex = 1;
-	Vector3Array::iterator j = i->second->begin();
-	while(j != i->second->end())
+    Vector3Array::iterator j = array->begin();
+    while (j != array->end())
 	{
 		vertices[currBoneVertex] = (*j);
 		++j;
@@ -893,29 +906,29 @@ bool AnimatedMeshToShapeConverter::getBoneVertices(unsigned char bone,
 }
 //------------------------------------------------------------------------------------------------
 BoxCollisionShape *AnimatedMeshToShapeConverter::createAlignedBox(unsigned char bone,
-																  const Vector3 &bonePosition,
-																  const Quaternion &boneOrientation)
+                                                                  const Ogre::Vector3 &bonePosition,
+                                                                  const Ogre::Quaternion &boneOrientation)
 {
 	unsigned int vertex_count;
-    Vector3 *vertices;
+    Ogre::Vector3 *vertices;
 
     if (!getBoneVertices(bone, vertex_count, vertices, bonePosition))
     {
         return NULL;
     }
 
-	Vector3 min_vec(vertices[0]);
-	Vector3 max_vec(vertices[0]);
+    Ogre::Vector3 min_vec(vertices[0]);
+    Ogre::Vector3 max_vec(vertices[0]);
 
     for (unsigned int j = 1; j < vertex_count; ++j)
 	{
-		min_vec.x = std::min(min_vec.x,vertices[j].x);
-		min_vec.y = std::min(min_vec.y,vertices[j].y);
-		min_vec.z = std::min(min_vec.z,vertices[j].z);
+        min_vec.x = std::min(min_vec.x, vertices[j].x);
+        min_vec.y = std::min(min_vec.y, vertices[j].y);
+        min_vec.z = std::min(min_vec.z, vertices[j].z);
 
-		max_vec.x = std::max(max_vec.x,vertices[j].x);
-		max_vec.y = std::max(max_vec.y,vertices[j].y);
-		max_vec.z = std::max(max_vec.z,vertices[j].z);
+        max_vec.x = std::max(max_vec.x, vertices[j].x);
+        max_vec.y = std::max(max_vec.y, vertices[j].y);
+        max_vec.z = std::max(max_vec.z, vertices[j].z);
 	}
 
 	const Ogre::Vector3 maxMinusMin(max_vec - min_vec);
@@ -934,21 +947,21 @@ BoxCollisionShape *AnimatedMeshToShapeConverter::createAlignedBox(unsigned char 
 }
 //------------------------------------------------------------------------------------------------
 bool AnimatedMeshToShapeConverter::getOrientedBox(unsigned char bone,
-                                                  const Vector3 &bonePosition,
-                                                  const Quaternion &boneOrientation,
-                                                  Vector3 &box_afExtent,
-                                                  Vector3 *box_akAxis,
-                                                  Vector3 &box_kCenter)
+                                                  const Ogre::Vector3 &bonePosition,
+                                                  const Ogre::Quaternion &boneOrientation,
+                                                  Ogre::Vector3 &box_afExtent,
+                                                  Ogre::Vector3 *box_akAxis,
+                                                  Ogre::Vector3 &box_kCenter)
 {
 	unsigned int vertex_count;
-    Vector3 *vertices;
+    Ogre::Vector3 *vertices;
 
 	if (!getBoneVertices(bone, vertex_count, vertices, bonePosition))
     {
 		return false;
     }
 
-    box_kCenter = Vector3::ZERO;
+    box_kCenter = Ogre::Vector3::ZERO;
 
     {
         for (unsigned int c = 0 ; c < vertex_count; ++c)
@@ -959,7 +972,7 @@ bool AnimatedMeshToShapeConverter::getOrientedBox(unsigned char bone,
         box_kCenter *= invVertexCount;
     }
 
-	Quaternion orient = boneOrientation;
+    Ogre::Quaternion orient = boneOrientation;
 	orient.ToAxes(box_akAxis);
 
 	// Let C be the box center and let U0, U1, and U2 be the box axes.  Each
@@ -1026,8 +1039,8 @@ bool AnimatedMeshToShapeConverter::getOrientedBox(unsigned char bone,
 }
 //------------------------------------------------------------------------------------------------
 BoxCollisionShape *AnimatedMeshToShapeConverter::createOrientedBox(unsigned char bone,
-                                                                   const Vector3 &bonePosition,
-                                                                   const Quaternion &boneOrientation)
+                                                                   const Ogre::Vector3 &bonePosition,
+                                                                   const Ogre::Quaternion &boneOrientation)
 {
 	Ogre::Vector3 box_akAxis[3];
 	Ogre::Vector3 box_afExtent;
@@ -1047,15 +1060,16 @@ BoxCollisionShape *AnimatedMeshToShapeConverter::createOrientedBox(unsigned char
 	return geom; 
 }
 //------------------------------------------------------------------------------------------------
-CapsuleCollisionShape *AnimatedMeshToShapeConverter::createOrientedCapsuleCollisionShape(unsigned char bone,
-                                                                                         const Vector3 &bonePosition,
-                                                                                         const Quaternion &boneOrientation)
+CapsuleCollisionShape *AnimatedMeshToShapeConverter::createOrientedCapsuleCollisionShape(
+        unsigned char bone,
+        const Ogre::Vector3 &bonePosition,
+        const Ogre::Quaternion &boneOrientation)
 {
 	Ogre::Vector3 box_akAxis[3];
 	Ogre::Vector3 box_afExtent;
 	Ogre::Vector3 box_afCenter;
 
-	if (!getOrientedBox(bone,  bonePosition, boneOrientation,
+    if (!getOrientedBox(bone, bonePosition, boneOrientation,
 						box_afExtent,
 						box_akAxis,
 						box_afCenter))
@@ -1065,28 +1079,28 @@ CapsuleCollisionShape *AnimatedMeshToShapeConverter::createOrientedCapsuleCollis
 
 	// find axes with longest length
 
-	Vector3 cap_dir;    //std::max(box_afExtent.x,std::max(box_afExtent.y,box_afExtent.z));
-	Real cap_dirLength;  //std::max(box_afExtent.x,std::max(box_afExtent.y,box_afExtent.z));
-	Real cap_radius;	 // max axe length
+    Ogre::Vector3 cap_dir;    //std::max(box_afExtent.x,std::max(box_afExtent.y,box_afExtent.z));
+    Ogre::Real cap_dirLength;  //std::max(box_afExtent.x,std::max(box_afExtent.y,box_afExtent.z));
+    Ogre::Real cap_radius;	 // max axe length
 	if (box_afExtent.x - box_afExtent.y > 0 && box_afExtent.x - box_afExtent.z > 0)
 	{
-		cap_dir = Vector3::UNIT_X;
+        cap_dir = Ogre::Vector3::UNIT_X;
 		cap_dirLength = box_afExtent.x;
-		cap_radius = std::max (box_afExtent.y, box_afExtent.z);
+        cap_radius = std::max(box_afExtent.y, box_afExtent.z);
 	}
     else
     if (box_afExtent.y - box_afExtent.x > 0 && box_afExtent.y - box_afExtent.z > 0)
 	{
-		cap_dir = Vector3::UNIT_Y;
+        cap_dir = Ogre::Vector3::UNIT_Y;
 		cap_dirLength = box_afExtent.y;
-		cap_radius = std::max (box_afExtent.x, box_afExtent.z);
+        cap_radius = std::max(box_afExtent.x, box_afExtent.z);
 	}
     else
     if (box_afExtent.z - box_afExtent.y > 0 && box_afExtent.z - box_afExtent.y > 0)
 	{
-		cap_dir = Vector3::UNIT_Z;
+        cap_dir = Ogre::Vector3::UNIT_Z;
 		cap_dirLength = box_afExtent.z;
-		cap_radius = std::max (box_afExtent.x, box_afExtent.z);
+        cap_radius = std::max(box_afExtent.x, box_afExtent.z);
 	}
 
     CapsuleCollisionShape *geom = new CapsuleCollisionShape(cap_radius, cap_dirLength, cap_dir);
