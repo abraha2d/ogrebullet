@@ -1,0 +1,2 @@
+#ignore OS X Finder config
+*.DS_Store
