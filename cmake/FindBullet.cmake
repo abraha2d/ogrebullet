@@ -39,42 +39,28 @@ endif()
 #mark_as_advanced(BULLET_INCLUDE_DIR)
 
 find_path(BULLET_INCLUDE_DIR btBulletCollisionCommon.h
-          PATHS ${HINT_PATHS})
-
-find_path(BULLET_INCLUDE_COLLISION_DIR BulletCollision/btBulletCollisionCommon.h
-          PATHS ${HINT_PATHS})
-
-if(BULLET_INCLUDE_COLLISION_DIR)
-        set(BULLET_INCLUDE_COLLISION_DIR ${BULLET_INCLUDE_COLLISION_DIR}/BulletCollision)
-endif()
-
-find_path(BULLET_INCLUDE_DYNAMICS_DIR BulletDynamics/btBulletDynamicsCommon.h
-          PATHS ${HINT_PATHS})
-
-if(BULLET_INCLUDE_DYNAMICS_DIR)
-        set(BULLET_INCLUDE_DYNAMICS_DIR ${BULLET_INCLUDE_DYNAMICS_DIR}/BulletDynamics)
-endif()
+          PATHS ${HINT_PATHS}
+          PATH_SUFFIXES src/)
+          
+find_path(BULLET_INCLUDE_COLLISION_DIR btBulletCollisionCommon.h
+          PATHS ${HINT_PATHS}
+          PATH_SUFFIXES src/)
+          
+find_path(BULLET_INCLUDE_DYNAMICS_DIR btBulletDynamicsCommon.h
+          PATHS ${HINT_PATHS}
+          PATH_SUFFIXES src/)
 
 find_path(BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR ConvexDecomposition/ConvexDecomposition.h
-          PATHS ${HINT_PATHS})
+          PATHS ${HINT_PATHS}
+          PATH_SUFFIXES Extras/)
 
-if(BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR)
-        set(BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR ${BULLET_INCLUDE_CONVEXDECOMPOSITION_DIR}/ConvexDecomposition)
-endif()
+find_path(BULLET_INCLUDE_SOFTBODY_DIR btSoftBody.h
+          PATHS ${HINT_PATHS}
+          PATH_SUFFIXES src/BulletSoftBody/)
 
-find_path(BULLET_INCLUDE_SOFTBODY_DIR BulletSoftBody/btSoftBody.h
-          PATHS ${HINT_PATHS})
-
-if(BULLET_INCLUDE_SOFTBODY_DIR)
-        set(BULLET_INCLUDE_SOFTBODY_DIR ${BULLET_INCLUDE_SOFTBODY_DIR}/BulletSoftBody)
-endif()
-
-find_path(BULLET_INCLUDE_LINEARMATH_DIR LinearMath/btScalar.h
-          PATHS ${HINT_PATHS})
-
-if(BULLET_INCLUDE_LINEARMATH_DIR)
-        set(BULLET_INCLUDE_LINEARMATH_DIR ${BULLET_INCLUDE_LINEARMATH_DIR}/LinearMath)
-endif()
+find_path(BULLET_INCLUDE_LINEARMATH_DIR btScalar.h
+          PATHS ${HINT_PATHS}
+          PATH_SUFFIXES src/LinearMath/)
 
 mark_as_advanced(BULLET_INCLUDE_COLLISION_DIR
                  BULLET_INCLUDE_DYNAMICS_DIR
