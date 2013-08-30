@@ -58,11 +58,11 @@ DebugLines::DebugLines()
             ResourceGroupManager::getSingletonPtr()->createResourceGroup("OgreBulletCollisions");
         }
 
-        MaterialPtr red = MaterialManager::getSingleton().create("OgreBulletCollisionsDebugLines/Disabled","OgreBulletCollisions");
-        MaterialPtr green = MaterialManager::getSingleton().create("OgreBulletCollisionsDebugLines/Enabled","OgreBulletCollisions");
-        MaterialPtr blue = MaterialManager::getSingleton().create("OgreBulletCollisionsDebugLines/Static","OgreBulletCollisions");
+        MaterialPtr red = MaterialManager::getSingleton().create("OgreBulletCollisionsDebugLines/Disabled","OgreBulletCollisions").dynamicCast<Material>();
+        MaterialPtr green = MaterialManager::getSingleton().create("OgreBulletCollisionsDebugLines/Enabled","OgreBulletCollisions").dynamicCast<Material>();
+        MaterialPtr blue = MaterialManager::getSingleton().create("OgreBulletCollisionsDebugLines/Static","OgreBulletCollisions").dynamicCast<Material>();
 
-		MaterialPtr redVisible = MaterialManager::getSingleton().create("OgreBulletCollisionsDebugLines/RED","OgreBulletCollisions");
+		MaterialPtr redVisible = MaterialManager::getSingleton().create("OgreBulletCollisionsDebugLines/RED","OgreBulletCollisions").dynamicCast<Material>();
 
         red->setReceiveShadows(false);
         red->getTechnique(0)->setLightingEnabled(true);
