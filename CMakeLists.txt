@@ -40,8 +40,6 @@ endif()
 
 include_directories(${INCLUDE_DIRS})
 
-link_directories(${OGRE_LIB_DIR})
-
 set(SOURCES_Col
 	Collisions/src/Shapes/OgreBulletCollisionsConeShape.cpp
 	Collisions/src/Shapes/OgreBulletCollisionsConvexHullShape.cpp
@@ -140,8 +138,11 @@ set(HEADERS_Dyn
 set(COLLISIONS_LIB "${PROJ}Collisions")
 set(DYNAMICS_LIB "${PROJ}Dynamics")
 
-add_library(${COLLISIONS_LIB} ${SOURCES_Col})
-add_library(${DYNAMICS_LIB} ${SOURCES_Dyn})
+add_library(${COLLISIONS_LIB} SHARED ${SOURCES_Col})
+add_library(${DYNAMICS_LIB} SHARED ${SOURCES_Dyn} )
+
+target_link_libraries(${DYNAMICS_LIB} ${COLLISIONS_LIB}   )
+target_link_libraries(${COLLISIONS_LIB} ${OGRE_LIBRARIES} ${OGRE_Overlay_LIBRARY} ${BULLET_LIBRARIES})
 
 set(INCLUDE_INSTALL_DIR include/${PROJ})
 
