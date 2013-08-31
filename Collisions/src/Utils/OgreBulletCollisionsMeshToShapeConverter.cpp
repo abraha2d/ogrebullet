@@ -31,7 +31,7 @@ THE SOFTWARE.
 
 #include "Utils/OgreBulletCollisionsMeshToShapeConverter.h"
 
-#include "ConvexBuilder.h"
+#include "ConvexDecomposition/ConvexBuilder.h"
 
 #include "BulletCollision/CollisionShapes/btShapeHull.h"
 
