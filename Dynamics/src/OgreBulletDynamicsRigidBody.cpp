@@ -67,11 +67,8 @@ namespace OgreBulletDynamics
         mState = new ObjectState(this);
 
         mRootNode = node;
-        mShapeNode = mRootNode->createChildSceneNode(mName + "Node");
+        mShapeNode = mRootNode->createChildSceneNode(mName + ":RBNode");
         mShapeNode->attachObject(this);
-
-        node->setPosition(pos);
-        node->setOrientation(quat);
 
         mShape = shape;
         showDebugShape(mWorld->getShowDebugShapes());
@@ -85,6 +82,9 @@ namespace OgreBulletDynamics
         btRigidBody *body = new btRigidBody(bodyMass, mState, mShape->getBulletShape(), localInertiaTensor);
         body->setRestitution(bodyRestitution);
         body->setFriction(bodyFriction);
+
+        body->getWorldTransform().setOrigin(OgreBtConverter::to(node->_getDerivedPosition()));
+        body->getWorldTransform().setRotation(OgreBtConverter::to(node->_getDerivedOrientation()));
 
         mObject = body;
 
@@ -106,9 +106,6 @@ namespace OgreBulletDynamics
         mShapeNode = mRootNode->createChildSceneNode(mName + "Node");
         mShapeNode->attachObject(this);
 
-        node->setPosition(pos);
-        node->setOrientation(quat);
-
         mShape = shape;
         showDebugShape(mWorld->getShowDebugShapes());
 
@@ -117,8 +114,8 @@ namespace OgreBulletDynamics
         body->setRestitution(bodyRestitution);
         body->setFriction(bodyFriction);
 
-        body->getWorldTransform().setOrigin(OgreBtConverter::to(pos));
-        body->getWorldTransform().setRotation(OgreBtConverter::to(quat));
+        body->getWorldTransform().setOrigin(OgreBtConverter::to(node->_getDerivedPosition()));
+        body->getWorldTransform().setRotation(OgreBtConverter::to(node->_getDerivedOrientation()));
 
         mObject = body;
 		getDynamicsWorld()->addRigidBody(this, mCollisionGroup, mCollisionMask);

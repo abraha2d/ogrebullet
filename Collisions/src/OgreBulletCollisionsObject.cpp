@@ -128,8 +128,24 @@ namespace OgreBulletCollisions
     // -------------------------------------------------------------------------
     void Object::setTransform(const btTransform& worldTrans)
     { 
-        mRootNode->setPosition(worldTrans.getOrigin()[0], worldTrans.getOrigin()[1],worldTrans.getOrigin()[2]);
-        mRootNode->setOrientation(worldTrans.getRotation().getW(),worldTrans.getRotation().getX(), worldTrans.getRotation().getY(), worldTrans.getRotation().getZ());
+    	// position calculation
+    	Ogre::Vector3 parentPosition(0.,0.,0.);
+    	Ogre::Vector3 newPosition = Ogre::Vector3(worldTrans.getOrigin()[0], worldTrans.getOrigin()[1],worldTrans.getOrigin()[2]);
+    	if(mRootNode->getParentSceneNode() != NULL) {
+    		parentPosition = mRootNode->getParentSceneNode()->_getDerivedPosition();
+
+    	}
+    	newPosition -= parentPosition;
+        mRootNode->setPosition(newPosition);
+
+        // orientation calculation
+    	Ogre::Quaternion parentOrientation = Ogre::Quaternion::IDENTITY;
+        Ogre::Quaternion newOrientation(worldTrans.getRotation().getW(),worldTrans.getRotation().getX(), worldTrans.getRotation().getY(), worldTrans.getRotation().getZ());
+    	if(mRootNode->getParentSceneNode() != NULL) {
+    		parentOrientation = mRootNode->getParentSceneNode()->_getDerivedOrientation();
+    	}
+        newOrientation = newOrientation * parentOrientation.Inverse();
+        mRootNode->setOrientation(newOrientation);
     }
     //-----------------------------------------------------------------------
     void Object::setShape(CollisionShape *shape, 
@@ -162,8 +178,8 @@ namespace OgreBulletCollisions
                 static_cast<SceneNode*>(parent)->detachObject(other_object);
 
             }
-            setPosition(parent->getPosition());
-            setOrientation(parent->getOrientation());
+//            setPosition(parent->getPosition());
+//            setOrientation(parent->getOrientation());
         } 
     }
 #if (OGRE_VERSION >=  ((1 << 16) | (5 << 8) | 0)) // must have at least shoggoth (1.5.0)
