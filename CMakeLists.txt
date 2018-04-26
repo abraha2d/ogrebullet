@@ -1,11 +1,20 @@
 cmake_minimum_required(VERSION 2.8)
 
-set(PROJ "OgreBullet")
+project("OgreBullet")
 
-option(${PROJ}_BUILD_DEMOS "Build demos")
-option(${PROJ}_USE_BOOST "Use Boost (when Ogre compiled with Boost)" ON)
+option(${PROJECT_NAME}_BUILD_STATIC "Static build")
+option(${PROJECT_NAME}_BUILD_DEMOS "Build demos" OFF)
+option(${PROJECT_NAME}_USE_BOOST "Use Boost (when Ogre compiled with Boost)" ON)
+option(${PROJECT_NAME}_USE_PCH "Use precompiled headers")
 
-project(${PROJ})
+if(NOT ${PROJECT_NAME}_BUILD_STATIC)
+        set(BUILD_SHARED_LIBS true)
+endif()
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+        add_definitions(-Wall)
+        add_definitions(-fPIC) # enable position independant code
+endif()
 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/)
 
@@ -24,7 +33,7 @@ if((${OGRE_VERSION} VERSION_EQUAL "1.9.0") OR (${OGRE_VERSION} VERSION_GREATER "
 endif()
 #message("OGRE_VER: ${OGRE_VERSION}")
 
-if(${PROJ}_USE_BOOST)
+if(${PROJECT_NAME}_USE_BOOST)
         find_package(Boost REQUIRED)
         set(INCLUDE_DIRS ${INCLUDE_DIRS} ${Boost_INCLUDE_DIRS})
         if(NOT Boost_FOUND)
@@ -32,13 +41,15 @@ if(${PROJ}_USE_BOOST)
                 message("---------------------------------------------")
                 message("---- Seems that your system has not Boost.")
                 message("---- Set Boost_DIR variable to Boost root dir")
-                message("---- if Ogre built with Boost or uncheck ${PROJ}_USE_BOOST option.")
+                message("---- if Ogre built with Boost or uncheck ${PROJECT_NAME}_USE_BOOST option.")
                 message("---------------------------------------------")
                 message("")
         endif()
 endif()
 
 include_directories(${INCLUDE_DIRS})
+
+link_directories(${OGRE_LIB_DIR})
 
 set(SOURCES_Col
 	Collisions/src/Shapes/OgreBulletCollisionsConeShape.cpp
@@ -62,7 +73,6 @@ set(SOURCES_Col
 	Collisions/src/Debug/OgreBulletCollisionsDebugDrawer.cpp
 	Collisions/src/Debug/OgreBulletCollisionsDebugShape.cpp
 	Collisions/src/Debug/OgreBulletCollisionsDebugLines.cpp
-	Collisions/src/OgreBulletCollisionsPrecompiled.cpp
 	Collisions/src/OgreBulletCollisionsObject.cpp
 	Collisions/src/Utils/OgreBulletCollisionsMeshToShapeConverter.cpp
 	Collisions/src/OgreBulletCollisionsShape.cpp)
@@ -76,10 +86,14 @@ set(SOURCES_Dyn
 	Dynamics/src/Constraints/OgreBulletDynamicsConeTwistConstraint.cpp
 	Dynamics/src/Constraints/OgreBulletDynamicsHingeConstraint.cpp
 	Dynamics/src/OgreBulletDynamicsRigidBody.cpp
-	Dynamics/src/OgreBulletDynamicsPrecompiled.cpp
 	Dynamics/src/OgreBulletDynamicsObjectState.cpp
 	Dynamics/src/OgreBulletDynamicsWorld.cpp
 	Dynamics/src/Prefab/OgreBulletDynamicsRagDoll.cpp)
+
+if(${PROJECT_NAME}_USE_PCH)
+        list(APPEND SOURCES_Col Collisions/src/OgreBulletCollisionsPrecompiled.cpp)
+        list(APPEND SOURCES_Dyn Dynamics/src/OgreBulletDynamicsPrecompiled.cpp)
+endif()
 
 set(HEADERS_Col_Shapes
 	Collisions/include/Shapes/OgreBulletCollisionsMultiSphereShape.h
@@ -135,16 +149,15 @@ set(HEADERS_Dyn
 	Dynamics/include/OgreBulletDynamicsObjectState.h
 	Dynamics/include/OgreBulletDynamicsPreRequisites.h)
 
-set(COLLISIONS_LIB "${PROJ}Collisions")
-set(DYNAMICS_LIB "${PROJ}Dynamics")
+set(COLLISIONS_LIB "${PROJECT_NAME}Collisions")
+set(DYNAMICS_LIB "${PROJECT_NAME}Dynamics")
 
-add_library(${COLLISIONS_LIB} SHARED ${SOURCES_Col})
-add_library(${DYNAMICS_LIB} SHARED ${SOURCES_Dyn} )
+add_library(${COLLISIONS_LIB} ${SOURCES_Col})
+target_link_libraries(${COLLISIONS_LIB} ${BULLET_LIBRARIES} ${OGRE_LIBRARIES})
+add_library(${DYNAMICS_LIB} ${SOURCES_Dyn})
+target_link_libraries(${DYNAMICS_LIB} ${BULLET_LIBRARIES} ${OGRE_LIBRARIES})
 
-target_link_libraries(${DYNAMICS_LIB} ${COLLISIONS_LIB}   )
-target_link_libraries(${COLLISIONS_LIB} ${OGRE_LIBRARIES} ${OGRE_Overlay_LIBRARY} ${BULLET_LIBRARIES})
-
-set(INCLUDE_INSTALL_DIR include/${PROJ})
+set(INCLUDE_INSTALL_DIR include/${PROJECT_NAME})
 
 set(INCLUDE_INSTALL_COL_DIR ${INCLUDE_INSTALL_DIR}/Collisions)
 set(INCLUDE_INSTALL_COL_SHAPES_DIR ${INCLUDE_INSTALL_COL_DIR}/Shapes)
@@ -157,16 +170,16 @@ set(INCLUDE_INSTALL_DYN_PREFAB_DIR ${INCLUDE_INSTALL_DYN_DIR}/Prefab)
 
 install(TARGETS ${COLLISIONS_LIB} ${DYNAMICS_LIB} 
 	RUNTIME DESTINATION bin
-	LIBRARY DESTINATION lib
+        LIBRARY DESTINATION lib
 	ARCHIVE DESTINATION lib)
 
 set(LIB_DIR ${CMAKE_CURRENT_SOURCE_DIR}/lib)
 set(BIN_DIR ${CMAKE_CURRENT_SOURCE_DIR}/bin)
 
-if(${PROJ}_BUILD_DEMOS)
+if(${PROJECT_NAME}_BUILD_DEMOS)
 #	message(STATUS "building demos!")
 	add_subdirectory(Demos)
-endif(${PROJ}_BUILD_DEMOS)
+endif(${PROJECT_NAME}_BUILD_DEMOS)
 
 install(FILES ${HEADERS_Col} DESTINATION ${INCLUDE_INSTALL_COL_DIR})
 install(FILES ${HEADERS_Col_Shapes} DESTINATION ${INCLUDE_INSTALL_COL_SHAPES_DIR})
@@ -177,7 +190,7 @@ install(FILES ${HEADERS_Dyn} DESTINATION ${INCLUDE_INSTALL_DYN_DIR})
 install(FILES ${HEADERS_Dyn_Constraints} DESTINATION ${INCLUDE_INSTALL_DYN_CONSTRAINTS_DIR})
 install(FILES ${HEADERS_Dyn_Prefab} DESTINATION ${INCLUDE_INSTALL_DYN_PREFAB_DIR})
 
-install(FILES FindOgreBullet.cmake DESTINATION lib/${PROJ}/cmake)
+install(FILES FindOgreBullet.cmake DESTINATION lib/${PROJECT_NAME}/cmake)
 
 # uninstall target
 configure_file(

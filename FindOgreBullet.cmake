@@ -14,11 +14,11 @@ endif(OgreBullet_INCLUDE_DIR)
 find_path(OgreBullet_INCLUDE_DIR "Dynamics/OgreBulletDynamicsRigidBody.h"
           PATH_SUFFIXES "OgreBullet")
 
-find_library(OgreBullet_COL_LIB "OgreBulletCol")
-find_library(OgreBullet_DYN_LIB "OgreBulletDyn")
+find_library(OgreBullet_COL_LIB "OgreBulletCollisions")
+find_library(OgreBullet_DYN_LIB "OgreBulletDynamics")
 
 set(OgreBullet_INCLUDE_DIRS "${OGREBULLET_INCLUDE_DIR}/Collisions" "${OGREBULLET_INCLUDE_DIR}/Dynamics")
-set(OgreBullet_LIBRARIES OgreBulletDyn OgreBulletCol)
+set(OgreBullet_LIBRARIES OgreBulletDynamics OgreBulletCollisions)
 
 # handle the QUIETLY and REQUIRED arguments and set OGREBULLET_FOUND to TRUE if
 # all listed variables are TRUE
