@@ -1,6 +1,14 @@
 Readme for OgreBullet
 ==================
 
+*NIX BUILD
+=====================
+1) Use the CMake GUI. Click "Browse Source" and browse to the downloaded source code. Click "Browse Build" and create a new folder inside the source code named "build". Select it.
+2) Press "Configure". If there are no errors, press "Generate".
+3) Open a terminal, and navigate to the "build" folder inside the source code.
+4) Run "make -jX", where X is how many threads you want to compile with.
+5) Run "sudo make install" to install OgreBullet.
+
 WINDOWS BUILD
 ======================
 Brief build instructions for building from SVN with MSVC 8 or higher. 
@@ -21,7 +29,3 @@ Brief build instructions for building from SVN with MSVC 8 or higher.
 9) Open the solution OgreBullet_VC8.sln to build the OgreBullet library with Microsoft Visual C++ 2005. The executable will be built to your 'ogrebullet\Demos' folder.
 10) You may need to manually copy the Ogre DLL files and the OIS*.DLL files to your 'ogrebullet\Demos' location.
 11) If you want to run the demo from within MSVC you'll need to set the 'Working Directory' to point to your 'ogrebullet\Demos' location.
-
-*NIX BUILD
-=====================
-There are scripts available to build OgreBullet. They are in need of an experienced *nix developer to fix them up.
